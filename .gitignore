@@ -1,0 +1,24 @@
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# VS Code
+.vscode/
+
+# Java / Spring / Maven
+target/
+*.class
+.mvn/
+mvnw
+mvnw.cmd
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+
+# Docker / Environment
+.env
+docker-compose.override.yml
+.DS_Store
