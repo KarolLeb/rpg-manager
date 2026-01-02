@@ -1,0 +1,65 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: rpg-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: rpg
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: rpg-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend:
+    build: .././backend
+    container_name: rpg-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DOCKER_COMPOSE_ENABLED=false
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rpg
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync
+          path: .././backend/src
+          target: /app/src
+        - action: rebuild
+          path: .././backend/pom.xml
+
+  frontend:
+    build: .././frontend
+    container_name: rpg-frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - /app/node_modules
+    develop:
+      watch:
+        - action: sync
+          path: .././frontend/src
+          target: /app/src
