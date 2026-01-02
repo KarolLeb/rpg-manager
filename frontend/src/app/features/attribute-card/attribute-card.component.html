@@ -1,0 +1,44 @@
+<div class="hud-card" [formGroup]="parentForm">
+  
+  <header class="attribute-header">
+    <div class="header-content">
+      <span class="label">ATTR</span>
+      <h3 class="title">{{ title | uppercase }}</h3>
+    </div>
+    <div class="attribute-value-wrapper">
+      <input 
+        type="number" 
+        [formControlName]="attributeControlName" 
+        class="cyber-input large"
+      >
+      <div class="hex-decoration"></div>
+    </div>
+  </header>
+
+  <div class="skills-container" [formArrayName]="skillsArrayName">
+    
+    <div class="skills-header-row">
+      <span class="col-name">Umiejętność</span>
+      <span class="col-stat">Baza</span>
+      <span class="col-stat">Suma</span>
+    </div>
+
+    @for (skill of skillsControls; track $index) {
+      <div class="skill-row" [formGroupName]="$index">
+        <span class="skill-label">{{ skill.get('name').value }}</span>
+        
+        <input 
+          type="number" 
+          formControlName="level" 
+          class="cyber-input small"
+        >
+        
+        <div class="skill-total-display">
+          {{ skill.get('total').value }}
+        </div>
+      </div>
+    }
+  </div>
+  
+  <div class="card-footer-decoration"></div>
+</div>

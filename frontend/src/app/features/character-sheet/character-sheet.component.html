@@ -1,0 +1,62 @@
+<div class="sheet-container" [formGroup]="characterForm">
+  
+  <header class="sheet-header" formGroupName="info">
+    <div class="profile-block">
+      <div class="avatar-placeholder">
+        IMG
+      </div>
+      <div class="basic-info">
+        <h1 class="char-name">
+          <input formControlName="name" class="header-input" placeholder="Imię">
+        </h1>
+        <div class="sub-info">
+          <label>Profesja:</label>
+          <input formControlName="profession" class="header-input small">
+        </div>
+      </div>
+    </div>
+
+    <div class="motivation-block">
+      <div class="motivation-row">
+        <span class="label">Ambicja:</span>
+        <input formControlName="ambition" class="cyber-line-input">
+      </div>
+      <div class="motivation-row">
+        <span class="label text-danger">Nemezis:</span>
+        <input formControlName="nemesis" class="cyber-line-input">
+      </div>
+    </div>
+  </header>
+
+  <main class="attributes-layout" formGroupName="attributes">
+    
+    <section class="column">
+      <h2 class="section-title">FIZYCZNE</h2>
+      @for (attr of physicalAttributes; track attr.key) {
+        @if (getAttributeGroup(attr.key)) {
+          <app-attribute-card
+            [title]="attr.label"
+            [parentForm]="getAttributeGroup(attr.key)"
+            attributeControlName="value"
+            skillsArrayName="skills">
+          </app-attribute-card>
+        }
+      }
+    </section>
+
+    <section class="column">
+      <h2 class="section-title">UMYSŁOWE</h2>
+      @for (attr of mentalAttributes; track attr.key) {
+        @if (getAttributeGroup(attr.key)) {
+          <app-attribute-card
+            [title]="attr.label"
+            [parentForm]="getAttributeGroup(attr.key)"
+            attributeControlName="value"
+            skillsArrayName="skills">
+          </app-attribute-card>
+        }
+      }
+    </section>
+
+  </main>
+</div>
