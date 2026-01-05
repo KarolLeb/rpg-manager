@@ -12,10 +12,31 @@ $color-text: #e2e8f0;
   padding: 20px;
 }
 
-.sheet-container {
-  max-width: 1200px;
-  margin: 0 auto;
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
+
+.save-btn {
+  background: #00ff9d;
+  color: #000;
+  border: none;
+  padding: 8px 20px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+  transition: all 0.2s;
+
+  &:hover {
+    background: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 255, 157, 0.5);
+  }
+}
+
+
 
 .sheet-header {
   display: flex;

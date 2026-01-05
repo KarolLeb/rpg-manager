@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { AttributeCardComponent } from '../attribute-card/attribute-card.component';
 import { AttributeConfig } from './models/character-data.model';
+import { CharacterService } from '../../core/services/character.service';
+import { Character } from '../../core/models/character.model';
 
 @Component({
   selector: 'app-character-sheet',
@@ -13,6 +15,7 @@ import { AttributeConfig } from './models/character-data.model';
 })
 export class CharacterSheetPageComponent implements OnInit {
   characterForm: FormGroup;
+  currentCharacterId?: number;
   
   physicalAttributes: AttributeConfig[] = [
     { key: 'strength', label: 'Siła' },
@@ -30,7 +33,7 @@ export class CharacterSheetPageComponent implements OnInit {
     { key: 'willpower', label: 'Siła Woli' }
   ];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private characterService: CharacterService) {
     this.characterForm = this.fb.group({
       info: this.fb.group({
         name: [''],
@@ -44,7 +47,78 @@ export class CharacterSheetPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadDummyData();
+    this.characterService.getCharacters().subscribe(characters => {
+      if (characters.length > 0) {
+        const character = characters[0];
+        this.currentCharacterId = character.id;
+        this.loadCharacterData(character);
+      } else {
+        this.loadDummyData();
+      }
+    });
+  }
+
+  onSave() {
+    if (!this.currentCharacterId) return;
+
+    const formVal = this.characterForm.value;
+    
+    // Map internal structure back to the format expected by the DB (stats as JSON)
+    const characterToSave: Character = {
+      id: this.currentCharacterId,
+      name: formVal.info.name,
+      characterClass: formVal.info.profession,
+      level: 1, // Default or fetch from form if added
+      stats: JSON.stringify(formVal.attributes)
+    };
+
+    this.characterService.updateCharacter(this.currentCharacterId, characterToSave).subscribe({
+      next: (res) => {
+        console.log('Character saved!', res);
+        alert('Postać została zapisana pomyślnie!');
+      },
+      error: (err) => {
+        console.error('Save failed', err);
+        alert('Błąd podczas zapisywania postaci.');
+      }
+    });
+  }
+
+  private loadCharacterData(character: Character) {
+    this.characterForm.get('info')?.patchValue({
+      name: character.name,
+      profession: character.characterClass,
+      ambition: 'Z bazy danych',
+      nemesis: 'Brak danych'
+    });
+
+    let attributesData: any;
+    try {
+      attributesData = JSON.parse(character.stats);
+    } catch (e) {
+      console.error('Failed to parse character stats', e);
+      return;
+    }
+
+    const attrsGroup = this.characterForm.get('attributes') as FormGroup;
+
+    Object.keys(attributesData).forEach(key => {
+      const data = attributesData[key];
+      if (typeof data === 'object' && data.skills) {
+        const skillsArray = this.fb.array(
+          data.skills.map((s: any[]) => this.fb.group({
+            name: [s[0]], 
+            level: [s[1]],
+            total: [s[2]] 
+          }))
+        );
+
+        attrsGroup.addControl(key, this.fb.group({
+          value: [data.val],
+          skills: skillsArray
+        }));
+      }
+    });
   }
 
   private loadDummyData() {

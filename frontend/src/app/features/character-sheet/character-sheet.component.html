@@ -6,9 +6,12 @@
         IMG
       </div>
       <div class="basic-info">
-        <h1 class="char-name">
-          <input formControlName="name" class="header-input" placeholder="Imię">
-        </h1>
+        <div class="title-row">
+          <h1 class="char-name">
+            <input formControlName="name" class="header-input" placeholder="Imię">
+          </h1>
+          <button (click)="onSave()" class="save-btn">ZAPISZ</button>
+        </div>
         <div class="sub-info">
           <label>Profesja:</label>
           <input formControlName="profession" class="header-input small">
