@@ -16,6 +16,16 @@ $color-text: #e2e8f0;
   display: flex;
   align-items: center;
   gap: 20px;
+  width: 100%; /* Ensure row takes full width */
+
+  .char-name {
+    flex-grow: 1; /* Allow name to take available space */
+    margin: 0; /* Remove default h1 margins */
+    
+    input {
+      width: 100%;
+    }
+  }
 }
 
 .save-btn {

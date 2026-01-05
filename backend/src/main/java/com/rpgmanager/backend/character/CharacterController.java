@@ -13,7 +13,7 @@ public class CharacterController {
 
     @GetMapping
     public List<Character> getAllCharacters() {
-        return characterRepository.findAll();
+        return characterRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "id"));
     }
 
     @PutMapping("/{id}")
