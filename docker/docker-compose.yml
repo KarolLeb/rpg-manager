@@ -16,6 +16,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - rpg-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -29,6 +31,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - rpg-network
 
   backend:
     build: .././backend
@@ -65,6 +69,8 @@ services:
         - action: sync
           path: .././frontend/src
           target: /app/src
+    networks:
+      - rpg-network
 
   prometheus:
     image: prom/prometheus:latest
