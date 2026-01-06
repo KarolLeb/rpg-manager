@@ -20,6 +20,6 @@ public class Character {
     @Column(nullable = false)
     private Integer level;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "jsonb")
     private String stats;
 }

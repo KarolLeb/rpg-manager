@@ -11,6 +11,6 @@ VALUES
   "intelligence": {"val": 14, "skills": [["Znaki", 10, 24]]},
   "knowledge": {"val": 18, "skills": [["Potwory", 10, 28], ["Alchemia", 10, 28]]},
   "willpower": {"val": 16, "skills": [["Medytacja", 10, 26]]}
-}'),
-('Yennefer', 'Czarodziejka', 32, '{"intelligence": 22, "chaos_control": 95}'),
-('Jaskier', 'Bard', 15, '{"charisma": 25, "luck": -10}');
+}'::jsonb),
+('Yennefer', 'Czarodziejka', 32, '{"intelligence": 22, "chaos_control": 95}'::jsonb),
+('Jaskier', 'Bard', 15, '{"charisma": 25, "luck": -10}'::jsonb);
