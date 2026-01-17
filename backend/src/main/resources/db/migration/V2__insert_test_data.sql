@@ -1,16 +1,19 @@
-INSERT INTO characters (name, character_class, level, stats)
-VALUES
-('Geralt z Rivii', 'Wiedźmin', 35, '{
-  "strength": {"val": 18, "skills": [["Miecz stalowy", 10, 28], ["Miecz srebrny", 10, 28], ["Zastraszanie", 8, 26]]},
-  "constitution": {"val": 15, "skills": [["Odporność", 10, 25], ["Mocna głowa", 10, 25]]},
-  "dexterity": {"val": 20, "skills": [["Refleks", 10, 30], ["Parowanie", 10, 30]]},
-  "agility": {"val": 18, "skills": [["Uniki", 10, 28]]},
-  "perception": {"val": 16, "skills": [["Wiedźmińskie zmysły", 10, 26]]},
-  "empathy": {"val": 8, "skills": [["Perswazja", 2, 10]]},
-  "charisma": {"val": 10, "skills": [["Aktorstwo", 5, 15]]},
-  "intelligence": {"val": 14, "skills": [["Znaki", 10, 24]]},
-  "knowledge": {"val": 18, "skills": [["Potwory", 10, 28], ["Alchemia", 10, 28]]},
-  "willpower": {"val": 16, "skills": [["Medytacja", 10, 26]]}
-}'::jsonb),
-('Yennefer', 'Czarodziejka', 32, '{"intelligence": 22, "chaos_control": 95}'::jsonb),
-('Jaskier', 'Bard', 15, '{"charisma": 25, "luck": -10}'::jsonb);
+-- Users
+INSERT INTO users (username, password, email, role) VALUES 
+('gamemaster', '$2a$10$8.UnVuG9HHgffUDAlk8q4.0n.jK.g9Y0.g9Y0.g9Y0.g9Y0.g9Y0', 'gm@example.com', 'GM'),
+('player1', '$2a$10$8.UnVuG9HHgffUDAlk8q4.0n.jK.g9Y0.g9Y0.g9Y0.g9Y0.g9Y0', 'player1@example.com', 'PLAYER'),
+('player2', '$2a$10$8.UnVuG9HHgffUDAlk8q4.0n.jK.g9Y0.g9Y0.g9Y0.g9Y0.g9Y0', 'player2@example.com', 'PLAYER');
+
+-- Campaigns
+INSERT INTO campaigns (name, description, status, game_master_id) VALUES 
+('Kampania Smoczej Lancy', 'Epicka przygoda w świecie smoków.', 'ACTIVE', (SELECT id FROM users WHERE username = 'gamemaster'));
+
+-- Sessions
+INSERT INTO sessions (campaign_id, name, description, status) VALUES 
+((SELECT id FROM campaigns WHERE name = 'Kampania Smoczej Lancy'), 'Sesja 1: Spotkanie w Karczmie', 'Pierwsze spotkanie drużyny.', 'FINISHED'),
+((SELECT id FROM campaigns WHERE name = 'Kampania Smoczej Lancy'), 'Sesja 2: Atak Goblinów', 'Drużyna wyrusza w drogę.', 'ACTIVE');
+
+-- Characters
+INSERT INTO characters (name, character_class, level, stats, campaign_id, user_id, controller_id, character_type) VALUES 
+('Geralt', 'Witcher', 10, '{"strength": 15, "dexterity": 18, "intelligence": 12}', (SELECT id FROM campaigns WHERE name = 'Kampania Smoczej Lancy'), (SELECT id FROM users WHERE username = 'player1'), NULL, 'PERMANENT'),
+('Yennefer', 'Sorceress', 10, '{"strength": 8, "dexterity": 14, "intelligence": 20}', (SELECT id FROM campaigns WHERE name = 'Kampania Smoczej Lancy'), (SELECT id FROM users WHERE username = 'player2'), (SELECT id FROM users WHERE username = 'player1'), 'PERMANENT');

@@ -23,5 +23,3 @@ dist/
 docker-compose.override.yml
 .DS_Store
 .aider*
-
-GEMINI.md

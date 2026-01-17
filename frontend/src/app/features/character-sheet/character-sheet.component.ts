@@ -16,7 +16,7 @@ import { Character } from '../../core/models/character.model';
 export class CharacterSheetPageComponent implements OnInit {
   characterForm: FormGroup;
   currentCharacterId?: number;
-  
+
   physicalAttributes: AttributeConfig[] = [
     { key: 'strength', label: 'Siła' },
     { key: 'constitution', label: 'Wytrzymałość' },
@@ -62,14 +62,24 @@ export class CharacterSheetPageComponent implements OnInit {
     if (!this.currentCharacterId) return;
 
     const formVal = this.characterForm.value;
-    
-    // Map internal structure back to the format expected by the DB (stats as JSON)
+    const attributesRaw = formVal.attributes;
+    const attributesToSave: any = {};
+
+    // Map 'value' from form back to 'val' for DB storage
+    Object.keys(attributesRaw).forEach(key => {
+      const attr = attributesRaw[key];
+      attributesToSave[key] = {
+        val: attr.value,
+        skills: attr.skills.map((s: any) => [s.name, s.level, s.total]) // Ensure skills are just arrays of values, not objects if form structure changed
+      };
+    });
+
     const characterToSave: Character = {
       id: this.currentCharacterId,
       name: formVal.info.name,
       characterClass: formVal.info.profession,
-      level: 1, // Default or fetch from form if added
-      stats: JSON.stringify(formVal.attributes)
+      level: 1,
+      stats: JSON.stringify(attributesToSave)
     };
 
     this.characterService.updateCharacter(this.currentCharacterId, characterToSave).subscribe({
@@ -107,9 +117,9 @@ export class CharacterSheetPageComponent implements OnInit {
       if (typeof data === 'object' && data.skills) {
         const skillsArray = this.fb.array(
           data.skills.map((s: any[]) => this.fb.group({
-            name: [s[0]], 
+            name: [s[0]],
             level: [s[1]],
-            total: [s[2]] 
+            total: [s[2]]
           }))
         );
 
@@ -136,7 +146,7 @@ export class CharacterSheetPageComponent implements OnInit {
       agility: { val: 12, skills: [['Akrobatyka', 5, 15], ['Rzucanie', 5, 15], ['Skradanie', 5, 15]] },
       perception: { val: 12, skills: [['Broń Długa', 5, 15], ['Nawigacja', 5, 15], ['Spostrzegawczość', 5, 15]] },
       empathy: { val: 12, skills: [['Blef', 5, 15], ['Gadanina', 5, 15], ['Oswajanie', 5, 15]] },
-      
+
       charisma: { val: 12, skills: [['Aktorstwo', 5, 15], ['Handel', 5, 15], ['Przekonywanie', 5, 15]] },
       intelligence: { val: 12, skills: [['Analiza', 5, 15], ['Komputery', 5, 15], ['Taktyka', 5, 15]] },
       knowledge: { val: 12, skills: [['Kosmos', 5, 15], ['Kultura', 5, 15], ['Medycyna', 5, 15]] },
@@ -147,12 +157,12 @@ export class CharacterSheetPageComponent implements OnInit {
 
     Object.keys(attributesData).forEach(key => {
       const data = attributesData[key];
-      
+
       const skillsArray = this.fb.array(
         data.skills.map((s: any[]) => this.fb.group({
-          name: [s[0]], 
+          name: [s[0]],
           level: [s[1]],
-          total: [s[2]] 
+          total: [s[2]]
         }))
       );
 

@@ -1,7 +1,10 @@
 package com.rpgmanager.backend.character;
 
+import com.rpgmanager.backend.campaign.Campaign;
+import com.rpgmanager.backend.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import java.util.UUID;
 
 @Entity
 @Table(name = "characters")
@@ -10,6 +13,9 @@ public class Character {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
+    private UUID uuid;
 
     @Column(nullable = false)
     private String name;
@@ -22,4 +28,31 @@ public class Character {
 
     @Column(columnDefinition = "jsonb")
     private String stats;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "campaign_id")
+    private Campaign campaign;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "controller_id")
+    private User controller;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "character_type", length = 20)
+    private CharacterType characterType = CharacterType.PERMANENT; // Defines if the character is the player's main one or just temporary for a session
+
+    @PrePersist
+    protected void onCreate() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID();
+        }
+    }
+
+    public enum CharacterType {
+        PERMANENT, TEMPORARY
+    }
 }
