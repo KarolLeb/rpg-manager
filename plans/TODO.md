@@ -19,10 +19,12 @@
     - [x] Pola: `uuid`, `campaign`, `name`, `date`, `status`.
 - [x] **Encja `Character`**:
     - [x] Relacje: `campaign`, `user` (owner), `controller` (temporary).
-- [ ] **Logika Biznesowa (Service/Controller)**:
-    - `CampaignService`: CRUD dla kampanii (dla GM).
-    - `SessionService`: CRUD dla sesji w ramach kampanii.
-    - `CharacterService`: Tworzenie postaci w kampanii, przypisywanie kontrolera.
+- [x] **Logika Biznesowa (Service/Controller)**:
+    - [ ] `CampaignService`: CRUD dla kampanii (dla GM).
+    - [ ] `SessionService`: CRUD dla sesji w ramach kampanii.
+    - [ ] `CharacterService`: Tworzenie postaci w kampanii, przypisywanie kontrolera.
+- [x] **Testy E2E (Playwright)**:
+    - [x] Implementacja scenariusza Campaign CRUD.
 
 ## Frontend (Angular) - Interfejs Użytkownika
 
@@ -39,6 +41,17 @@
 - [ ] **Dashboard Gracza**:
     - "Moje Kampanie".
     - Wybór postaci (lub podgląd przypisanej).
+
+## Jakość i Pokrycie Testami (Quality Gate)
+- [ ] **Konfiguracja Raportowania**:
+    - [ ] Skonfigurować JaCoCo dla Backend (Maven).
+    - [ ] Skonfigurować Karma/Istanbul coverage reporter dla Frontend.
+- [ ] **Osiągnięcie Targetów Pokrycia**:
+    - [ ] Globalne pokrycie ≥ 90%.
+    - [ ] Moduły core (logika biznesowa) ≥ 95%.
+    - [ ] Ścieżki krytyczne (security, error handling) 100%.
+- [ ] **Automatyzacja**:
+    - [ ] Zintegrować `scripts/enforce-coverage.js` z procesem budowania.
 
 ## Ogólne
 - [ ] Reset bazy danych (`docker-compose down -v`) po zmianie modelu.
