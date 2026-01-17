@@ -7,6 +7,7 @@ import com.rpgmanager.backend.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -34,13 +35,13 @@ class CampaignIntegrationTest {
     @Autowired
     private CampaignRepository campaignRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     private User gameMaster;
 
     @BeforeEach
     void setUp() {
+        objectMapper.registerModule(new JavaTimeModule());
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 
         // Ensure we have a user to be the GM
