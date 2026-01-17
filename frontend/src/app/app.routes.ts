@@ -17,6 +17,21 @@ export const routes: Routes = [
       .then(m => m.CharacterSheetPageComponent)
   },
   {
+    path: 'campaigns',
+    loadComponent: () => import('./features/campaign/campaign-list.component')
+      .then(m => m.CampaignListComponent)
+  },
+  {
+    path: 'campaigns/new',
+    loadComponent: () => import('./features/campaign/campaign-form.component')
+      .then(m => m.CampaignFormComponent)
+  },
+  {
+    path: 'campaigns/:id/edit',
+    loadComponent: () => import('./features/campaign/campaign-form.component')
+      .then(m => m.CampaignFormComponent)
+  },
+  {
     path: '**', // Wildcard (404)
     redirectTo: 'dashboard'
   }
