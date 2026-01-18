@@ -6,6 +6,11 @@ This file provides a high-level map of the project structure and resources for t
 - **[Instructions](.github/instructions.md)**: Central entry point for all coding standards, tech stack details, and sub-instructions (Backend, Frontend, Docs).
 - **[Prompts](.github/prompts/)**: Reusable prompt templates for common tasks.
 
+## 🛠️ Environment & Troubleshooting
+- **Docker & Testcontainers**: If Testcontainers fail to start, ensure Docker is running.
+- **Compatibility**: See **[Testcontainers Compatibility](docs/TESTCONTAINERS_COMPATIBILITY.md)** for known issues with Docker Desktop versions.
+- **Action**: If Docker is not running, ask the user to start it before proceeding with tests.
+
 ## 📅 Project Management
 - **[Plans & TODO](plans/TODO.md)**: Current development roadmap and task tracking.
 
