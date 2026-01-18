@@ -67,4 +67,9 @@ describe('AttributeCardComponent', () => {
     expect(rows[0].nativeElement.textContent).toContain('Evasion');
     expect(rows[0].nativeElement.textContent).toContain('12'); // Total
   });
+
+  it('should return empty array if skills control is missing', () => {
+    component.skillsArrayName = 'nonExistent';
+    expect(component.skillsControls).toEqual([]);
+  });
 });

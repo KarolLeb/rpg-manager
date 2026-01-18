@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CampaignFormComponent } from './campaign-form.component';
 import { CampaignService } from '../../core/services/campaign.service';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
-import { of, BehaviorSubject } from 'rxjs';
+import { of, BehaviorSubject, throwError } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Campaign } from '../../core/models/campaign.model';
 import { By } from '@angular/platform-browser';
@@ -115,5 +115,37 @@ describe('CampaignFormComponent', () => {
 
     expect(mockCampaignService.createCampaign).not.toHaveBeenCalled();
     expect(mockCampaignService.updateCampaign).not.toHaveBeenCalled();
+  });
+
+  it('should log error when loading campaign fails', () => {
+    mockCampaignService.getCampaign.and.returnValue(throwError(() => new Error('Load failed')));
+    spyOn(console, 'error');
+    
+    paramsSubject.next({ id: '1' });
+    fixture.detectChanges();
+
+    expect(console.error).toHaveBeenCalledWith('Error loading campaign', jasmine.any(Error));
+  });
+
+  it('should log error when creating campaign fails', () => {
+    mockCampaignService.createCampaign.and.returnValue(throwError(() => new Error('Create failed')));
+    spyOn(console, 'error');
+    
+    component.campaignForm.setValue({ name: 'New', description: 'Desc' });
+    component.onSubmit();
+
+    expect(console.error).toHaveBeenCalledWith('Error creating campaign', jasmine.any(Error));
+  });
+
+  it('should log error when updating campaign fails', () => {
+    mockCampaignService.updateCampaign.and.returnValue(throwError(() => new Error('Update failed')));
+    spyOn(console, 'error');
+    
+    paramsSubject.next({ id: '1' });
+    fixture.detectChanges();
+    
+    component.onSubmit();
+
+    expect(console.error).toHaveBeenCalledWith('Error updating campaign', jasmine.any(Error));
   });
 });

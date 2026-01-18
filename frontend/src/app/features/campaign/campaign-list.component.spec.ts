@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CampaignListComponent } from './campaign-list.component';
 import { CampaignService } from '../../core/services/campaign.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { provideRouter } from '@angular/router';
 import { Campaign } from '../../core/models/campaign.model';
 import { By } from '@angular/platform-browser';
@@ -74,5 +74,24 @@ describe('CampaignListComponent', () => {
     
     expect(window.confirm).toHaveBeenCalled();
     expect(mockCampaignService.deleteCampaign).not.toHaveBeenCalled();
+  });
+
+  it('should log error when loading campaigns fails', () => {
+    mockCampaignService.getCampaigns.and.returnValue(throwError(() => new Error('Load failed')));
+    spyOn(console, 'error');
+    
+    component.loadCampaigns();
+
+    expect(console.error).toHaveBeenCalledWith('Error loading campaigns', jasmine.any(Error));
+  });
+
+  it('should log error when deleting campaign fails', () => {
+    spyOn(window, 'confirm').and.returnValue(true);
+    mockCampaignService.deleteCampaign.and.returnValue(throwError(() => new Error('Delete failed')));
+    spyOn(console, 'error');
+    
+    component.deleteCampaign(1);
+
+    expect(console.error).toHaveBeenCalledWith('Error deleting campaign', jasmine.any(Error));
   });
 });

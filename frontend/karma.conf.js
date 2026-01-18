@@ -26,7 +26,9 @@ module.exports = function (config) {
       subdir: '.',
       reporters: [
         { type: 'html' },
-        { type: 'text-summary' }
+        { type: 'text-summary' },
+        { type: 'text' },
+        { type: 'json-summary' }
       ]
     },
     reporters: ['progress', 'kjhtml'],
