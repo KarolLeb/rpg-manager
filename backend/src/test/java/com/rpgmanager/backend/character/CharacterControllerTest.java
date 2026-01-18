@@ -88,4 +88,21 @@ class CharacterControllerTest {
                 .andExpect(jsonPath("$.name").value("New Name"))
                 .andExpect(jsonPath("$.level").value(2));
     }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingNonExistentCharacter() {
+        Long charId = 999L;
+        Character updateRequest = new Character();
+        updateRequest.setName("Ghost");
+
+        given(characterRepository.findById(charId)).willReturn(Optional.empty());
+
+        org.junit.jupiter.api.Assertions.assertThrows(jakarta.servlet.ServletException.class, () -> {
+            mockMvc.perform(put("/api/characters/{id}", charId)
+                            .with(csrf())
+                            .with(user("user"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(updateRequest)));
+        });
+    }
 }

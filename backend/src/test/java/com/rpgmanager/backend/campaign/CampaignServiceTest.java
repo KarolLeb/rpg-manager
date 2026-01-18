@@ -60,6 +60,14 @@ class CampaignServiceTest {
     }
 
     @Test
+    void createCampaign_shouldThrowExceptionWhenUserNotFound() {
+        CreateCampaignRequest request = new CreateCampaignRequest("New Camp", "Desc", 999L);
+        when(userRepository.findById(999L)).thenReturn(Optional.empty());
+
+        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class, () -> campaignService.createCampaign(request));
+    }
+
+    @Test
     void getAllCampaigns_shouldReturnList() {
         Campaign campaign = Campaign.builder().id(1L).gameMaster(user).build();
         when(campaignRepository.findAll()).thenReturn(java.util.List.of(campaign));
@@ -96,6 +104,19 @@ class CampaignServiceTest {
         CampaignDTO result = campaignService.updateCampaign(1L, request);
 
         assertThat(result.getName()).isEqualTo("New");
+    }
+
+    @Test
+    void updateCampaign_shouldNotUpdateGM_whenGMIdIsNull() {
+        Campaign campaign = Campaign.builder().id(1L).name("Old").gameMaster(user).build();
+        CreateCampaignRequest request = new CreateCampaignRequest("New", "Desc", null);
+        when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+        when(campaignRepository.save(any(Campaign.class))).thenReturn(campaign);
+
+        campaignService.updateCampaign(1L, request);
+
+        verify(userRepository, never()).findById(anyLong());
+        assertThat(campaign.getGameMaster()).isEqualTo(user);
     }
 
     @Test

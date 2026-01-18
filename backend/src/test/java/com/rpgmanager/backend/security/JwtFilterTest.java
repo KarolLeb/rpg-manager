@@ -98,4 +98,31 @@ class JwtFilterTest {
         verify(filterChain).doFilter(request, response);
         assert SecurityContextHolder.getContext().getAuthentication() == null;
     }
+
+    @Test
+    void shouldNotAuthenticateIfUserAlreadyAuthenticated() throws ServletException, IOException {
+        String token = "valid-token";
+        String username = "testuser";
+        given(request.getHeader("Authorization")).willReturn("Bearer " + token);
+        given(jwtUtil.extractUsername(token)).willReturn(username);
+        
+        SecurityContextHolder.getContext().setAuthentication(mock(org.springframework.security.core.Authentication.class));
+
+        jwtFilter.doFilterInternal(request, response, filterChain);
+
+        verify(filterChain).doFilter(request, response);
+        verify(userDetailsService, never()).loadUserByUsername(anyString());
+    }
+
+    @Test
+    void shouldNotAuthenticateIfUsernameIsNull() throws ServletException, IOException {
+        String token = "valid-token";
+        given(request.getHeader("Authorization")).willReturn("Bearer " + token);
+        given(jwtUtil.extractUsername(token)).willReturn(null);
+
+        jwtFilter.doFilterInternal(request, response, filterChain);
+
+        verify(filterChain).doFilter(request, response);
+        verify(userDetailsService, never()).loadUserByUsername(anyString());
+    }
 }
