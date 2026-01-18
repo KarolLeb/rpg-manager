@@ -14,7 +14,12 @@ export class AuthService {
   constructor(private http: HttpClient) {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
-      this.currentUserSubject.next(JSON.parse(savedUser));
+      try {
+        this.currentUserSubject.next(JSON.parse(savedUser));
+      } catch (e) {
+        console.error('Failed to parse user from local storage', e);
+        localStorage.removeItem('currentUser');
+      }
     }
   }
 
@@ -47,7 +52,7 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem('token') && !!this.currentUserSubject.value;
   }
 
   getToken(): string | null {

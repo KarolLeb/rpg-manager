@@ -43,3 +43,10 @@ CREATE TABLE characters (
     controller_id BIGINT REFERENCES users(id), -- Current Controller
     character_type VARCHAR(20) DEFAULT 'PERMANENT'
 );
+
+CREATE TABLE race_styles (
+    id BIGSERIAL PRIMARY KEY,
+    uuid UUID NOT NULL UNIQUE,
+    race_name VARCHAR(255) NOT NULL UNIQUE,
+    css_content TEXT
+);

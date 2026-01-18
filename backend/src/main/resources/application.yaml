@@ -23,10 +23,11 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     validate-on-migrate: true
-    clean-disabled: true
+    clean-disabled: false
     schemas: public
     baseline-version: 1
     baseline-description: "Initial Baseline"
+    clean-on-validation-error: true
 
   data:
     redis:
