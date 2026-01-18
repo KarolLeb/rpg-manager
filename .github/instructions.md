@@ -20,3 +20,4 @@ Please refer to the specific instruction files for detailed guidelines:
 5.  **Context First:** Always understand the surrounding code and architecture before making changes.
 6.  **Consistency:** Adhere strictly to the coding styles and patterns defined in the specific instruction files.
 7.  **Safety:** Never commit secrets, passwords, or API keys.
+8.  **Environment Awareness:** This agent runs in a **PowerShell** environment on Windows. All shell commands, scripts, and file system operations must use PowerShell-compatible syntax and follow Windows-specific path conventions where applicable.

@@ -19,6 +19,15 @@ services:
     networks:
       - rpg-network
 
+  redis:
+    image: redis:alpine
+    container_name: rpg-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - rpg-network
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: rpg-pgadmin
@@ -44,6 +53,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rpg
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATA_REDIS_HOST=redis
     depends_on:
       postgres:
         condition: service_healthy

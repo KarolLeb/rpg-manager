@@ -28,6 +28,13 @@ spring:
     baseline-version: 1
     baseline-description: "Initial Baseline"
 
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+  cache:
+    type: redis
+
 management:
   endpoints:
     web:
