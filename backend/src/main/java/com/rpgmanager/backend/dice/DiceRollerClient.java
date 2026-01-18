@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
-@FeignClient(name = "diceRoller", url = "http://www.randomnumberapi.com/api/v1.0")
+@FeignClient(name = "diceRoller", url = "${rpg.dice.url}")
 public interface DiceRollerClient {
 
     @GetMapping("/random")

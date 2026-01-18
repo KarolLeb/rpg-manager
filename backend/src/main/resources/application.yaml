@@ -35,6 +35,10 @@ spring:
   cache:
     type: redis
 
+rpg:
+  dice:
+    url: http://www.randomnumberapi.com/api/v1.0
+
 management:
   endpoints:
     web:

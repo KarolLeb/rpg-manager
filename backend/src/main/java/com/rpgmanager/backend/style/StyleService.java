@@ -2,6 +2,7 @@ package com.rpgmanager.backend.style;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class StyleService {
                 .orElse("/* Default style for " + raceName + " */\n:root { --race-theme-color: #cccccc; }");
     }
 
+    @CacheEvict(value = "raceStyles", key = "#raceName")
     public RaceStyle saveStyle(String raceName, String cssContent) {
         RaceStyle style = raceStyleRepository.findByRaceName(raceName)
                 .orElse(new RaceStyle());
