@@ -15,8 +15,8 @@ INSERT INTO sessions (campaign_id, name, description, status) VALUES
 
 -- Characters
 INSERT INTO characters (name, character_class, level, stats, campaign_id, user_id, controller_id, character_type) VALUES 
-('Geralt', 'Witcher', 10, '{"strength": 15, "dexterity": 18, "intelligence": 12}', (SELECT id FROM campaigns WHERE name = 'Kampania Smoczej Lancy'), (SELECT id FROM users WHERE username = 'player1'), NULL, 'PERMANENT'),
-('Yennefer', 'Sorceress', 10, '{"strength": 8, "dexterity": 14, "intelligence": 20}', (SELECT id FROM campaigns WHERE name = 'Kampania Smoczej Lancy'), (SELECT id FROM users WHERE username = 'player2'), (SELECT id FROM users WHERE username = 'player1'), 'PERMANENT');
+('Geralt', 'Witcher', 10, '{"strength": {"val": 15, "skills": []}, "constitution": {"val": 14, "skills": []}, "dexterity": {"val": 18, "skills": []}, "agility": {"val": 16, "skills": []}, "perception": {"val": 15, "skills": []}, "empathy": {"val": 8, "skills": []}, "charisma": {"val": 10, "skills": []}, "intelligence": {"val": 12, "skills": []}, "knowledge": {"val": 10, "skills": []}, "willpower": {"val": 14, "skills": []}}', (SELECT id FROM campaigns WHERE name = 'Kampania Smoczej Lancy'), (SELECT id FROM users WHERE username = 'player1'), NULL, 'PERMANENT'),
+('Yennefer', 'Sorceress', 10, '{"strength": {"val": 8, "skills": []}, "constitution": {"val": 10, "skills": []}, "dexterity": {"val": 14, "skills": []}, "agility": {"val": 12, "skills": []}, "perception": {"val": 14, "skills": []}, "empathy": {"val": 12, "skills": []}, "charisma": {"val": 16, "skills": []}, "intelligence": {"val": 20, "skills": []}, "knowledge": {"val": 18, "skills": []}, "willpower": {"val": 18, "skills": []}}', (SELECT id FROM campaigns WHERE name = 'Kampania Smoczej Lancy'), (SELECT id FROM users WHERE username = 'player2'), (SELECT id FROM users WHERE username = 'player1'), 'PERMANENT');
 
 INSERT INTO race_styles (uuid, race_name, css_content) VALUES
 ('550e8400-e29b-41d4-a716-446655440000', 'ELF', ':root { --race-theme-color: #2ecc71; --race-bg-image: url("/assets/forest-bg.jpg"); }'),

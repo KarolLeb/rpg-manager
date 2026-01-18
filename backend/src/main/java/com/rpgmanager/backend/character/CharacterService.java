@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,9 +27,16 @@ public class CharacterService {
     }
 
     @Transactional
-    public CharacterResponse updateCharacter(Long id, Character characterDetails) {
-        Character character = characterRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Character not found with id: " + id));
+    public CharacterResponse getCharacter(UUID uuid) {
+        Character character = characterRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RuntimeException("Character not found with uuid: " + uuid));
+        return CharacterMapper.toResponse(character);
+    }
+
+    @Transactional
+    public CharacterResponse updateCharacter(UUID uuid, Character characterDetails) {
+        Character character = characterRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RuntimeException("Character not found with uuid: " + uuid));
 
         character.setName(characterDetails.getName());
         character.setCharacterClass(characterDetails.getCharacterClass());
@@ -40,9 +48,9 @@ public class CharacterService {
     }
 
     @Transactional
-    public CharacterResponse joinCampaign(Long characterId, Long campaignId) {
-        Character character = characterRepository.findById(characterId)
-                .orElseThrow(() -> new RuntimeException("Character not found with id: " + characterId));
+    public CharacterResponse joinCampaign(UUID characterUuid, Long campaignId) {
+        Character character = characterRepository.findByUuid(characterUuid)
+                .orElseThrow(() -> new RuntimeException("Character not found with uuid: " + characterUuid));
 
         Campaign campaign = campaignRepository.findById(campaignId)
                 .orElseThrow(() -> new RuntimeException("Campaign not found with id: " + campaignId));

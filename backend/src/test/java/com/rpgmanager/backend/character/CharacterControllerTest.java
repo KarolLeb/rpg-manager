@@ -66,14 +66,14 @@ class CharacterControllerTest {
 
     @Test
     void shouldUpdateCharacterAndReturnResponse() throws Exception {
-        Long charId = 1L;
+        UUID charId = UUID.randomUUID();
         Character updateRequest = new Character();
         updateRequest.setName("New Name");
         updateRequest.setLevel(2);
         updateRequest.setStats("Str: 12");
 
         CharacterResponse response = new CharacterResponse(
-                UUID.randomUUID(),
+                charId,
                 "New Name",
                 "Warrior",
                 2,
@@ -97,7 +97,7 @@ class CharacterControllerTest {
 
     @Test
     void shouldThrowExceptionWhenUpdatingNonExistentCharacter() {
-        Long charId = 999L;
+        UUID charId = UUID.randomUUID();
         Character updateRequest = new Character();
         updateRequest.setName("Ghost");
 

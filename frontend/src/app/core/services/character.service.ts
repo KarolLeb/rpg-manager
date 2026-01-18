@@ -15,11 +15,11 @@ export class CharacterService {
     return this.http.get<Character[]>(this.apiUrl);
   }
 
-  getCharacter(id: number): Observable<Character> {
-    return this.http.get<Character>(`${this.apiUrl}/${id}`);
+  getCharacter(uuid: string): Observable<Character> {
+    return this.http.get<Character>(`${this.apiUrl}/${uuid}`);
   }
 
-  updateCharacter(id: number, character: Character): Observable<Character> {
-    return this.http.put<Character>(`${this.apiUrl}/${id}`, character);
+  updateCharacter(uuid: string, character: Character): Observable<Character> {
+    return this.http.put<Character>(`${this.apiUrl}/${uuid}`, character);
   }
 }

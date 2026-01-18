@@ -4,6 +4,8 @@ import com.rpgmanager.backend.campaign.Campaign;
 import com.rpgmanager.backend.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.util.UUID;
 
 @Entity
@@ -26,6 +28,7 @@ public class Character {
     @Column(nullable = false)
     private Integer level;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private String stats;
 

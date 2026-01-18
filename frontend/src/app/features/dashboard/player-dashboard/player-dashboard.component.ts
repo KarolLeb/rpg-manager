@@ -20,7 +20,7 @@ import { RouterLink } from '@angular/router';
           <div *ngFor="let char of characters" class="character-card">
             <h3>{{ char.name }}</h3>
             <p>{{ char.characterClass }} - Level {{ char.level }}</p>
-            <a [routerLink]="['/character', char.id]" class="btn">View Sheet</a>
+            <a [routerLink]="['/character', char.uuid]" class="btn">View Sheet</a>
           </div>
           <div *ngIf="characters.length === 0" class="no-data">
             You don't have any characters yet.

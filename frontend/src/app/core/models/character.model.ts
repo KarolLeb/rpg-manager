@@ -1,5 +1,5 @@
 export interface Character {
-  id?: number;
+  uuid?: string;
   name: string;
   characterClass: string;
   level: number;

@@ -1,0 +1,49 @@
+# Troubleshooting & Engineering Notes
+
+This document records technical issues encountered during development and their solutions to prevent recurrence.
+
+## Backend
+
+### 1. Postgres JSONB Mapping
+**Issue:** `ERROR: column "stats" is of type jsonb but expression is of type character varying`
+**Context:** When saving a `String` field to a `jsonb` column in Postgres using Hibernate 6.
+**Solution:** You must explicitly annotate the field with `@JdbcTypeCode(SqlTypes.JSON)`.
+```java
+@JdbcTypeCode(SqlTypes.JSON)
+@Column(columnDefinition = "jsonb")
+private String stats;
+```
+**Lesson:** Hibernate does not automatically cast String to JSONB even if `columnDefinition` is set.
+
+### 2. Spring Security & Hidden Errors
+**Issue:** Public endpoints return `401 Unauthorized` instead of `500` or `400` when an exception occurs.
+**Cause:** When a Controller throws an exception, Spring forwards the request to `/error`. If `/error` is not explicitly permitted in `SecurityConfig`, the `AuthenticationEntryPoint` blocks it.
+**Solution:** Allow anonymous access to the error endpoint.
+```java
+.requestMatchers("/error").permitAll()
+```
+
+### 3. JwtFilter & Public Endpoints
+**Issue:** Invalid tokens (expired/malformed) cause `401` even on `permitAll` endpoints.
+**Cause:** Exceptions thrown inside a Filter (e.g., `io.jsonwebtoken.ExpiredJwtException`) bubble up to the `AuthenticationEntryPoint` before the authorization decision is made.
+**Solution:** Wrap token parsing in a `try-catch` block inside `JwtFilter`. If the token is invalid, log/ignore it and continue the chain anonymously. Let the downstream Authorization filter decide if the request should be allowed.
+
+### 4. Docker Volumes on Windows
+**Issue:** `Flyway validation failed: Checksum mismatch` persists even after running `docker-compose down -v`.
+**Cause:** File locking on Windows can prevent Docker from actually deleting volume data.
+**Solution:** 
+1.  Enable `spring.flyway.clean-on-validation-error: true` in `application.yaml` (Dev profile only).
+2.  Disable `spring.flyway.clean-disabled: false`.
+This forces Flyway to wipe the schema when it detects a mismatch, effectively resetting the DB state without relying on the filesystem.
+
+## Frontend
+
+### 1. UUID vs ID
+**Issue:** Character sheets failing to load (`/character/undefined`).
+**Cause:** Frontend model expected numeric `id`, but backend DTO returned UUIDs (and missed the numeric ID).
+**Decision:** Switched to using **UUIDs** for all public-facing routing and API calls (`/api/characters/{uuid}`). Updated Frontend models and services to use `string` (UUID) instead of `number`.
+
+### 2. JSON Parsing Safety
+**Issue:** White screen on startup.
+**Cause:** `JSON.parse` in `AuthService` threw an error on corrupted localStorage data.
+**Solution:** Always wrap `JSON.parse(localStorage.getItem(...))` in a `try-catch` block and clear the storage on error.

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/characters")
@@ -18,13 +19,18 @@ public class CharacterController {
         return characterService.getAllCharacters();
     }
 
-    @PutMapping("/{id}")
-    public CharacterResponse updateCharacter(@PathVariable Long id, @RequestBody Character characterDetails) {
-        return characterService.updateCharacter(id, characterDetails);
+    @GetMapping("/{uuid}")
+    public CharacterResponse getCharacter(@PathVariable UUID uuid) {
+        return characterService.getCharacter(uuid);
     }
 
-    @PostMapping("/{id}/join-campaign/{campaignId}")
-    public CharacterResponse joinCampaign(@PathVariable Long id, @PathVariable Long campaignId) {
-        return characterService.joinCampaign(id, campaignId);
+    @PutMapping("/{uuid}")
+    public CharacterResponse updateCharacter(@PathVariable UUID uuid, @RequestBody Character characterDetails) {
+        return characterService.updateCharacter(uuid, characterDetails);
+    }
+
+    @PostMapping("/{uuid}/join-campaign/{campaignId}")
+    public CharacterResponse joinCampaign(@PathVariable UUID uuid, @PathVariable Long campaignId) {
+        return characterService.joinCampaign(uuid, campaignId);
     }
 }
