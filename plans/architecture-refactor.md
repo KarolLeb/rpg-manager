@@ -8,17 +8,17 @@ Refactoring the backend to meet modern enterprise standards (Hexagonal Architect
 
 ```yaml
 owner: AI Agent <ai@rpgmanager.com>
-state: in-progress
+state: completed
 last_updated: 2026-01-18
 blockers: []
 ```
 
 ## 4. Objectives
 
-1. Decouple domain logic from persistence framework (Hexagonal Architecture) in the `Character` module.
-2. Optimize system performance by caching static/semi-static data (Race Styles) using Redis.
-3. Demonstrate distributed system integration capabilities using Spring Cloud Feign for an external Dice Roller service.
-4. Prepare the monolith for decomposition by isolating `Auth` and `Admin` domains.
+1. Decouple domain logic from persistence framework (Hexagonal Architecture) in the `Character` module. (DONE)
+2. Optimize system performance by caching static/semi-static data (Race Styles) using Redis. (DONE)
+3. Demonstrate distributed system integration capabilities using Spring Cloud Feign for an external Dice Roller service. (DONE)
+4. Prepare the monolith for decomposition by isolating `Auth` and `Admin` domains. (DONE)
 
 ## 5. Success criteria
 
@@ -26,16 +26,19 @@ blockers: []
   metric: `Service dependency on javax.persistence`
   target: `0 direct dependencies in domain classes`
   verification: `Code review and package dependency analysis`
+  status: `SUCCESS`
 
 - name: `Cache Hit Rate`
   metric: `Redis keys presence`
   target: `Styles found in Redis after first fetch`
   verification: `Redis CLI check keys *`
+  status: `SUCCESS`
 
 - name: `Resilience`
   metric: `Dice Roll Success`
   target: `100% (fallback to local if external API fails)`
   verification: `Integration test with mocked external failure`
+  status: `SUCCESS`
 
 ## 6. Scope
 
@@ -56,10 +59,10 @@ out:
 
 ## 8. High-level timeline & milestones
 
-1. M1 — Hexagonal PoC Complete — 2026-01-19 — AI Agent
-2. M2 — Redis Caching Implemented — 2026-01-20 — AI Agent
-3. M3 — External Integration (Spring Cloud) — 2026-01-21 — AI Agent
-4. M4 — Domain Decomposition Prep — 2026-01-22 — AI Agent
+1. M1 — Hexagonal PoC Complete — 2026-01-19 — AI Agent (DONE)
+2. M2 — Redis Caching Implemented — 2026-01-20 — AI Agent (DONE)
+3. M3 — External Integration (Spring Cloud) — 2026-01-21 — AI Agent (DONE)
+4. M4 — Domain Decomposition Prep — 2026-01-22 — AI Agent (DONE)
 
 ## 9. Task list
 
