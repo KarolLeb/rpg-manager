@@ -70,9 +70,9 @@ out:
 - T-005 | Add Spring Cloud dependencies (Feign, Resilience4j) | AI Agent | complexity: S | deps: [] | done: true
 - T-006 | Implement `DiceRollerClient` interface | AI Agent | complexity: M | deps: [T-005] | done: true
 - T-007 | Create `RandomOrgAdapter` and Fallback | AI Agent | complexity: M | deps: [T-006] | done: true
-- T-008 | Fix Redis Cache Eviction in StyleService (Bugfix) | AI Agent | complexity: XS | deps: [T-004] | done: false
-- T-009 | Externalize Dice API URL to application.yaml (Refactor) | AI Agent | complexity: XS | deps: [T-006] | done: false
-- T-010 | Fix/Update CharacterController Tests after DTO Refactor | AI Agent | complexity: S | deps: [T-002] | done: false
+- T-008 | Fix Redis Cache Eviction in StyleService (Bugfix) | AI Agent | complexity: XS | deps: [T-004] | done: true
+- T-009 | Externalize Dice API URL to application.yaml (Refactor) | AI Agent | complexity: XS | deps: [T-006] | done: true
+- T-010 | Fix/Update CharacterController Tests after DTO Refactor | AI Agent | complexity: S | deps: [T-002] | done: true
 
 ## 10. Risks and mitigations
 
