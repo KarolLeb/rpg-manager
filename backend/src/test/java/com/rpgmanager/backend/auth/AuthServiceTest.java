@@ -59,6 +59,15 @@ class AuthServiceTest {
     }
 
     @Test
+    void shouldThrowExceptionWhenUserNotFoundDuringLogin() {
+        LoginRequest request = new LoginRequest("unknown", "pass");
+        given(userRepository.findByUsername("unknown")).willReturn(Optional.empty());
+
+        assertThrows(org.springframework.security.core.userdetails.UsernameNotFoundException.class, 
+            () -> authService.login(request));
+    }
+
+    @Test
     void shouldRegisterSuccessfully() {
         RegisterRequest request = new RegisterRequest();
         request.setUsername("newuser");

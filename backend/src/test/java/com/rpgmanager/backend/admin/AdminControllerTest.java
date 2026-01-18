@@ -17,8 +17,7 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AdminController.class)
 @Import(SecurityConfig.class)
@@ -59,5 +58,13 @@ class AdminControllerTest {
     void shouldReturnUnauthorizedWhenNotLoggedIn() throws Exception {
         mockMvc.perform(get("/api/admin/users"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldReturnHealth() throws Exception {
+        mockMvc.perform(get("/api/admin/health"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Admin module is healthy"));
     }
 }

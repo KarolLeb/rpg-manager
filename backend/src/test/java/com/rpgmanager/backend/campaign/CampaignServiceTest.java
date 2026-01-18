@@ -58,4 +58,59 @@ class CampaignServiceTest {
         assertThat(result.getGameMasterId()).isEqualTo(1L);
         verify(campaignRepository).save(any(Campaign.class));
     }
+
+    @Test
+    void getAllCampaigns_shouldReturnList() {
+        Campaign campaign = Campaign.builder().id(1L).gameMaster(user).build();
+        when(campaignRepository.findAll()).thenReturn(java.util.List.of(campaign));
+
+        java.util.List<CampaignDTO> result = campaignService.getAllCampaigns();
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void getCampaignById_shouldReturnDTO() {
+        Campaign campaign = Campaign.builder().id(1L).gameMaster(user).build();
+        when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+
+        CampaignDTO result = campaignService.getCampaignById(1L);
+
+        assertThat(result.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void getCampaignById_shouldThrowExceptionWhenNotFound() {
+        when(campaignRepository.findById(1L)).thenReturn(Optional.empty());
+
+        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class, () -> campaignService.getCampaignById(1L));
+    }
+
+    @Test
+    void updateCampaign_shouldUpdateAndReturnDTO() {
+        Campaign campaign = Campaign.builder().id(1L).name("Old").gameMaster(user).build();
+        CreateCampaignRequest request = new CreateCampaignRequest("New", "Desc", 1L);
+        when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+        when(campaignRepository.save(any(Campaign.class))).thenReturn(campaign);
+
+        CampaignDTO result = campaignService.updateCampaign(1L, request);
+
+        assertThat(result.getName()).isEqualTo("New");
+    }
+
+    @Test
+    void deleteCampaign_shouldDelete() {
+        when(campaignRepository.existsById(1L)).thenReturn(true);
+
+        campaignService.deleteCampaign(1L);
+
+        verify(campaignRepository).deleteById(1L);
+    }
+
+    @Test
+    void deleteCampaign_shouldThrowExceptionWhenNotFound() {
+        when(campaignRepository.existsById(1L)).thenReturn(false);
+
+        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class, () -> campaignService.deleteCampaign(1L));
+    }
 }
