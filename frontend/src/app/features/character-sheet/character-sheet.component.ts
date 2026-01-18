@@ -5,6 +5,7 @@ import { AttributeCardComponent } from '../attribute-card/attribute-card.compone
 import { AttributeConfig } from './models/character-data.model';
 import { CharacterService } from '../../core/services/character.service';
 import { Character } from '../../core/models/character.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-character-sheet',
@@ -16,6 +17,7 @@ import { Character } from '../../core/models/character.model';
 export class CharacterSheetPageComponent implements OnInit {
   characterForm: FormGroup;
   currentCharacterId?: number;
+  isLoading = true;
 
   physicalAttributes: AttributeConfig[] = [
     { key: 'strength', label: 'Siła' },
@@ -33,7 +35,11 @@ export class CharacterSheetPageComponent implements OnInit {
     { key: 'willpower', label: 'Siła Woli' }
   ];
 
-  constructor(private fb: FormBuilder, private characterService: CharacterService) {
+  constructor(
+    private fb: FormBuilder,
+    private characterService: CharacterService,
+    private route: ActivatedRoute
+  ) {
     this.characterForm = this.fb.group({
       info: this.fb.group({
         name: [''],
@@ -47,15 +53,24 @@ export class CharacterSheetPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.characterService.getCharacters().subscribe(characters => {
-      if (characters.length > 0) {
-        const character = characters[0];
-        this.currentCharacterId = character.id;
-        this.loadCharacterData(character);
-      } else {
-        this.loadDummyData();
-      }
-    });
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.currentCharacterId = +id;
+      this.characterService.getCharacter(this.currentCharacterId).subscribe({
+        next: (character: Character) => {
+          this.loadCharacterData(character);
+          this.isLoading = false;
+        },
+        error: (err: any) => {
+          console.error('Failed to load character', err);
+          this.loadDummyData();
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.loadDummyData();
+      this.isLoading = false;
+    }
   }
 
   onSave() {

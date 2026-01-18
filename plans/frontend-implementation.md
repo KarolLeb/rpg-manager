@@ -49,9 +49,9 @@ out:
 ## 9. Task list
 
 - T-001 | Create `LoginComponent` & `RegisterComponent` | AI Agent | complexity: S | deps: [] | done: true
-- T-002 | Implement `AuthService` (JWT handling) | AI Agent | complexity: M | deps: [T-001] | done: false
-- T-003 | Create `DashboardComponent` (GM View) | AI Agent | complexity: L | deps: [T-002] | done: false
-- T-004 | Create `PlayerDashboardComponent` | AI Agent | complexity: M | deps: [T-002] | done: false
+- T-002 | Implement `AuthService` (JWT handling) | AI Agent | complexity: M | deps: [T-001] | done: true
+- T-003 | Create `DashboardComponent` (GM View) | AI Agent | complexity: L | deps: [T-002] | done: true
+- T-004 | Create `PlayerDashboardComponent` | AI Agent | complexity: M | deps: [T-002] | done: true
 
 ## 10. Risks and mitigations
 

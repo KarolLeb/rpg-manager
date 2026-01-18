@@ -10,6 +10,12 @@ test.describe('Campaign CRUD', () => {
     db = [];
     nextId = 1;
 
+    // Mock Authentication
+    await page.addInitScript(() => {
+      window.localStorage.setItem('token', 'fake-jwt-token');
+      window.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', role: 'GM' }));
+    });
+
     // --- Mock API: Collection Resource ---
     await page.route('**/api/campaigns', async route => {
       const method = route.request().method();

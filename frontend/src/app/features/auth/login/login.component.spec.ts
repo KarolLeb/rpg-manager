@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
 import { provideRouter } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -10,7 +12,11 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LoginComponent, ReactiveFormsModule],
-      providers: [provideRouter([])]
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     })
     .compileComponents();
     
@@ -28,7 +34,7 @@ describe('LoginComponent', () => {
   });
 
   it('should enable submit button when form is valid', () => {
-    component.loginForm.controls['email'].setValue('test@example.com');
+    component.loginForm.controls['username'].setValue('testuser');
     component.loginForm.controls['password'].setValue('password123');
     fixture.detectChanges();
     expect(component.loginForm.valid).toBeTruthy();

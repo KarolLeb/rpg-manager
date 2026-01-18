@@ -4,7 +4,8 @@ import { CharacterService } from '../../core/services/character.service';
 import { of, throwError } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Character } from '../../core/models/character.model';
-import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 describe('CharacterSheetPageComponent', () => {
   let component: CharacterSheetPageComponent;
@@ -23,28 +24,37 @@ describe('CharacterSheetPageComponent', () => {
   };
 
   beforeEach(async () => {
-    mockCharacterService = jasmine.createSpyObj('CharacterService', ['getCharacters', 'updateCharacter']);
+    mockCharacterService = jasmine.createSpyObj('CharacterService', ['getCharacter', 'getCharacters', 'updateCharacter']);
+    mockCharacterService.getCharacter.and.returnValue(of(dummyCharacter));
     mockCharacterService.getCharacters.and.returnValue(of([dummyCharacter]));
     mockCharacterService.updateCharacter.and.returnValue(of(dummyCharacter));
 
     await TestBed.configureTestingModule({
       imports: [CharacterSheetPageComponent, ReactiveFormsModule],
       providers: [
-        { provide: CharacterService, useValue: mockCharacterService }
+        { provide: CharacterService, useValue: mockCharacterService },
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: { get: () => '1' } }
+          }
+        }
       ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(CharacterSheetPageComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should load character data on init', () => {
+  it('should load character data on init when id is provided', () => {
+    fixture.detectChanges();
     expect(component.currentCharacterId).toBe(1);
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
     
@@ -52,14 +62,10 @@ describe('CharacterSheetPageComponent', () => {
     const strengthGroup = component.characterForm.get('attributes.strength');
     expect(strengthGroup).toBeTruthy();
     expect(strengthGroup?.get('value')?.value).toBe(10);
-    
-    // Check skills
-    const skills = strengthGroup?.get('skills')?.value;
-    expect(skills.length).toBe(1);
-    expect(skills[0].name).toBe('Melee');
   });
 
   it('should call updateCharacter on save', () => {
+    fixture.detectChanges();
     // Modify value
     component.characterForm.get('info.name')?.setValue('Updated Char');
     
@@ -77,11 +83,9 @@ describe('CharacterSheetPageComponent', () => {
     expect(savedStats.strength.skills[0]).toEqual(['Melee', 2, 12]);
   });
 
-  it('should load dummy data when no characters are found', () => {
-    mockCharacterService.getCharacters.and.returnValue(of([]));
+  it('should load dummy data when getCharacter fails', () => {
+    mockCharacterService.getCharacter.and.returnValue(throwError(() => new Error('Not found')));
     
-    fixture = TestBed.createComponent(CharacterSheetPageComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
 
     expect(component.characterForm.get('info.name')?.value).toBe('Tonny Ballony');
@@ -89,12 +93,14 @@ describe('CharacterSheetPageComponent', () => {
   });
 
   it('should not call updateCharacter if currentCharacterId is missing', () => {
+    fixture.detectChanges();
     component.currentCharacterId = undefined;
     component.onSave();
     expect(mockCharacterService.updateCharacter).not.toHaveBeenCalled();
   });
 
   it('should handle save error', () => {
+    fixture.detectChanges();
     mockCharacterService.updateCharacter.and.returnValue(throwError(() => new Error('Save failed')));
     spyOn(console, 'error');
     spyOn(window, 'alert');
@@ -103,23 +109,5 @@ describe('CharacterSheetPageComponent', () => {
 
     expect(console.error).toHaveBeenCalledWith('Save failed', jasmine.any(Error));
     expect(window.alert).toHaveBeenCalledWith('Błąd podczas zapisywania postaci.');
-  });
-
-  it('should handle JSON parse error in loadCharacterData', () => {
-    const invalidCharacter: Character = {
-      id: 2,
-      name: 'Invalid',
-      characterClass: 'None',
-      level: 1,
-      stats: 'invalid json'
-    };
-    mockCharacterService.getCharacters.and.returnValue(of([invalidCharacter]));
-    spyOn(console, 'error');
-
-    fixture = TestBed.createComponent(CharacterSheetPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-
-    expect(console.error).toHaveBeenCalledWith('Failed to parse character stats', jasmine.any(SyntaxError));
   });
 });

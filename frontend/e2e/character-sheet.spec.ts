@@ -21,18 +21,24 @@ test.describe('Character Sheet Feature', () => {
   };
 
   test.beforeEach(async ({ page }) => {
+    // Mock Authentication
+    await page.addInitScript(() => {
+      window.localStorage.setItem('token', 'fake-jwt-token');
+      window.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', role: 'GM' }));
+    });
+
     // Mock the GET request to return our mock character
-    await page.route('**/api/characters', async route => {
+    await page.route('**/api/characters/1', async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify([mockCharacter])
+        body: JSON.stringify(mockCharacter)
       });
     });
   });
 
   test('should load character data', async ({ page }) => {
-    await page.goto('/character');
+    await page.goto('/character/1');
 
     // Check if the name field is populated
     const nameInput = page.locator('input[formControlName="name"]');
@@ -42,27 +48,12 @@ test.describe('Character Sheet Feature', () => {
     const professionInput = page.locator('input[formControlName="profession"]');
     await expect(professionInput).toHaveValue('Tester');
     
-    // Check if attributes are loaded (checking Strength value)
-    // The component generates controls dynamically. 
-    // We need to target the input inside the attribute card.
-    // Assuming the structure from the component code:
-    // It uses 'app-attribute-card'. 
-    
-    // We can look for the label "Siła" and then find the input nearby or in the same container.
-    // However, exact DOM structure depends on attribute-card.component.html which we haven't seen.
-    // We'll rely on text visibility first.
+    // Check if attributes are loaded
     await expect(page.getByText('SIŁA', { exact: true })).toBeVisible();
-    
-    // Try to find the input for value. 
-    // Since we don't know the exact ID or class, we might need to debug or check the attribute-card component.
-    // But we know the formControlName logic:
-    // "attributes.strength.value" -> likely bound to an input.
-    
-    // Let's assume standard input behaviour.
   });
 
   test('should update and save character data', async ({ page }) => {
-    await page.goto('/character');
+    await page.goto('/character/1');
 
     // Mock the PUT request
     let savedData: any;
@@ -83,22 +74,14 @@ test.describe('Character Sheet Feature', () => {
     await nameInput.fill('Updated Name');
 
     // Click Save
-    // The button calls onSave(). We need to find the button.
     const saveButton = page.locator('.save-btn', { hasText: 'ZAPISZ' });
-    
-    // Check if button is visible
     await expect(saveButton).toBeVisible();
 
     await page.waitForLoadState('networkidle');
-    // Force click event for robustness in Webkit
-    await saveButton.dispatchEvent('click');
+    await saveButton.click();
 
     // Verify the PUT request contained the updated name
-    // We need to wait a bit or wait for the response.
-    // The route handler 'await savedData = ...' captures it synchronously when called.
-    
-    // To be robust, we can wait for the response
-    await page.waitForResponse(response => response.url().includes('/api/characters/1') && response.status() === 200);
+    await page.waitForResponse(response => response.url().includes('/api/characters/1') && response.request().method() === 'PUT');
 
     expect(savedData.name).toBe('Updated Name');
   });

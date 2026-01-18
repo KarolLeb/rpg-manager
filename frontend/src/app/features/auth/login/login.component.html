@@ -8,15 +8,15 @@
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="username">Username</label>
         <input 
-          type="email" 
-          id="email" 
-          formControlName="email"
-          [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          type="text" 
+          id="username" 
+          formControlName="username"
+          [class.invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
         >
-        <div class="error-text" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-          Please enter a valid email.
+        <div class="error-text" *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+          Username is required.
         </div>
       </div>
 

@@ -57,6 +57,7 @@ PROMPTING: Reference, don't duplicate. Keep actions concrete for frontend.
 	- Assert async states: loading, success, and error paths; handle empty data gracefully.
 
 3. **E2E/UI Flows (optional, if project uses Playwright/Cypress)**
+	- **IMPORTANT**: Before running E2E tests, ensure the frontend container is stopped (e.g., `docker-compose down` in `docker/`) as Playwright starts its own dev server.
 	- Keep scenarios small and stable; tag appropriately (e.g., `@ui`, `@smoke`).
 	- Prefer testids sparingly; select by role/name first.
 

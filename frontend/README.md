@@ -48,6 +48,9 @@ ng test
 
 For end-to-end (e2e) testing using Playwright, you have several options:
 
+> [!IMPORTANT]
+> Before running end-to-end tests, ensure that the frontend service is not running in Docker (e.g., run `docker-compose down` in the `docker/` directory). Playwright is configured to start its own development server for testing.
+
 - `npm run e2e`: Standard test run.
 - `npm run e2e:ui`: Open Playwright UI for interactive debugging.
 - `npm run e2e:cli`: Recommended for terminal/CLI environments. Uses the `list` reporter and prevents automatic browser/report popups that might freeze the CLI.

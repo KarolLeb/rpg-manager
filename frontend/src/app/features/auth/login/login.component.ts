@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,10 +18,11 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -33,14 +35,15 @@ export class LoginComponent {
     this.isLoading = true;
     this.error = null;
 
-    // TODO: Connect to AuthService
-    console.log('Login attempt:', this.loginForm.value);
-    
-    // Simulate API call
-    setTimeout(() => {
-      this.isLoading = false;
-      // Mock success for now
-      this.router.navigate(['/dashboard']);
-    }, 1000);
+    this.authService.login(this.loginForm.value).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.error = err.error?.message || 'Login failed. Please check your credentials.';
+      }
+    });
   }
 }

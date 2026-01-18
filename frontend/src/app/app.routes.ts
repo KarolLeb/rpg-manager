@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -18,26 +19,31 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/dashboard/dashboard.component')
       .then(m => m.DashboardComponent)
   },
   {
-    path: 'character', 
+    path: 'character/:id', 
+    canActivate: [authGuard],
     loadComponent: () => import('./features/character-sheet/character-sheet.component')
       .then(m => m.CharacterSheetPageComponent)
   },
   {
     path: 'campaigns',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/campaign/campaign-list.component')
       .then(m => m.CampaignListComponent)
   },
   {
     path: 'campaigns/new',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/campaign/campaign-form.component')
       .then(m => m.CampaignFormComponent)
   },
   {
     path: 'campaigns/:id/edit',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/campaign/campaign-form.component')
       .then(m => m.CampaignFormComponent)
   },

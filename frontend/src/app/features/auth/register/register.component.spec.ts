@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegisterComponent } from './register.component';
 import { provideRouter } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -10,7 +12,11 @@ describe('RegisterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RegisterComponent, ReactiveFormsModule],
-      providers: [provideRouter([])]
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     })
     .compileComponents();
     
@@ -26,10 +32,6 @@ describe('RegisterComponent', () => {
   it('should validate password mismatch', () => {
     component.registerForm.controls['password'].setValue('password123');
     component.registerForm.controls['confirmPassword'].setValue('password456');
-    expect(component.registerForm.errors?.['mismatch']).toBeTruthy(); // Wait, validator is on group? No, usually on group but errors might be on group or control depending on implementation.
-    // In my code: { validators: this.passwordMatchValidator } -> Logic returns { mismatch: true } on the group.
-    
-    // Check group error
     expect(component.registerForm.hasError('mismatch')).toBeTruthy();
   });
 

@@ -348,6 +348,10 @@ AI assistants MUST follow these coding standards and reference project-specific 
 - **JavaScript/TypeScript**: Follow established project linting rules
 - **Documentation**: Use clear, concise language with proper Markdown formatting
 
+**E2E Testing:**
+- **IMPORTANT**: Before running E2E tests, ensure the frontend container is stopped (e.g., `docker-compose down` in `docker/`) as Playwright starts its own dev server for testing to avoid port conflicts and ensure a clean environment.
+- Follow guidelines in `.github/instructions/bdd-tests.instructions.md` for scenario structure.
+
 **Quality Assurance:**
 - All code MUST include appropriate unit tests
 - Integration tests for complex workflows
