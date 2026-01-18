@@ -1,4 +1,4 @@
-# Plan: Quality Assurance & Coverage Enforcement
+# Plan: Quality Assurance & Coverage Enforcement (Completed)
 
 ## 2. Short description
 
@@ -8,7 +8,7 @@ Establishing quality gates, code coverage reporting, and automated testing pipel
 
 ```yaml
 owner: AI Agent <ai@rpgmanager.com>
-state: proposed
+state: completed
 last_updated: 2026-01-18
 blockers: []
 ```
@@ -40,14 +40,14 @@ out:
 
 ## 8. High-level timeline & milestones
 
-1. M1 — Reporting Configured — 2026-01-25 — AI Agent
-2. M2 — Targets Met — 2026-02-15 — AI Agent
+1. M1 — Reporting Configured — 2026-01-25 — AI Agent (DONE)
+2. M2 — Targets Met — 2026-02-15 — AI Agent (DONE)
 
 ## 9. Task list
 
-- T-001 | Configure JaCoCo for Maven (Backend) | AI Agent | complexity: S | deps: [] | done: false
-- T-002 | Configure Karma Coverage Reporter (Frontend) | AI Agent | complexity: S | deps: [] | done: false
-- T-003 | Integrate `scripts/enforce-coverage.js` | AI Agent | complexity: M | deps: [T-001, T-002] | done: false
+- T-001 | Configure JaCoCo for Maven (Backend) | AI Agent | complexity: S | deps: [] | done: true
+- T-002 | Configure Karma Coverage Reporter (Frontend) | AI Agent | complexity: S | deps: [] | done: true
+- T-003 | Integrate `scripts/enforce-coverage.js` | AI Agent | complexity: M | deps: [T-001, T-002] | done: true
 
 ## 10. Risks and mitigations
 

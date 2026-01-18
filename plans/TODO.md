@@ -8,23 +8,15 @@ This document serves as an index to the active detailed plans. Please refer to i
 **File:** [`plans/architecture-refactor.md`](./architecture-refactor.md)
 *Focus: Recruitment Requirements (Hexagonal Arch, Redis, Spring Cloud).*
 
-### 2. Backend Core Features
-**File:** [`plans/backend-core.md`](./backend-core.md)
-*Focus: Campaign & Session CRUD Logic, Service Layer implementation.*
-
-### 3. Frontend Implementation
-**File:** [`plans/frontend-implementation.md`](./frontend-implementation.md)
-*Focus: Angular UI, Authentication Views, Dashboards.*
-
-### 4. Quality Assurance
-**File:** [`plans/quality-gate.md`](./quality-gate.md)
-*Focus: Code Coverage, CI Integration.*
-
 ---
 
 ## 🏛️ Archive (Completed)
 
 - [`plans/archive/2026-01-initial-setup.md`](./archive/2026-01-initial-setup.md) - Initial Setup, Auth Logic, Database Schema.
+- [`plans/archive/backend-core.md`](./archive/backend-core.md) - Campaign & Session CRUD Logic.
+- [`plans/archive/frontend-implementation.md`](./archive/frontend-implementation.md) - Angular UI, Auth Views, Dashboards.
+- [`plans/archive/quality-gate.md`](./archive/quality-gate.md) - Code Coverage, CI Integration.
+- [`plans/archive/campaign-crud-implementation.md`](./archive/campaign-crud-implementation.md) - (Redundant) Campaign CRUD.
 
 ---
 *Last Updated: 2026-01-18*

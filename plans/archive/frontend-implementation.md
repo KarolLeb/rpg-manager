@@ -1,4 +1,4 @@
-# Plan: Frontend Implementation (Angular)
+# Plan: Frontend Implementation (Angular) (Completed)
 
 ## 2. Short description
 
@@ -8,9 +8,9 @@ Development of the user interface using Angular, focusing on Authentication, Das
 
 ```yaml
 owner: AI Agent <ai@rpgmanager.com>
-state: proposed
+state: completed
 last_updated: 2026-01-18
-blockers: ["Backend API availability"]
+blockers: []
 ```
 
 ## 4. Objectives
@@ -43,8 +43,8 @@ out:
 
 ## 8. High-level timeline & milestones
 
-1. M1 — Auth Views — 2026-02-01 — AI Agent
-2. M2 — Core Dashboards — 2026-02-10 — AI Agent
+1. M1 — Auth Views — 2026-02-01 — AI Agent (DONE)
+2. M2 — Core Dashboards — 2026-02-10 — AI Agent (DONE)
 
 ## 9. Task list
 
