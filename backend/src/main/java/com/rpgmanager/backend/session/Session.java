@@ -50,7 +50,12 @@ public class Session {
         }
     }
 
-    public enum SessionStatus {
-        ACTIVE, FINISHED
+        public enum SessionStatus {
+
+            ACTIVE, FINISHED, CANCELLED
+
+        }
+
     }
-}
+
+    

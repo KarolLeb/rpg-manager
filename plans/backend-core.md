@@ -8,7 +8,7 @@ Implementation of core RPG Manager functionalities including Campaign management
 
 ```yaml
 owner: AI Agent <ai@rpgmanager.com>
-state: in-progress
+state: completed
 last_updated: 2026-01-18
 blockers: []
 ```
@@ -41,14 +41,14 @@ out:
 
 ## 8. High-level timeline & milestones
 
-1. M1 — Campaign CRUD — 2026-01-25 — AI Agent
-2. M2 — Session Logic — 2026-01-30 — AI Agent
+1. M1 — Campaign CRUD — 2026-01-25 — AI Agent (DONE)
+2. M2 — Session Logic — 2026-01-30 — AI Agent (DONE)
 
 ## 9. Task list
 
-- T-001 | Implement `CampaignService` (CRUD logic) | AI Agent | complexity: M | deps: [] | done: false
-- T-002 | Implement `SessionService` (Schedule, Cancel, Complete) | AI Agent | complexity: M | deps: [] | done: false
-- T-003 | Implement `CharacterService` (Link to Campaign) | AI Agent | complexity: S | deps: [T-001] | done: false
+- T-001 | Implement `CampaignService` (CRUD logic) | AI Agent | complexity: M | deps: [] | done: true
+- T-002 | Implement `SessionService` (Schedule, Cancel, Complete) | AI Agent | complexity: M | deps: [] | done: true
+- T-003 | Implement `CharacterService` (Link to Campaign) | AI Agent | complexity: S | deps: [T-001] | done: true
 
 ## 10. Risks and mitigations
 

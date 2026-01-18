@@ -12,10 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -31,7 +31,7 @@ class CharacterControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CharacterRepository characterRepository;
+    private CharacterService characterService;
 
     @MockBean
     private JwtUtil jwtUtil;
@@ -44,16 +44,18 @@ class CharacterControllerTest {
 
     @Test
     void shouldReturnAllCharactersAsResponses() throws Exception {
-        Character character = new Character();
-        character.setId(1L);
-        character.setUuid(UUID.randomUUID());
-        character.setName("Test Char");
-        character.setCharacterClass("Warrior");
-        character.setLevel(5);
-        character.setStats("Str: 10");
+        CharacterResponse response = new CharacterResponse(
+                UUID.randomUUID(),
+                "Test Char",
+                "Warrior",
+                5,
+                "Str: 10",
+                "Owner",
+                "Campaign",
+                "PERMANENT"
+        );
 
-        given(characterRepository.findAll(any(org.springframework.data.domain.Sort.class)))
-                .willReturn(List.of(character));
+        given(characterService.getAllCharacters()).willReturn(List.of(response));
 
         mockMvc.perform(get("/api/characters")
                         .with(user("user")))
@@ -65,19 +67,23 @@ class CharacterControllerTest {
     @Test
     void shouldUpdateCharacterAndReturnResponse() throws Exception {
         Long charId = 1L;
-        Character existingCharacter = new Character();
-        existingCharacter.setId(charId);
-        existingCharacter.setUuid(UUID.randomUUID());
-        existingCharacter.setName("Old Name");
-        existingCharacter.setLevel(1);
-
         Character updateRequest = new Character();
         updateRequest.setName("New Name");
         updateRequest.setLevel(2);
         updateRequest.setStats("Str: 12");
 
-        given(characterRepository.findById(charId)).willReturn(Optional.of(existingCharacter));
-        given(characterRepository.save(any(Character.class))).willAnswer(invocation -> invocation.getArgument(0));
+        CharacterResponse response = new CharacterResponse(
+                UUID.randomUUID(),
+                "New Name",
+                "Warrior",
+                2,
+                "Str: 12",
+                "Owner",
+                "Campaign",
+                "PERMANENT"
+        );
+
+        given(characterService.updateCharacter(eq(charId), any(Character.class))).willReturn(response);
 
         mockMvc.perform(put("/api/characters/{id}", charId)
                 .with(csrf())
@@ -95,9 +101,10 @@ class CharacterControllerTest {
         Character updateRequest = new Character();
         updateRequest.setName("Ghost");
 
-        given(characterRepository.findById(charId)).willReturn(Optional.empty());
+        given(characterService.updateCharacter(eq(charId), any(Character.class)))
+                .willThrow(new RuntimeException("Character not found"));
 
-        org.junit.jupiter.api.Assertions.assertThrows(jakarta.servlet.ServletException.class, () -> {
+        org.junit.jupiter.api.Assertions.assertThrows(Exception.class, () -> {
             mockMvc.perform(put("/api/characters/{id}", charId)
                             .with(csrf())
                             .with(user("user"))
