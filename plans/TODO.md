@@ -4,7 +4,17 @@ This document serves as an index to the active detailed plans. All core project 
 
 ## 🚀 Active Plans
 
-- (None) All current milestones completed.
+### 1. Redis Infrastructure Verification
+**File:** [`plans/redis-verification.md`](./redis-verification.md)
+*Focus: Confirming Redis connectivity and cache functionality.*
+
+### 2. Hexagonal Architecture Rollout
+**File:** [`plans/hexagonal-architecture-rollout.md`](./hexagonal-architecture-rollout.md)
+*Focus: Researching and implementing Ports & Adapters pattern.*
+
+### 3. Microservices Extraction (Admin & Auth)
+**File:** [`plans/microservices-extraction.md`](./microservices-extraction.md)
+*Focus: Decomposing the monolith into Auth and Admin services.*
 
 ---
 
