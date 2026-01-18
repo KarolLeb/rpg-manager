@@ -1,57 +1,30 @@
-# RPG Manager - Plan Zadań
+# RPG Manager - Master Roadmap
 
-## Backend (Spring Boot) - Struktura Danych i API
+This document serves as an index to the active detailed plans. Please refer to individual plan files for tasks and progress tracking.
 
-### Bezpieczeństwo i Użytkownicy (JWT)
-- [x] **Konfiguracja i Zależności**:
-    - [x] Dodać `spring-boot-starter-security` oraz biblioteki JWT (`jjwt`) do `pom.xml`.
-- [x] **Encja `User`**:
-    - [x] Pola: `id`, `uuid`, `username`, `password` (hash), `role` (GM/PLAYER), `email`.
-- [x] **Logika Logowania**:
-    - [x] `SecurityConfig`, `UserDetailsService`, `JwtUtil`, `AuthController`.
-- [x] **Migracje Flyway**:
-    - [x] `V1__init_schema.sql`: Tabela użytkowników, kampanii, sesji i postaci (z UUID).
+## 🚀 Active Plans
 
-### Zarządzanie Kampaniami i Sesjami
-- [x] **Encja `Campaign`**:
-    - [x] Pola: `uuid`, `name`, `description`, `gameMaster`.
-- [x] **Encja `Session`**:
-    - [x] Pola: `uuid`, `campaign`, `name`, `date`, `status`.
-- [x] **Encja `Character`**:
-    - [x] Relacje: `campaign`, `user` (owner), `controller` (temporary).
-- [x] **Logika Biznesowa (Service/Controller)**:
-    - [ ] `CampaignService`: CRUD dla kampanii (dla GM).
-    - [ ] `SessionService`: CRUD dla sesji w ramach kampanii.
-    - [ ] `CharacterService`: Tworzenie postaci w kampanii, przypisywanie kontrolera.
-- [x] **Testy E2E (Playwright)**:
-    - [x] Implementacja scenariusza Campaign CRUD.
+### 1. Architecture Refactor & Optimization (High Priority)
+**File:** [`plans/architecture-refactor.md`](./architecture-refactor.md)
+*Focus: Recruitment Requirements (Hexagonal Arch, Redis, Spring Cloud).*
 
-## Frontend (Angular) - Interfejs Użytkownika
+### 2. Backend Core Features
+**File:** [`plans/backend-core.md`](./backend-core.md)
+*Focus: Campaign & Session CRUD Logic, Service Layer implementation.*
 
-### Autoryzacja
-- [ ] **Logowanie**:
-    - Widok logowania (`LoginComponent`).
-    - `AuthService` (JWT storage).
-    - `AuthGuard`.
+### 3. Frontend Implementation
+**File:** [`plans/frontend-implementation.md`](./frontend-implementation.md)
+*Focus: Angular UI, Authentication Views, Dashboards.*
 
-### Widoki (Views)
-- [ ] **Dashboard GM**:
-    - Lista Kampanii.
-    - Widok Kampanii: Lista Sesji + Lista Postaci.
-- [ ] **Dashboard Gracza**:
-    - "Moje Kampanie".
-    - Wybór postaci (lub podgląd przypisanej).
+### 4. Quality Assurance
+**File:** [`plans/quality-gate.md`](./quality-gate.md)
+*Focus: Code Coverage, CI Integration.*
 
-## Jakość i Pokrycie Testami (Quality Gate)
-- [ ] **Konfiguracja Raportowania**:
-    - [ ] Skonfigurować JaCoCo dla Backend (Maven).
-    - [ ] Skonfigurować Karma/Istanbul coverage reporter dla Frontend.
-- [ ] **Osiągnięcie Targetów Pokrycia**:
-    - [ ] Globalne pokrycie ≥ 90%.
-    - [ ] Moduły core (logika biznesowa) ≥ 95%.
-    - [ ] Ścieżki krytyczne (security, error handling) 100%.
-- [ ] **Automatyzacja**:
-    - [ ] Zintegrować `scripts/enforce-coverage.js` z procesem budowania.
+---
 
-## Ogólne
-- [ ] Reset bazy danych (`docker-compose down -v`) po zmianie modelu.
+## 🏛️ Archive (Completed)
+
+- [`plans/archive/2026-01-initial-setup.md`](./archive/2026-01-initial-setup.md) - Initial Setup, Auth Logic, Database Schema.
+
+---
+*Last Updated: 2026-01-18*
