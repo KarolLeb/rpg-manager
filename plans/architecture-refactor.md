@@ -67,9 +67,9 @@ out:
 - T-002 | Refactor `CharacterController` to return DTOs | AI Agent | complexity: S | deps: [T-001] | done: true
 - T-003 | Configure Redis in `docker-compose.yml` | AI Agent | complexity: XS | deps: [] | done: true
 - T-004 | Implement `StyleService` with `@Cacheable` | AI Agent | complexity: M | deps: [T-003] | done: true
-- T-005 | Add Spring Cloud dependencies (Feign, Resilience4j) | AI Agent | complexity: S | deps: [] | done: false
-- T-006 | Implement `DiceRollerClient` interface | AI Agent | complexity: M | deps: [T-005] | done: false
-- T-007 | Create `RandomOrgAdapter` and Fallback | AI Agent | complexity: M | deps: [T-006] | done: false
+- T-005 | Add Spring Cloud dependencies (Feign, Resilience4j) | AI Agent | complexity: S | deps: [] | done: true
+- T-006 | Implement `DiceRollerClient` interface | AI Agent | complexity: M | deps: [T-005] | done: true
+- T-007 | Create `RandomOrgAdapter` and Fallback | AI Agent | complexity: M | deps: [T-006] | done: true
 
 ## 10. Risks and mitigations
 
