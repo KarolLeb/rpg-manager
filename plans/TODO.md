@@ -16,6 +16,10 @@ This document serves as an index to the active detailed plans. All core project 
 **File:** [`plans/microservices-extraction.md`](./microservices-extraction.md)
 *Focus: Decomposing the monolith into Auth and Admin services.*
 
+### 4. Documentation & Presentation
+*   **Task:** Refine Project README for GitHub profile readiness.
+*   **Focus:** Adding architecture diagrams, visual screenshots (placeholders), and a polished "Getting Started" guide.
+
 ---
 
 ## 🏛️ Archive (Completed)
