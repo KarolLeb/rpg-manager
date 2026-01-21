@@ -1,7 +1,12 @@
 package com.rpgmanager.backend.character;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rpgmanager.backend.character.dto.CharacterResponse;
+import com.rpgmanager.backend.character.application.dto.CharacterResponse;
+import com.rpgmanager.backend.character.application.port.in.GetCharacterUseCase;
+import com.rpgmanager.backend.character.application.port.in.JoinCampaignUseCase;
+import com.rpgmanager.backend.character.application.port.in.UpdateCharacterUseCase;
+import com.rpgmanager.backend.character.domain.model.CharacterDomain;
+import com.rpgmanager.backend.character.infrastructure.adapter.in.web.CharacterController;
 import com.rpgmanager.backend.security.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +36,13 @@ class CharacterControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CharacterService characterService;
+    private GetCharacterUseCase getCharacterUseCase;
+
+    @MockBean
+    private UpdateCharacterUseCase updateCharacterUseCase;
+
+    @MockBean
+    private JoinCampaignUseCase joinCampaignUseCase;
 
     @MockBean
     private JwtUtil jwtUtil;
@@ -55,7 +66,7 @@ class CharacterControllerTest {
                 "PERMANENT"
         );
 
-        given(characterService.getAllCharacters()).willReturn(List.of(response));
+        given(getCharacterUseCase.getAllCharacters()).willReturn(List.of(response));
 
         mockMvc.perform(get("/api/characters")
                         .with(user("user")))
@@ -67,10 +78,11 @@ class CharacterControllerTest {
     @Test
     void shouldUpdateCharacterAndReturnResponse() throws Exception {
         UUID charId = UUID.randomUUID();
-        Character updateRequest = new Character();
-        updateRequest.setName("New Name");
-        updateRequest.setLevel(2);
-        updateRequest.setStats("Str: 12");
+        CharacterDomain updateRequest = CharacterDomain.builder()
+                .name("New Name")
+                .level(2)
+                .stats("Str: 12")
+                .build();
 
         CharacterResponse response = new CharacterResponse(
                 charId,
@@ -83,7 +95,7 @@ class CharacterControllerTest {
                 "PERMANENT"
         );
 
-        given(characterService.updateCharacter(eq(charId), any(Character.class))).willReturn(response);
+        given(updateCharacterUseCase.updateCharacter(eq(charId), any(CharacterDomain.class))).willReturn(response);
 
         mockMvc.perform(put("/api/characters/{id}", charId)
                 .with(csrf())
@@ -98,10 +110,11 @@ class CharacterControllerTest {
     @Test
     void shouldThrowExceptionWhenUpdatingNonExistentCharacter() {
         UUID charId = UUID.randomUUID();
-        Character updateRequest = new Character();
-        updateRequest.setName("Ghost");
+        CharacterDomain updateRequest = CharacterDomain.builder()
+                .name("Ghost")
+                .build();
 
-        given(characterService.updateCharacter(eq(charId), any(Character.class)))
+        given(updateCharacterUseCase.updateCharacter(eq(charId), any(CharacterDomain.class)))
                 .willThrow(new RuntimeException("Character not found"));
 
         org.junit.jupiter.api.Assertions.assertThrows(Exception.class, () -> {

@@ -39,9 +39,9 @@ blockers: []
 - Frontend refactoring (Backend focus).
 
 ## 9. Task list
-- T-001 | Research Hexagonal Architecture patterns for Spring Boot | AI Agent | complexity: S | done: false
-- T-002 | Create Architecture Standard Documentation (`docs/engineering/hexagonal-architecture.md`) | AI Agent | complexity: S | deps: [T-001] | done: false
-- T-003 | Refactor `Character` module to Ports & Adapters | AI Agent | complexity: L | deps: [T-002] | done: false
+- T-001 | Research Hexagonal Architecture patterns for Spring Boot | AI Agent | complexity: S | done: true
+- T-002 | Create Architecture Standard Documentation (`docs/engineering/hexagonal-architecture.md`) | AI Agent | complexity: S | deps: [T-001] | done: true
+- T-003 | Refactor `Character` module to Ports & Adapters | AI Agent | complexity: L | deps: [T-002] | done: true
 - T-004 | Refactor `Campaign` module to Ports & Adapters | AI Agent | complexity: L | deps: [T-002] | done: false
 - T-005 | Verify implementations with ArchUnit tests | AI Agent | complexity: M | deps: [T-003, T-004] | done: false
 

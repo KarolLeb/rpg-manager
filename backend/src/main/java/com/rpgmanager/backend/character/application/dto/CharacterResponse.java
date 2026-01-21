@@ -1,4 +1,4 @@
-package com.rpgmanager.backend.character.dto;
+package com.rpgmanager.backend.character.application.dto;
 
 import java.util.UUID;
 
