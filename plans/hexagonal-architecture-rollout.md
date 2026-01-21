@@ -43,7 +43,7 @@ blockers: []
 - T-002 | Create Architecture Standard Documentation (`docs/engineering/hexagonal-architecture.md`) | AI Agent | complexity: S | deps: [T-001] | done: true
 - T-003 | Refactor `Character` module to Ports & Adapters | AI Agent | complexity: L | deps: [T-002] | done: true
 - T-004 | Refactor `Campaign` module to Ports & Adapters | AI Agent | complexity: L | deps: [T-002] | done: true
-- T-005 | Integrate ArchUnit and verify architecture with tests | AI Agent | complexity: M | deps: [T-003, T-004] | done: false
+- T-005 | Verify implementations with ArchUnit tests | AI Agent | complexity: M | deps: [T-003, T-004] | done: true
 - T-006 | Integrate MapStruct for Entity-DTO mapping | AI Agent | complexity: S | deps: [T-002] | done: false
 - T-007 | Integrate Instancio for automated test data generation | AI Agent | complexity: S | deps: [] | done: false
 
