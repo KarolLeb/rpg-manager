@@ -1,13 +1,16 @@
 package com.rpgmanager.backend.campaign;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.rpgmanager.backend.campaign.application.dto.CreateCampaignRequest;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.CampaignEntity;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.JpaCampaignRepository;
 import com.rpgmanager.backend.config.TestContainersConfig;
 import com.rpgmanager.backend.user.User;
 import com.rpgmanager.backend.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -33,7 +36,7 @@ class CampaignIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
-    private CampaignRepository campaignRepository;
+    private JpaCampaignRepository campaignRepository;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -71,11 +74,11 @@ class CampaignIntegrationTest {
     @Test
     void shouldGetAllCampaigns() throws Exception {
         // Create one campaign to ensure list is not empty
-        Campaign campaign = Campaign.builder()
+        CampaignEntity campaign = CampaignEntity.builder()
                 .name("List Test Campaign")
                 .description("Desc")
                 .gameMaster(gameMaster)
-                .status(Campaign.CampaignStatus.ACTIVE)
+                .status(CampaignEntity.CampaignStatus.ACTIVE)
                 .build();
         campaignRepository.save(campaign);
 
@@ -87,11 +90,11 @@ class CampaignIntegrationTest {
 
     @Test
     void shouldGetCampaignById() throws Exception {
-        Campaign campaign = Campaign.builder()
+        CampaignEntity campaign = CampaignEntity.builder()
                 .name("Get By Id Campaign")
                 .description("Desc")
                 .gameMaster(gameMaster)
-                .status(Campaign.CampaignStatus.ACTIVE)
+                .status(CampaignEntity.CampaignStatus.ACTIVE)
                 .build();
         campaign = campaignRepository.save(campaign);
 
@@ -103,11 +106,11 @@ class CampaignIntegrationTest {
 
     @Test
     void shouldUpdateCampaign() throws Exception {
-        Campaign campaign = Campaign.builder()
+        CampaignEntity campaign = CampaignEntity.builder()
                 .name("Original Name")
                 .description("Original Desc")
                 .gameMaster(gameMaster)
-                .status(Campaign.CampaignStatus.ACTIVE)
+                .status(CampaignEntity.CampaignStatus.ACTIVE)
                 .build();
         campaign = campaignRepository.save(campaign);
 
@@ -123,11 +126,11 @@ class CampaignIntegrationTest {
 
     @Test
     void shouldDeleteCampaign() throws Exception {
-        Campaign campaign = Campaign.builder()
+        CampaignEntity campaign = CampaignEntity.builder()
                 .name("To Be Deleted")
                 .description("Desc")
                 .gameMaster(gameMaster)
-                .status(Campaign.CampaignStatus.ACTIVE)
+                .status(CampaignEntity.CampaignStatus.ACTIVE)
                 .build();
         campaign = campaignRepository.save(campaign);
 

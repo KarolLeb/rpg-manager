@@ -1,7 +1,7 @@
 package com.rpgmanager.backend.session;
 
-import com.rpgmanager.backend.campaign.Campaign;
-import com.rpgmanager.backend.campaign.CampaignRepository;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.CampaignEntity;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.JpaCampaignRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 public class SessionService {
 
     private final SessionRepository sessionRepository;
-    private final CampaignRepository campaignRepository;
+    private final JpaCampaignRepository campaignRepository;
 
     @Transactional
     public SessionDTO createSession(CreateSessionRequest request) {
-        Campaign campaign = campaignRepository.findById(request.getCampaignId())
+        CampaignEntity campaign = campaignRepository.findById(request.getCampaignId())
                 .orElseThrow(() -> new RuntimeException("Campaign not found with id: " + request.getCampaignId()));
 
         Session session = Session.builder()

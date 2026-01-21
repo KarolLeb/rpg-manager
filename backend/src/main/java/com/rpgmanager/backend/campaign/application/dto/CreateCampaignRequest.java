@@ -1,4 +1,4 @@
-package com.rpgmanager.backend.campaign;
+package com.rpgmanager.backend.campaign.application.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

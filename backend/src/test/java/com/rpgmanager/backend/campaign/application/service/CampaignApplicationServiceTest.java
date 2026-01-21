@@ -1,5 +1,9 @@
-package com.rpgmanager.backend.campaign;
+package com.rpgmanager.backend.campaign.application.service;
 
+import com.rpgmanager.backend.campaign.application.dto.CampaignDTO;
+import com.rpgmanager.backend.campaign.application.dto.CreateCampaignRequest;
+import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
+import com.rpgmanager.backend.campaign.domain.repository.CampaignRepository;
 import com.rpgmanager.backend.user.User;
 import com.rpgmanager.backend.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CampaignServiceTest {
+class CampaignApplicationServiceTest {
 
     @Mock
     private CampaignRepository campaignRepository;
@@ -25,7 +29,7 @@ class CampaignServiceTest {
     private UserRepository userRepository;
 
     @InjectMocks
-    private CampaignService campaignService;
+    private CampaignApplicationService campaignService;
 
     private User user;
 
@@ -41,22 +45,23 @@ class CampaignServiceTest {
     @Test
     void createCampaign_shouldSaveAndReturnDTO() {
         CreateCampaignRequest request = new CreateCampaignRequest("New Camp", "Desc", 1L);
-        Campaign savedCampaign = Campaign.builder()
+        CampaignDomain savedCampaign = CampaignDomain.builder()
                 .id(10L)
                 .name("New Camp")
                 .description("Desc")
-                .gameMaster(user)
-                .status(Campaign.CampaignStatus.ACTIVE)
+                .gameMasterId(1L)
+                .gameMasterName("gm")
+                .status(CampaignDomain.CampaignStatus.ACTIVE)
                 .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(campaignRepository.save(any(Campaign.class))).thenReturn(savedCampaign);
+        when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(savedCampaign);
 
         CampaignDTO result = campaignService.createCampaign(request);
 
         assertThat(result.getName()).isEqualTo("New Camp");
         assertThat(result.getGameMasterId()).isEqualTo(1L);
-        verify(campaignRepository).save(any(Campaign.class));
+        verify(campaignRepository).save(any(CampaignDomain.class));
     }
 
     @Test
@@ -69,7 +74,7 @@ class CampaignServiceTest {
 
     @Test
     void getAllCampaigns_shouldReturnList() {
-        Campaign campaign = Campaign.builder().id(1L).gameMaster(user).build();
+        CampaignDomain campaign = CampaignDomain.builder().id(1L).gameMasterId(1L).gameMasterName("gm").build();
         when(campaignRepository.findAll()).thenReturn(java.util.List.of(campaign));
 
         java.util.List<CampaignDTO> result = campaignService.getAllCampaigns();
@@ -79,7 +84,7 @@ class CampaignServiceTest {
 
     @Test
     void getCampaignById_shouldReturnDTO() {
-        Campaign campaign = Campaign.builder().id(1L).gameMaster(user).build();
+        CampaignDomain campaign = CampaignDomain.builder().id(1L).gameMasterId(1L).gameMasterName("gm").build();
         when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
 
         CampaignDTO result = campaignService.getCampaignById(1L);
@@ -96,10 +101,10 @@ class CampaignServiceTest {
 
     @Test
     void updateCampaign_shouldUpdateAndReturnDTO() {
-        Campaign campaign = Campaign.builder().id(1L).name("Old").gameMaster(user).build();
+        CampaignDomain campaign = CampaignDomain.builder().id(1L).name("Old").gameMasterId(1L).gameMasterName("gm").build();
         CreateCampaignRequest request = new CreateCampaignRequest("New", "Desc", 1L);
         when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
-        when(campaignRepository.save(any(Campaign.class))).thenReturn(campaign);
+        when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
 
         CampaignDTO result = campaignService.updateCampaign(1L, request);
 
@@ -108,15 +113,15 @@ class CampaignServiceTest {
 
     @Test
     void updateCampaign_shouldNotUpdateGM_whenGMIdIsNull() {
-        Campaign campaign = Campaign.builder().id(1L).name("Old").gameMaster(user).build();
+        CampaignDomain campaign = CampaignDomain.builder().id(1L).name("Old").gameMasterId(1L).gameMasterName("gm").build();
         CreateCampaignRequest request = new CreateCampaignRequest("New", "Desc", null);
         when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
-        when(campaignRepository.save(any(Campaign.class))).thenReturn(campaign);
+        when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
 
         campaignService.updateCampaign(1L, request);
 
         verify(userRepository, never()).findById(anyLong());
-        assertThat(campaign.getGameMaster()).isEqualTo(user);
+        assertThat(campaign.getGameMasterId()).isEqualTo(1L);
     }
 
     @Test

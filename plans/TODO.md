@@ -20,6 +20,10 @@ This document serves as an index to the active detailed plans. All core project 
 *   **Task:** Refine Project README for GitHub profile readiness.
 *   **Focus:** Adding architecture diagrams, visual screenshots (placeholders), and a polished "Getting Started" guide.
 
+### 5. Developer Experience (DX) Improvements (Backlog)
+*   **Task:** Integrate SpringDoc OpenAPI for automated Swagger UI documentation.
+*   **Task:** Integrate Spotless for automated code formatting and style enforcement.
+
 ---
 
 ## 🏛️ Archive (Completed)

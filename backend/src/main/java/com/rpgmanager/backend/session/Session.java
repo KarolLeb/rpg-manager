@@ -1,6 +1,6 @@
 package com.rpgmanager.backend.session;
 
-import com.rpgmanager.backend.campaign.Campaign;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.CampaignEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,7 @@ public class Session {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campaign_id")
-    private Campaign campaign;
+    private CampaignEntity campaign;
 
     @Column(nullable = false)
     private String name;
@@ -50,12 +50,7 @@ public class Session {
         }
     }
 
-        public enum SessionStatus {
-
-            ACTIVE, FINISHED, CANCELLED
-
-        }
-
+    public enum SessionStatus {
+        ACTIVE, FINISHED, CANCELLED
     }
-
-    
+}

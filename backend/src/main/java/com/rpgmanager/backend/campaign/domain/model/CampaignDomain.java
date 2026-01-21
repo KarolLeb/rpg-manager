@@ -1,9 +1,10 @@
-package com.rpgmanager.backend.campaign;
+package com.rpgmanager.backend.campaign.domain.model;
 
-import lombok.Data;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -11,13 +12,17 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CampaignDTO {
+public class CampaignDomain {
     private Long id;
     private UUID uuid;
     private String name;
     private String description;
     private OffsetDateTime creationDate;
-    private Campaign.CampaignStatus status;
+    private CampaignStatus status;
     private Long gameMasterId;
     private String gameMasterName;
+
+    public enum CampaignStatus {
+        ACTIVE, FINISHED, ARCHIVED
+    }
 }

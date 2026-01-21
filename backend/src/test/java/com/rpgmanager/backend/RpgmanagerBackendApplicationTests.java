@@ -1,7 +1,7 @@
 package com.rpgmanager.backend;
 
-import com.rpgmanager.backend.campaign.Campaign;
-import com.rpgmanager.backend.campaign.CampaignRepository;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.CampaignEntity;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.JpaCampaignRepository;
 import com.rpgmanager.backend.config.TestContainersConfig;
 import com.rpgmanager.backend.session.Session;
 import com.rpgmanager.backend.session.SessionRepository;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RpgmanagerBackendApplicationTests {
 
 	@Autowired
-	private CampaignRepository campaignRepository;
+	private JpaCampaignRepository campaignRepository;
 
 	@Autowired
 	private SessionRepository sessionRepository;
@@ -28,10 +28,10 @@ class RpgmanagerBackendApplicationTests {
 	@Test
 	void contextLoadsAndMigrationsAreApplied() {
 		// 1. Sprawdź czy kampania z V2 istnieje
-		Optional<Campaign> campaignOpt = campaignRepository.findByName("Kampania Smoczej Lancy");
+		Optional<CampaignEntity> campaignOpt = campaignRepository.findByName("Kampania Smoczej Lancy");
 		assertThat(campaignOpt).isPresent();
 
-		Campaign campaign = campaignOpt.get();
+		CampaignEntity campaign = campaignOpt.get();
 		assertThat(campaign.getUuid()).isNotNull();
 		assertThat(campaign.getStatus().name()).isEqualTo("ACTIVE");
 

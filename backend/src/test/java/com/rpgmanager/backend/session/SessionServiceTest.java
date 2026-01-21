@@ -1,7 +1,7 @@
 package com.rpgmanager.backend.session;
 
-import com.rpgmanager.backend.campaign.Campaign;
-import com.rpgmanager.backend.campaign.CampaignRepository;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.CampaignEntity;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.JpaCampaignRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,17 +24,17 @@ class SessionServiceTest {
     private SessionRepository sessionRepository;
 
     @Mock
-    private CampaignRepository campaignRepository;
+    private JpaCampaignRepository campaignRepository;
 
     @InjectMocks
     private SessionService sessionService;
 
-    private Campaign campaign;
+    private CampaignEntity campaign;
     private Session session;
 
     @BeforeEach
     void setUp() {
-        campaign = Campaign.builder()
+        campaign = CampaignEntity.builder()
                 .id(1L)
                 .name("Campaign 1")
                 .build();
