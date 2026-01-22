@@ -5,6 +5,7 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Bean;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
 @TestConfiguration(proxyBeanMethods = false)
@@ -19,6 +20,9 @@ public class TestContainersConfig {
     @Bean
     @ServiceConnection(name = "redis")
     public GenericContainer<?> redisContainer() {
-        return new GenericContainer<>(DockerImageName.parse("redis:alpine")).withExposedPorts(6379);
+        return new GenericContainer<>(DockerImageName.parse("redis:alpine"))
+                .withExposedPorts(6379)
+                .waitingFor(Wait.forLogMessage(".*Ready to accept connections tcp.*\\n", 1))
+                .withStartupTimeout(java.time.Duration.ofMinutes(2));
     }
 }
