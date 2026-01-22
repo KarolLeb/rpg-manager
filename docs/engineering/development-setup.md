@@ -34,6 +34,30 @@ Tools that are typically started once and kept running across multiple developme
   docker-compose up -d
   ```
 
+## 🧪 Local CI (act)
+
+You can run GitHub Actions workflows locally using [act](https://github.com/nektos/act). This project includes a `.actrc` configuration file to ensure compatibility.
+
+### Prerequisites
+- [Docker](https://www.docker.com/)
+- [act](https://github.com/nektos/act)
+
+### Usage
+Run all workflows triggered by a push:
+```powershell
+act
+```
+
+Run a specific job (e.g., backend):
+```powershell
+act -j backend
+```
+
+Run with a clean start (if you encounter issues with reused containers):
+```powershell
+act --rm
+```
+
 ## 🔗 Access Points
 
 | Service | URL | Note | 

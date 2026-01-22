@@ -13,10 +13,22 @@ const fs = require('fs');
 
 function parseArgs() {
   const args = process.argv.slice(2);
-  const params = { file: null };
+  const params = { file: null, global: 90, core: 95, integration: 85, critical: 100 };
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--file' && args[i + 1]) {
       params.file = args[i + 1];
+      i++;
+    } else if (args[i] === '--global' && args[i + 1]) {
+      params.global = parseFloat(args[i + 1]);
+      i++;
+    } else if (args[i] === '--core' && args[i + 1]) {
+      params.core = parseFloat(args[i + 1]);
+      i++;
+    } else if (args[i] === '--integration' && args[i + 1]) {
+      params.integration = parseFloat(args[i + 1]);
+      i++;
+    } else if (args[i] === '--critical' && args[i + 1]) {
+      params.critical = parseFloat(args[i + 1]);
       i++;
     }
   }
@@ -27,8 +39,6 @@ function loadSummary(file) {
   const input = file ? fs.readFileSync(file, 'utf8') : fs.readFileSync(0, 'utf8');
   return JSON.parse(input);
 }
-
-function pct(n) { return Math.round(n * 10000) / 100; }
 
 function classifyFile(path) {
   const p = path.toLowerCase();
@@ -49,13 +59,13 @@ function isCritical(path) {
   );
 }
 
-function check(summary) {
+function check(summary, thresholds) {
   const metrics = summary.total || summary;
-  const globalLines = metrics.lines.pct || metrics.lines.covered / metrics.lines.total * 100;
-  const globalPass = globalLines >= 90;
+  const globalLines = metrics.lines.pct || (metrics.lines.covered / metrics.lines.total * 100);
+  const globalPass = globalLines >= thresholds.global;
 
   const failures = [];
-  if (!globalPass) failures.push(`Global lines coverage ${pct(globalLines)}% < 90%`);
+  if (!globalPass) failures.push(`Global lines coverage ${globalLines.toFixed(2)}% < ${thresholds.global}%`);
 
   // Per-file checks if available
   if (summary && typeof summary === 'object') {
@@ -63,14 +73,14 @@ function check(summary) {
       if (file === 'total' || !m || !m.lines) continue;
       const filePct = m.lines.pct || (m.lines.covered / m.lines.total * 100);
       const cls = classifyFile(file);
-      if (isCritical(file) && filePct < 100) {
-        failures.push(`Critical path not fully covered: ${file} ${pct(filePct)}% < 100%`);
+      if (isCritical(file) && filePct < thresholds.critical) {
+        failures.push(`Critical path not fully covered: ${file} ${filePct.toFixed(2)}% < ${thresholds.critical}%`);
         continue;
       }
-      if (cls === 'core' && filePct < 95) {
-        failures.push(`Core module below 95%: ${file} ${pct(filePct)}%`);
-      } else if (cls === 'integration' && filePct < 85) {
-        failures.push(`Integration below 85%: ${file} ${pct(filePct)}%`);
+      if (cls === 'core' && filePct < thresholds.core) {
+        failures.push(`Core module below ${thresholds.core}%: ${file} ${filePct.toFixed(2)}%`);
+      } else if (cls === 'integration' && filePct < thresholds.integration) {
+        failures.push(`Integration below ${thresholds.integration}%: ${file} ${filePct.toFixed(2)}%`);
       }
     }
   }
@@ -80,9 +90,9 @@ function check(summary) {
 
 function main() {
   try {
-    const { file } = parseArgs();
-    const summary = loadSummary(file);
-    const failures = check(summary);
+    const thresholds = parseArgs();
+    const summary = loadSummary(thresholds.file);
+    const failures = check(summary, thresholds);
     if (failures.length) {
       console.error('Coverage enforcement failed:\n- ' + failures.join('\n- '));
       process.exit(1);
