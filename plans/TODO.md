@@ -1,47 +1,21 @@
-# RPG Manager - Master Roadmap
+# Project TODO Queue
 
-This document serves as an index to the active detailed plans. All core project objectives have been met.
+Operational task list and active execution plans.
 
 ## 🚀 Active Plans
+1.  **Microservices Extraction (Admin & Auth)**
+    *   **Plan:** [`plans/microservices-extraction.md`](./microservices-extraction.md)
+    *   **Status:** Proposed - Pending analysis.
 
-### 1. Redis Infrastructure Verification
-**File:** [`plans/redis-verification.md`](./redis-verification.md)
-*Focus: Confirming Redis connectivity and cache functionality.*
-*Status: [x] Completed*
+## 📋 Backlog (Short Tasks)
+- [ ] **DX:** Refine 'act' configuration for local GitHub Actions execution.
+- [ ] **Docs:** Add Hexagonal Architecture diagrams to `docs/architecture/`.
+- [ ] **Frontend:** Implement visual indicators for cache hits (debug mode).
 
-### 2. Hexagonal Architecture Rollout
-**File:** [`plans/hexagonal-architecture-rollout.md`](./hexagonal-architecture-rollout.md)
-*Focus: Researching and implementing Ports & Adapters pattern.*
-*Status: [x] Completed*
-
-### 3. User Module Refactoring (Hexagonal)
-**File:** [`plans/user-module-refactoring.md`](./user-module-refactoring.md)
-*Focus: Refactoring the legacy User module to resolve architectural violations.*
-*Status: [x] Completed*
-
-### 4. Microservices Extraction (Admin & Auth)
-**File:** [`plans/microservices-extraction.md`](./microservices-extraction.md)
-*Focus: Decomposing the monolith into Auth and Admin services.*
-
-### 4. Documentation & Presentation
-*   **Task:** Refine Project README for GitHub profile readiness.
-*   **Focus:** Adding architecture diagrams, visual screenshots (placeholders), and a polished "Getting Started" guide.
-
-### 5. Developer Experience (DX) Improvements (Backlog)
-*   [x] **Task:** Configure SonarQube Infrastructure - Scans successful for both Backend & Frontend.
-*   [x] **Task:** Setup Recommended MCPs (Everything, GitHub) - See [`docs/engineering/mcp-setup-guide.md`](../docs/engineering/mcp-setup-guide.md).
-*   **Task:** 'act' further config - Local GitHub Actions execution and optimization.
+## ✅ Recently Finished (Pending Archive)
+- [x] Redis Infrastructure Verification ([`archive/redis-verification.md`](./archive/redis-verification.md))
+- [x] User Module Refactoring ([`archive/user-module-refactoring.md`](./archive/user-module-refactoring.md))
+- [x] MapStruct & Instancio Integration ([`archive/hexagonal-architecture-rollout.md`](./archive/hexagonal-architecture-rollout.md))
 
 ---
-
-## 🏛️ Archive (Completed)
-
-- [`plans/archive/2026-01-initial-setup.md`](./archive/2026-01-initial-setup.md) - Initial Setup, Auth Logic, Database Schema.
-- [`plans/archive/backend-core.md`](./archive/backend-core.md) - Campaign & Session CRUD Logic.
-- [`plans/archive/frontend-implementation.md`](./archive/frontend-implementation.md) - Angular UI, Auth Views, Dashboards.
-- [`plans/archive/architecture-refactor.md`](./archive/architecture-refactor.md) - Hexagonal Arch, Redis, Spring Cloud Integration.
-- [`plans/archive/quality-gate.md`](./archive/quality-gate.md) - Code Coverage, CI Integration.
-- [`plans/archive/campaign-crud-implementation.md`](./archive/campaign-crud-implementation.md) - (Redundant) Campaign CRUD.
-
----
-*Last Updated: 2026-01-22*
+*For the long-term vision, see [ROADMAP.md](./ROADMAP.md).*

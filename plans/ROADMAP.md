@@ -1,27 +1,41 @@
-# Project Roadmap
+# RPG Manager Roadmap
 
-Use this roadmap to communicate upcoming milestones and recently completed work. Keep it lightweight and updated as plans evolve.
+Strategic milestones and high-level project evolution.
 
 ## Status Badges
-
 - Planned: ![Planned](https://img.shields.io/badge/status-Planned-lightgrey)
 - In Progress: ![In Progress](https://img.shields.io/badge/status-In%20Progress-blue)
 - Done: ![Done](https://img.shields.io/badge/status-Done-brightgreen)
 
-Usage: Add one badge per item to convey current status. Optionally include an owner badge.
-Example: `Q4 2025 — Platform auth hardening` ![In Progress](https://img.shields.io/badge/status-In%20Progress-blue) ![Owner](https://img.shields.io/badge/owner-Platform%20Team-informational)
+## 🗺️ Project Phases
 
-## Milestones (Upcoming)
+### Phase 1: MVP Foundation ![Done](https://img.shields.io/badge/status-Done-brightgreen)
+*   **Goal:** Establish core RPG management capabilities.
+*   **Deliverables:**
+    *   Monolithic Backend (Spring Boot).
+    *   Angular Frontend with Dashboard.
+    *   PostgreSQL Persistence.
+    *   JWT Authentication.
 
-- Qx YYYY — Milestone name
-  - Goals
-  - Key deliverables
-  - Owners
+### Phase 2: Architectural Hardening ![In Progress](https://img.shields.io/badge/status-In%20Progress-blue)
+*   **Goal:** Clean up technical debt and establish scalable patterns.
+*   **Deliverables:**
+    *   [x] Full Hexagonal Architecture (Ports & Adapters) rollout.
+    *   [x] Redis Infrastructure & Caching integration.
+    *   [x] MapStruct & Instancio tooling integration.
+    *   [ ] CI/CD optimization and "act" configuration.
 
-## Milestones (Completed)
+### Phase 3: Distributed Scalability ![Planned](https://img.shields.io/badge/status-Planned-lightgrey)
+*   **Goal:** Decompose the monolith for independent scaling.
+*   **Deliverables:**
+    *   Extraction of `Auth` service.
+    *   Extraction of `Admin` service.
+    *   API Gateway implementation.
 
-- Qx YYYY — Milestone name
-  - Outcomes
-  - Links to PRs/Docs
+## 🏁 Recently Completed Milestones
+- **Jan 2026:** Achieved 100% Hexagonal Architecture compliance across all modules.
+- **Jan 2026:** Integrated Redis for campaign list caching and verified eviction logic.
+- **Jan 2026:** Established SonarQube quality gates for both Frontend and Backend.
 
-<!-- © Capgemini 2025 -->
+---
+*Last Updated: 2026-01-22*
