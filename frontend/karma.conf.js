@@ -26,8 +26,8 @@ module.exports = function (config) {
       subdir: '.',
       reporters: [
         { type: 'html' },
+        { type: 'lcovonly' },
         { type: 'text-summary' },
-        { type: 'text' },
         { type: 'json-summary' }
       ]
     },
