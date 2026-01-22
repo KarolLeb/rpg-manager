@@ -294,7 +294,7 @@
 		<profile>
 			<id>unit</id>
 			<activation>
-				<activeByDefault>true</activation>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 		</profile>
 		<profile>
