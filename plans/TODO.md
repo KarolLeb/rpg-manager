@@ -23,6 +23,9 @@ This document serves as an index to the active detailed plans. All core project 
 ### 5. Developer Experience (DX) Improvements (Backlog)
 *   **Task:** Integrate SpringDoc OpenAPI for automated Swagger UI documentation.
 *   **Task:** Integrate Spotless for automated code formatting and style enforcement.
+*   [x] **Task:** Configure SonarQube Infrastructure - Scans successful for both Backend & Frontend.
+*   **Task:** Configure Java LSP MCP - See `docs/engineering/mcp-setup-guide.md`.
+*   **Task:** 'act' further config - Local GitHub Actions execution and optimization.
 
 ---
 
@@ -36,4 +39,4 @@ This document serves as an index to the active detailed plans. All core project 
 - [`plans/archive/campaign-crud-implementation.md`](./archive/campaign-crud-implementation.md) - (Redundant) Campaign CRUD.
 
 ---
-*Last Updated: 2026-01-18*
+*Last Updated: 2026-01-22*

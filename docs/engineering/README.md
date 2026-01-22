@@ -4,6 +4,7 @@ This directory contains engineering processes and standards (e.g., code reviews,
 
 ## Index
 
+- [Development Setup](development-setup.md)
 - [Code Review Guidelines](code-review-guidelines.md)
 - [Pull Request Guidelines](pull-request-guidelines.md)
 
