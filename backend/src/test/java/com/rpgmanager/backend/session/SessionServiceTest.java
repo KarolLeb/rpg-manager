@@ -1,7 +1,7 @@
 package com.rpgmanager.backend.session;
 
-import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.CampaignEntity;
-import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.JpaCampaignRepository;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

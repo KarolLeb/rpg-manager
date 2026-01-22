@@ -1,7 +1,7 @@
 package com.rpgmanager.backend;
 
-import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.CampaignEntity;
-import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.JpaCampaignRepository;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
 import com.rpgmanager.backend.config.TestContainersConfig;
 import com.rpgmanager.backend.session.Session;
 import com.rpgmanager.backend.session.SessionRepository;

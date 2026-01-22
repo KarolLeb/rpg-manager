@@ -1,7 +1,7 @@
 package com.rpgmanager.backend.campaign.infrastructure.mapper;
 
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
-import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.CampaignEntity;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.user.User;
 
 public class CampaignPersistenceMapper {

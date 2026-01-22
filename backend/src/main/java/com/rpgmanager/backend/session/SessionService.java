@@ -1,7 +1,7 @@
 package com.rpgmanager.backend.session;
 
-import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.CampaignEntity;
-import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.JpaCampaignRepository;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,8 +1,8 @@
 package com.rpgmanager.backend.character.infrastructure.mapper;
 
-import com.rpgmanager.backend.campaign.infrastructure.adapter.out.persistence.CampaignEntity;
+import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
-import com.rpgmanager.backend.character.infrastructure.adapter.out.persistence.CharacterEntity;
+import com.rpgmanager.backend.character.infrastructure.adapter.outgoing.persistence.CharacterEntity;
 import com.rpgmanager.backend.user.User;
 
 public class CharacterPersistenceMapper {
