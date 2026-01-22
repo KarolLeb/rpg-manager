@@ -21,10 +21,8 @@ This document serves as an index to the active detailed plans. All core project 
 *   **Focus:** Adding architecture diagrams, visual screenshots (placeholders), and a polished "Getting Started" guide.
 
 ### 5. Developer Experience (DX) Improvements (Backlog)
-*   **Task:** Integrate SpringDoc OpenAPI for automated Swagger UI documentation.
-*   **Task:** Integrate Spotless for automated code formatting and style enforcement.
 *   [x] **Task:** Configure SonarQube Infrastructure - Scans successful for both Backend & Frontend.
-*   **Task:** Setup Recommended MCPs (Everything MCP, Docker) - See [`docs/engineering/mcp-setup-guide.md`](../docs/engineering/mcp-setup-guide.md).
+*   [x] **Task:** Setup Recommended MCPs (Everything, GitHub) - See [`docs/engineering/mcp-setup-guide.md`](../docs/engineering/mcp-setup-guide.md).
 *   **Task:** 'act' further config - Local GitHub Actions execution and optimization.
 
 ---

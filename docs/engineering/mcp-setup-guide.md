@@ -12,36 +12,21 @@ Used for static code analysis, quality gate monitoring, and issue tracking.
   - Configured to connect to `http://localhost:9000`.
   - Requires `SONAR_TOKEN` from `.env` for authenticated operations.
 
-## 🚀 Recommended MCPs (To Be Configured)
+### 2. Grafana Extension
+Direct integration with Grafana for observability and incident management.
+- **Source:** Built-in Gemini Extension.
+- **Capabilities:** Search dashboards, query Prometheus/Loki, manage alerts, and track incidents.
+- **Connection:** Automatically configured to interact with the project's Grafana instance via tools.
 
-### 2. Everything MCP (Recommended)
-Provides broad project understanding and symbol access without the complexity of a Java LSP bridge.
-- **Implementation:** [@modelcontextprotocol/server-everything](https://github.com/modelcontextprotocol/servers/tree/main/src/everything)
-- **Setup In `settings.json`:**
-  ```json
-  "everything": {
-    "command": "npx",
-    "args": ["-y", "@modelcontextprotocol/server-everything"]
-  }
-  ```
-
-### 3. Docker MCP
-Enables direct management of project infrastructure containers.
-- **Implementation:** [mcp-server-docker](https://github.com/modelcontextprotocol/servers/tree/main/src/docker).
-- **Setup In `settings.json`:**
-  ```json
-  "mcpServers": {
-    "docker": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-docker"]
-    }
-  }
-  ```
+### 3. Everything MCP
+Provides broad project understanding and symbol access.
+- **Implementation:** `@modelcontextprotocol/server-everything`
+- **Status:** Configured via `settings.json`.
 
 ### 4. GitHub MCP
 Automates repository management, issue tracking, and PR creation.
-- **Implementation:** [mcp-server-github](https://github.com/modelcontextprotocol/servers/tree/main/src/github).
-- **Setup:** Requires a GitHub Personal Access Token (PAT).
+- **Implementation:** `@modelcontextprotocol/server-github`
+- **Status:** Configured via `settings.json`.
 
 ## 📝 Configuration Location
 These should be added to your local `settings.json` (e.g., in VS Code or the Gemini Desktop app configuration).
