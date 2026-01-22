@@ -9,7 +9,7 @@ Operational task list and active execution plans.
 
 ## 📋 Backlog (Short Tasks)
 - [ ] **DX:** Refine 'act' configuration for local GitHub Actions execution.
-- [ ] **Docs:** Add Hexagonal Architecture diagrams to `docs/architecture/`.
+- [x] **Docs:** Add Hexagonal Architecture diagrams to `docs/architecture/`.
 - [ ] **Frontend:** Implement visual indicators for cache hits (debug mode).
 
 ## ✅ Recently Finished (Pending Archive)
