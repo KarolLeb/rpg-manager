@@ -1,5 +1,7 @@
 package com.rpgmanager.backend.user;
 
+import com.rpgmanager.backend.user.domain.model.UserDomain;
+import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -17,7 +19,7 @@ class UserDetailsServiceImplTest {
     private UserDetailsServiceImpl userDetailsService;
 
     @Mock
-    private UserRepository userRepository;
+    private UserRepositoryPort userRepository;
 
     @BeforeEach
     void setUp() {
@@ -27,10 +29,10 @@ class UserDetailsServiceImplTest {
 
     @Test
     void shouldLoadUserByUsername() {
-        User user = new User();
+        UserDomain user = new UserDomain();
         user.setUsername("testuser");
         user.setPassword("password");
-        user.setRole(User.Role.PLAYER);
+        user.setRole(UserDomain.Role.PLAYER);
         given(userRepository.findByUsername("testuser")).willReturn(Optional.of(user));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername("testuser");

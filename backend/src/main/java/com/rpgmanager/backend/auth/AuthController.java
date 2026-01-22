@@ -1,8 +1,6 @@
 package com.rpgmanager.backend.auth;
 
 import com.rpgmanager.backend.security.JwtUtil;
-import com.rpgmanager.backend.user.User;
-import com.rpgmanager.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

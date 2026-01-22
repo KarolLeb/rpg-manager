@@ -1,7 +1,7 @@
 package com.rpgmanager.backend.admin;
 
-import com.rpgmanager.backend.user.User;
-import com.rpgmanager.backend.user.UserRepository;
+import com.rpgmanager.backend.user.domain.model.UserDomain;
+import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,10 +17,10 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
-    private final UserRepository userRepository;
+    private final UserRepositoryPort userRepository;
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDomain>> getAllUsers() {
         return ResponseEntity.ok(userRepository.findAll());
     }
 

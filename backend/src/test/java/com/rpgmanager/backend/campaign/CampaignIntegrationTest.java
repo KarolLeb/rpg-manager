@@ -6,8 +6,8 @@ import com.rpgmanager.backend.campaign.application.dto.CreateCampaignRequest;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
 import com.rpgmanager.backend.config.TestContainersConfig;
-import com.rpgmanager.backend.user.User;
-import com.rpgmanager.backend.user.UserRepository;
+import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUserRepository;
+import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +33,14 @@ class CampaignIntegrationTest {
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    private UserRepository userRepository;
+    private JpaUserRepository userRepository;
 
     @Autowired
     private JpaCampaignRepository campaignRepository;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private User gameMaster;
+    private UserEntity gameMaster;
 
     @BeforeEach
     void setUp() {
@@ -49,11 +49,11 @@ class CampaignIntegrationTest {
 
         // Ensure we have a user to be the GM
         gameMaster = userRepository.findByUsername("gamemaster")
-                .orElseGet(() -> userRepository.save(User.builder()
+                .orElseGet(() -> userRepository.save(UserEntity.builder()
                         .username("gamemaster")
                         .password("password")
                         .email("gm@test.com")
-                        .role(User.Role.GM)
+                        .role(UserEntity.Role.GM)
                         .build()));
     }
 

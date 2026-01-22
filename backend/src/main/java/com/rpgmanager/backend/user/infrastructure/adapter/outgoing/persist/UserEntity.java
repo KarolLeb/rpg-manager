@@ -1,4 +1,4 @@
-package com.rpgmanager.backend.user;
+package com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

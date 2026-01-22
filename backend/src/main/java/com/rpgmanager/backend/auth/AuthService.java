@@ -1,8 +1,8 @@
 package com.rpgmanager.backend.auth;
 
 import com.rpgmanager.backend.security.JwtUtil;
-import com.rpgmanager.backend.user.User;
-import com.rpgmanager.backend.user.UserRepository;
+import com.rpgmanager.backend.user.domain.model.UserDomain;
+import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +19,7 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
+    private final UserRepositoryPort userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public AuthResponse login(LoginRequest request) {
@@ -27,7 +27,7 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        User user = userRepository.findByUsername(request.getUsername())
+        UserDomain user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         String token = jwtUtil.generateToken(user.getUsername());
@@ -41,12 +41,12 @@ public class AuthService {
             throw new RuntimeException("Username already exists");
         }
 
-        User user = new User();
+        UserDomain user = new UserDomain();
         user.setUuid(UUID.randomUUID());
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
-        user.setRole(User.Role.PLAYER);
+        user.setRole(UserDomain.Role.PLAYER);
 
         userRepository.save(user);
     }

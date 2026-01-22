@@ -2,7 +2,7 @@ package com.rpgmanager.backend.campaign.infrastructure.mapper;
 
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
-import com.rpgmanager.backend.user.User;
+import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 
 public class CampaignPersistenceMapper {
 
@@ -22,7 +22,7 @@ public class CampaignPersistenceMapper {
                 .build();
     }
 
-    public static CampaignEntity toEntity(CampaignDomain domain, User gameMaster) {
+    public static CampaignEntity toEntity(CampaignDomain domain, UserEntity gameMaster) {
         if (domain == null) {
             return null;
         }

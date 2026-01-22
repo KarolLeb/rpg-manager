@@ -12,8 +12,14 @@ This document serves as an index to the active detailed plans. All core project 
 ### 2. Hexagonal Architecture Rollout
 **File:** [`plans/hexagonal-architecture-rollout.md`](./hexagonal-architecture-rollout.md)
 *Focus: Researching and implementing Ports & Adapters pattern.*
+*Status: [x] Completed*
 
-### 3. Microservices Extraction (Admin & Auth)
+### 3. User Module Refactoring (Hexagonal)
+**File:** [`plans/user-module-refactoring.md`](./user-module-refactoring.md)
+*Focus: Refactoring the legacy User module to resolve architectural violations.*
+*Status: [x] Completed*
+
+### 4. Microservices Extraction (Admin & Auth)
 **File:** [`plans/microservices-extraction.md`](./microservices-extraction.md)
 *Focus: Decomposing the monolith into Auth and Admin services.*
 

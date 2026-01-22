@@ -9,8 +9,8 @@ import com.rpgmanager.backend.campaign.application.port.in.GetCampaignUseCase;
 import com.rpgmanager.backend.campaign.application.port.in.UpdateCampaignUseCase;
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
 import com.rpgmanager.backend.campaign.domain.repository.CampaignRepository;
-import com.rpgmanager.backend.user.User;
-import com.rpgmanager.backend.user.UserRepository;
+import com.rpgmanager.backend.user.domain.model.UserDomain;
+import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class CampaignApplicationService implements CreateCampaignUseCase, GetCampaignUseCase, UpdateCampaignUseCase, DeleteCampaignUseCase {
 
     private final CampaignRepository campaignRepository;
-    private final UserRepository userRepository;
+    private final UserRepositoryPort userRepository;
     private final CampaignApplicationMapper campaignApplicationMapper;
 
     @Override
@@ -50,7 +50,7 @@ public class CampaignApplicationService implements CreateCampaignUseCase, GetCam
     @Transactional
     @CacheEvict(value = "campaigns", allEntries = true)
     public CampaignDTO createCampaign(CreateCampaignRequest request) {
-        User gameMaster = userRepository.findById(request.getGameMasterId())
+        UserDomain gameMaster = userRepository.findById(request.getGameMasterId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getGameMasterId()));
 
         CampaignDomain campaign = CampaignDomain.builder()
@@ -78,7 +78,7 @@ public class CampaignApplicationService implements CreateCampaignUseCase, GetCam
         campaign.setDescription(request.getDescription());
 
         if (request.getGameMasterId() != null && !request.getGameMasterId().equals(campaign.getGameMasterId())) {
-            User newGameMaster = userRepository.findById(request.getGameMasterId())
+            UserDomain newGameMaster = userRepository.findById(request.getGameMasterId())
                     .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getGameMasterId()));
             campaign.setGameMasterId(newGameMaster.getId());
             campaign.setGameMasterName(newGameMaster.getUsername());

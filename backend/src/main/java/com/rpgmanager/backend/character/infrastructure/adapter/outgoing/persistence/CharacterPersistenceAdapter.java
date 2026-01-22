@@ -5,8 +5,8 @@ import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.J
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import com.rpgmanager.backend.character.domain.repository.CharacterRepository;
 import com.rpgmanager.backend.character.infrastructure.mapper.CharacterPersistenceMapper;
-import com.rpgmanager.backend.user.User;
-import com.rpgmanager.backend.user.UserRepository;
+import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUserRepository;
+import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class CharacterPersistenceAdapter implements CharacterRepository {
 
     private final JpaCharacterRepository jpaCharacterRepository;
     private final JpaCampaignRepository jpaCampaignRepository;
-    private final UserRepository userRepository;
+    private final JpaUserRepository userRepository;
 
     @Override
     public List<CharacterDomain> findAll() {
@@ -52,7 +52,7 @@ public class CharacterPersistenceAdapter implements CharacterRepository {
             CharacterPersistenceMapper.updateEntity(entity, domain, campaign);
         } else {
             // Create New
-            User owner = null;
+            UserEntity owner = null;
             if (domain.getOwnerUsername() != null) {
                 owner = userRepository.findByUsername(domain.getOwnerUsername())
                         .orElseThrow(() -> new RuntimeException("User not found: " + domain.getOwnerUsername()));

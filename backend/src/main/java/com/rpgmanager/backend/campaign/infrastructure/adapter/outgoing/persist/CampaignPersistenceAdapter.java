@@ -3,8 +3,8 @@ package com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist;
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
 import com.rpgmanager.backend.campaign.domain.repository.CampaignRepository;
 import com.rpgmanager.backend.campaign.infrastructure.mapper.CampaignPersistenceMapper;
-import com.rpgmanager.backend.user.User;
-import com.rpgmanager.backend.user.UserRepository;
+import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUserRepository;
+import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class CampaignPersistenceAdapter implements CampaignRepository {
 
     private final JpaCampaignRepository jpaCampaignRepository;
-    private final UserRepository userRepository;
+    private final JpaUserRepository userRepository;
 
     @Override
     public List<CampaignDomain> findAll() {
@@ -41,7 +41,7 @@ public class CampaignPersistenceAdapter implements CampaignRepository {
 
     @Override
     public CampaignDomain save(CampaignDomain campaign) {
-        User gameMaster = null;
+        UserEntity gameMaster = null;
         if (campaign.getGameMasterId() != null) {
             gameMaster = userRepository.findById(campaign.getGameMasterId())
                     .orElseThrow(() -> new RuntimeException("Game Master not found with id: " + campaign.getGameMasterId()));

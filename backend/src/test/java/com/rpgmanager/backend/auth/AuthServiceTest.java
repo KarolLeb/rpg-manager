@@ -1,8 +1,8 @@
 package com.rpgmanager.backend.auth;
 
 import com.rpgmanager.backend.security.JwtUtil;
-import com.rpgmanager.backend.user.User;
-import com.rpgmanager.backend.user.UserRepository;
+import com.rpgmanager.backend.user.domain.model.UserDomain;
+import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,7 +29,7 @@ class AuthServiceTest {
     private JwtUtil jwtUtil;
 
     @Mock
-    private UserRepository userRepository;
+    private UserRepositoryPort userRepository;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -43,9 +43,9 @@ class AuthServiceTest {
         request.setUsername("user");
         request.setPassword("pass");
 
-        User user = new User();
+        UserDomain user = new UserDomain();
         user.setUsername("user");
-        user.setRole(User.Role.PLAYER);
+        user.setRole(UserDomain.Role.PLAYER);
 
         given(userRepository.findByUsername("user")).willReturn(Optional.of(user));
         given(jwtUtil.generateToken("user")).willReturn("token");
@@ -79,7 +79,7 @@ class AuthServiceTest {
 
         authService.register(request);
 
-        verify(userRepository).save(any(User.class));
+        verify(userRepository).save(any(UserDomain.class));
     }
 
     @Test
@@ -87,7 +87,7 @@ class AuthServiceTest {
         RegisterRequest request = new RegisterRequest();
         request.setUsername("existing");
 
-        given(userRepository.findByUsername("existing")).willReturn(Optional.of(new User()));
+        given(userRepository.findByUsername("existing")).willReturn(Optional.of(new UserDomain()));
 
         assertThrows(RuntimeException.class, () -> authService.register(request));
     }

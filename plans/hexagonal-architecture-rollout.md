@@ -6,8 +6,8 @@ Conduct in-depth research on Hexagonal Architecture (Ports and Adapters) best pr
 ## 3. Current status
 ```yaml
 owner: AI Agent
-state: in-progress
-last_updated: 2026-01-21
+state: completed
+last_updated: 2026-01-22
 blockers: []
 ```
 
@@ -45,7 +45,7 @@ blockers: []
 - T-004 | Refactor `Campaign` module to Ports & Adapters | AI Agent | complexity: L | deps: [T-002] | done: true
 - T-005 | Verify implementations with ArchUnit tests | AI Agent | complexity: M | deps: [T-003, T-004] | done: true
 - T-006 | Integrate MapStruct for Entity-DTO mapping | AI Agent | complexity: S | deps: [T-002] | done: true
-- T-007 | Integrate Instancio for automated test data generation | AI Agent | complexity: S | deps: [] | done: false
+- T-007 | Integrate Instancio for automated test data generation | AI Agent | complexity: S | deps: [] | done: true
 
 ## 12. Implementation approach
 We will adopt a package structure similar to:

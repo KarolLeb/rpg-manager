@@ -2,8 +2,8 @@ package com.rpgmanager.backend.admin;
 
 import com.rpgmanager.backend.config.SecurityConfig;
 import com.rpgmanager.backend.security.JwtUtil;
-import com.rpgmanager.backend.user.User;
-import com.rpgmanager.backend.user.UserRepository;
+import com.rpgmanager.backend.user.domain.model.UserDomain;
+import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,7 +27,7 @@ class AdminControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserRepository userRepository;
+    private UserRepositoryPort userRepository;
 
     @MockBean
     private JwtUtil jwtUtil;
@@ -38,7 +38,7 @@ class AdminControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void shouldReturnUsersWhenAdmin() throws Exception {
-        User user = new User();
+        UserDomain user = new UserDomain();
         user.setUsername("testuser");
         given(userRepository.findAll()).willReturn(List.of(user));
 

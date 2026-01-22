@@ -1,7 +1,7 @@
 package com.rpgmanager.backend.character.infrastructure.adapter.outgoing.persistence;
 
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
-import com.rpgmanager.backend.user.User;
+import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -38,11 +38,11 @@ public class CharacterEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "controller_id")
-    private User controller;
+    private UserEntity controller;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "character_type", length = 20)
