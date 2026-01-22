@@ -9,9 +9,7 @@
 # Java / Spring / Maven
 target/
 *.class
-.mvn/
-mvnw
-mvnw.cmd
+# .mvn/ and mvnw/mvnw.cmd should be committed for CI/CD portability
 
 # Node / Angular
 node_modules/
