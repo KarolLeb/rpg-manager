@@ -2,6 +2,11 @@
 
 This directory is for project planning documents. Plans are created to outline the work required to complete a feature or a set of tasks.
 
+## 🗺️ Navigation
+
+- **[Strategic Roadmap](./ROADMAP.md):** High-level phases and long-term milestones.
+- **[Operational TODO Queue](./TODO.md):** Current active work and near-term backlog.
+
 ## The Role of Plans
 
 Plans are used to:

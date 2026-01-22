@@ -59,6 +59,14 @@ For end-to-end (e2e) testing using Playwright, you have several options:
 npm run e2e:cli
 ```
 
+## 🏗️ Backend Integration
+
+The frontend communicates with a **Spring Boot** backend designed using **Hexagonal Architecture**. 
+
+- **API Base:** `http://localhost:8080/api`
+- **Authentication:** JWT-based. Ensure you log in via `/api/auth/login` to receive a token.
+- **Caching:** The backend utilizes **Redis** for performance. Frontend developers should be aware that some list operations (like Campaigns) might be served from cache.
+
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

@@ -1,26 +1,21 @@
-# README
+# Project Documentation
 
-**N.B.** This README.md is located at `docs/README.md` and it is displayed in preference to the [README.md in the project root](../../template-github-copilot/README.md). The [README preference order](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes) is described in the GitHub docs.
+This directory contains all project-related documentation, organized by purpose.
 
-## Documents Directory
+## 🗂️ Index
 
-This directory contains all project-related documentation, organized into subdirectories based on its purpose.
+- **[Architecture](architecture/README.md):** System structure and high-level design.
+- **[ADRs (Architecture Decision Records)](ADRs/README.md):** Significant design choices and their rationale.
+- **[Design](design/README.md):** Detailed technical design specifications.
+- **[Engineering](engineering/README.md):** Processes, standards, and coding guidelines.
+- **[PRDs (Product Requirement Documents)](PRDs/README.md):** Functional requirements and success metrics.
 
-## Index
+## 🤖 AI-Assisted Documentation
 
-- [Architecture](architecture/README.md)
-- [ADRs (Architecture Decision Records)](ADRs/README.md)
-- [Design](design/README.md)
-- [Engineering](engineering/README.md)
-- [PRDs (Product Requirement Documents)](PRDs/README.md)
+This repository is optimized for AI-driven development. Key resources include:
 
-## Writing Documentation Using AI
-
-There are four examples of how to influence and use AI to write documentation in this repository:
-
-- [Custom agents](../../template-github-copilot/.github/agents/README.md) — Specialized AI behaviors for tasks like development, testing, and code review. As of October 2025, GitHub renamed "Chat Modes" to "Agents".
-- [Custom chat modes](../../template-github-copilot/.github/chatmodes/README.md) *(deprecated)* — Preset conversational configurations that shape Copilot's behavior and tone during interactive sessions and document generation.
-- [Instructions](../../template-github-copilot/.github/instructions/docs.instructions.md) — Repository-specific rules and constraints (coding standards, workflow, style) that the AI must follow when producing content.
-- [Prompts](../../template-github-copilot/.github/prompts/write-docs.prompt.md) — Reusable prompt templates for generating consistent artifacts (e.g., ADRs, docs, PRDs). See also [write-adr.prompt.md](../../template-github-copilot/.github/prompts/write-adr.prompt.md) and [write-prd.prompt.md](../../template-github-copilot/.github/prompts/write-prd.prompt.md).
+- **[Custom Agents](../.github/agents/README.md):** Specialized AI behaviors for development, testing, and review.
+- **[Instructions](../.github/instructions/README.md):** Strict coding and documentation standards for the AI.
+- **[Prompts](../.github/prompts/README.md):** Reusable templates for generating consistent artifacts (ADRs, PRDs, etc).
 
 <!-- © Capgemini 2025 -->

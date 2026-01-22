@@ -1,21 +1,15 @@
 # Architecture Directory
 
-This directory describes the system architecture. It provides an entry point to architectural decision records and diagrams that explain the system's structure and interactions.
+This directory describes the system architecture, focusing on the transition to a decoupled, testable system.
 
-## Architecture Decision Records
+## 🏗️ Core Architecture
+
+The system is built using **Hexagonal Architecture (Ports & Adapters)**. This pattern ensures that business logic is isolated from infrastructure concerns (DB, Web, Caching).
+
+- **[Hexagonal Architecture Details](../engineering/hexagonal-architecture.md):** Deep dive into the pattern, package structure, and rules enforced in this project.
+
+## 📝 Architecture Decision Records
 
 - [Architecture Decision Records (ADRs)](../ADRs/README.md)
-
-## Architecture Documents
-
-Architecture docs that are specific to this repository should live here. Organization-wide or platform architecture documents may live outside—link those in the External section.
-
-### In-repository Architecture documents
-
-- (Add links to architecture docs in this repository)
-
-### External Architecture documents
-
-- (Add links to external architecture documents or diagrams)
 
 <!-- © Capgemini 2025 -->
