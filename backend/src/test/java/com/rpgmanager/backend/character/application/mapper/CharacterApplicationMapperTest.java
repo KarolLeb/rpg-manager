@@ -3,10 +3,13 @@ package com.rpgmanager.backend.character.application.mapper;
 import com.rpgmanager.backend.character.application.dto.CharacterResponse;
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CharacterApplicationMapperTest {
+
+    private final CharacterApplicationMapper mapper = Mappers.getMapper(CharacterApplicationMapper.class);
 
     @Test
     void shouldMapDomainToResponse() {
@@ -21,7 +24,7 @@ class CharacterApplicationMapperTest {
                 .characterType(CharacterDomain.CharacterType.PERMANENT)
                 .build();
 
-        CharacterResponse response = CharacterApplicationMapper.toResponse(domain);
+        CharacterResponse response = mapper.toResponse(domain);
 
         assertNotNull(response);
         assertEquals("Conan", response.name());
@@ -37,7 +40,7 @@ class CharacterApplicationMapperTest {
                 .name("Conan")
                 .build();
 
-        CharacterResponse response = CharacterApplicationMapper.toResponse(domain);
+        CharacterResponse response = mapper.toResponse(domain);
 
         assertNotNull(response);
         assertNull(response.ownerName());
@@ -47,6 +50,6 @@ class CharacterApplicationMapperTest {
 
     @Test
     void shouldReturnNullWhenInputIsNull() {
-        assertNull(CharacterApplicationMapper.toResponse(null));
+        assertNull(mapper.toResponse(null));
     }
 }

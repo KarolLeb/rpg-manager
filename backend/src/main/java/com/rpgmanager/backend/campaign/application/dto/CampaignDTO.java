@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -12,7 +13,8 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CampaignDTO {
+public class CampaignDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     private UUID uuid;
     private String name;

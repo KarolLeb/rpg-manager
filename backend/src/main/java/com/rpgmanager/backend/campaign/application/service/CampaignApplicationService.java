@@ -12,6 +12,8 @@ import com.rpgmanager.backend.campaign.domain.repository.CampaignRepository;
 import com.rpgmanager.backend.user.User;
 import com.rpgmanager.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +28,13 @@ public class CampaignApplicationService implements CreateCampaignUseCase, GetCam
 
     private final CampaignRepository campaignRepository;
     private final UserRepository userRepository;
+    private final CampaignApplicationMapper campaignApplicationMapper;
 
     @Override
     @Transactional(readOnly = true)
     public List<CampaignDTO> getAllCampaigns() {
         return campaignRepository.findAll().stream()
-                .map(CampaignApplicationMapper::toDTO)
+                .map(campaignApplicationMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -40,11 +43,12 @@ public class CampaignApplicationService implements CreateCampaignUseCase, GetCam
     public CampaignDTO getCampaignById(Long id) {
         CampaignDomain campaign = campaignRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Campaign not found with id: " + id));
-        return CampaignApplicationMapper.toDTO(campaign);
+        return campaignApplicationMapper.toDTO(campaign);
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "campaigns", allEntries = true)
     public CampaignDTO createCampaign(CreateCampaignRequest request) {
         User gameMaster = userRepository.findById(request.getGameMasterId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getGameMasterId()));
@@ -60,11 +64,12 @@ public class CampaignApplicationService implements CreateCampaignUseCase, GetCam
                 .build();
 
         CampaignDomain savedCampaign = campaignRepository.save(campaign);
-        return CampaignApplicationMapper.toDTO(savedCampaign);
+        return campaignApplicationMapper.toDTO(savedCampaign);
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "campaigns", allEntries = true)
     public CampaignDTO updateCampaign(Long id, CreateCampaignRequest request) {
         CampaignDomain campaign = campaignRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Campaign not found with id: " + id));
@@ -79,11 +84,12 @@ public class CampaignApplicationService implements CreateCampaignUseCase, GetCam
             campaign.setGameMasterName(newGameMaster.getUsername());
         }
 
-        return CampaignApplicationMapper.toDTO(campaignRepository.save(campaign));
+        return campaignApplicationMapper.toDTO(campaignRepository.save(campaign));
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "campaigns", allEntries = true)
     public void deleteCampaign(Long id) {
         if (!campaignRepository.existsById(id)) {
             throw new RuntimeException("Campaign not found with id: " + id);

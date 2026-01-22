@@ -2,6 +2,7 @@ package com.rpgmanager.backend.campaign.application.service;
 
 import com.rpgmanager.backend.campaign.application.dto.CampaignDTO;
 import com.rpgmanager.backend.campaign.application.dto.CreateCampaignRequest;
+import com.rpgmanager.backend.campaign.application.mapper.CampaignApplicationMapper;
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
 import com.rpgmanager.backend.campaign.domain.repository.CampaignRepository;
 import com.rpgmanager.backend.user.User;
@@ -28,6 +29,9 @@ class CampaignApplicationServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private CampaignApplicationMapper campaignApplicationMapper;
+
     @InjectMocks
     private CampaignApplicationService campaignService;
 
@@ -53,9 +57,14 @@ class CampaignApplicationServiceTest {
                 .gameMasterName("gm")
                 .status(CampaignDomain.CampaignStatus.ACTIVE)
                 .build();
+        CampaignDTO campaignDTO = CampaignDTO.builder()
+                .name("New Camp")
+                .gameMasterId(1L)
+                .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(savedCampaign);
+        when(campaignApplicationMapper.toDTO(savedCampaign)).thenReturn(campaignDTO);
 
         CampaignDTO result = campaignService.createCampaign(request);
 
@@ -75,7 +84,10 @@ class CampaignApplicationServiceTest {
     @Test
     void getAllCampaigns_shouldReturnList() {
         CampaignDomain campaign = CampaignDomain.builder().id(1L).gameMasterId(1L).gameMasterName("gm").build();
+        CampaignDTO campaignDTO = CampaignDTO.builder().id(1L).build();
+        
         when(campaignRepository.findAll()).thenReturn(java.util.List.of(campaign));
+        when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
 
         java.util.List<CampaignDTO> result = campaignService.getAllCampaigns();
 
@@ -85,7 +97,10 @@ class CampaignApplicationServiceTest {
     @Test
     void getCampaignById_shouldReturnDTO() {
         CampaignDomain campaign = CampaignDomain.builder().id(1L).gameMasterId(1L).gameMasterName("gm").build();
+        CampaignDTO campaignDTO = CampaignDTO.builder().id(1L).build();
+        
         when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+        when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
 
         CampaignDTO result = campaignService.getCampaignById(1L);
 
@@ -103,8 +118,11 @@ class CampaignApplicationServiceTest {
     void updateCampaign_shouldUpdateAndReturnDTO() {
         CampaignDomain campaign = CampaignDomain.builder().id(1L).name("Old").gameMasterId(1L).gameMasterName("gm").build();
         CreateCampaignRequest request = new CreateCampaignRequest("New", "Desc", 1L);
+        CampaignDTO campaignDTO = CampaignDTO.builder().name("New").build();
+        
         when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
         when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
+        when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
 
         CampaignDTO result = campaignService.updateCampaign(1L, request);
 
@@ -115,8 +133,11 @@ class CampaignApplicationServiceTest {
     void updateCampaign_shouldNotUpdateGM_whenGMIdIsNull() {
         CampaignDomain campaign = CampaignDomain.builder().id(1L).name("Old").gameMasterId(1L).gameMasterName("gm").build();
         CreateCampaignRequest request = new CreateCampaignRequest("New", "Desc", null);
+        CampaignDTO campaignDTO = CampaignDTO.builder().name("New").build();
+        
         when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
         when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
+        when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
 
         campaignService.updateCampaign(1L, request);
 

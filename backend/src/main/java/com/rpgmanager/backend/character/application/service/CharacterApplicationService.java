@@ -20,12 +20,13 @@ import java.util.stream.Collectors;
 public class CharacterApplicationService implements GetCharacterUseCase, UpdateCharacterUseCase, JoinCampaignUseCase {
 
     private final CharacterRepository characterRepository;
+    private final CharacterApplicationMapper characterApplicationMapper;
 
     @Override
     @Transactional(readOnly = true)
     public List<CharacterResponse> getAllCharacters() {
         return characterRepository.findAll().stream()
-                .map(CharacterApplicationMapper::toResponse)
+                .map(characterApplicationMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -34,7 +35,7 @@ public class CharacterApplicationService implements GetCharacterUseCase, UpdateC
     public CharacterResponse getCharacter(UUID uuid) {
         CharacterDomain character = characterRepository.findByUuid(uuid)
                 .orElseThrow(() -> new RuntimeException("Character not found with uuid: " + uuid));
-        return CharacterApplicationMapper.toResponse(character);
+        return characterApplicationMapper.toResponse(character);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class CharacterApplicationService implements GetCharacterUseCase, UpdateC
         character.setStats(characterDetails.getStats());
 
         CharacterDomain savedCharacter = characterRepository.save(character);
-        return CharacterApplicationMapper.toResponse(savedCharacter);
+        return characterApplicationMapper.toResponse(savedCharacter);
     }
 
     @Override
@@ -63,6 +64,6 @@ public class CharacterApplicationService implements GetCharacterUseCase, UpdateC
         character.setCampaignId(campaignId);
         
         CharacterDomain savedCharacter = characterRepository.save(character);
-        return CharacterApplicationMapper.toResponse(savedCharacter);
+        return characterApplicationMapper.toResponse(savedCharacter);
     }
 }

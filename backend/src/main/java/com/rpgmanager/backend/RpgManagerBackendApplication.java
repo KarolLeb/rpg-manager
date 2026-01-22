@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoCo
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@SpringBootApplication(exclude = { RedisRepositoriesAutoConfiguration.class })
+@SpringBootApplication
 @EnableCaching
 @EnableFeignClients
 public class RpgManagerBackendApplication {

@@ -2,23 +2,13 @@ package com.rpgmanager.backend.character.application.mapper;
 
 import com.rpgmanager.backend.character.application.dto.CharacterResponse;
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-public class CharacterApplicationMapper {
+@Mapper(componentModel = "spring")
+public interface CharacterApplicationMapper {
     
-    public static CharacterResponse toResponse(CharacterDomain domain) {
-        if (domain == null) {
-            return null;
-        }
-
-        return new CharacterResponse(
-            domain.getUuid(),
-            domain.getName(),
-            domain.getCharacterClass(),
-            domain.getLevel(),
-            domain.getStats(),
-            domain.getOwnerUsername(),
-            domain.getCampaignName(),
-            domain.getCharacterType() != null ? domain.getCharacterType().name() : null
-        );
-    }
+    @Mapping(target = "characterType", expression = "java(domain.getCharacterType() != null ? domain.getCharacterType().name() : null)")
+    @Mapping(source = "ownerUsername", target = "ownerName")
+    CharacterResponse toResponse(CharacterDomain domain);
 }

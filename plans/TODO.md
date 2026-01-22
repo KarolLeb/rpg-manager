@@ -7,6 +7,7 @@ This document serves as an index to the active detailed plans. All core project 
 ### 1. Redis Infrastructure Verification
 **File:** [`plans/redis-verification.md`](./redis-verification.md)
 *Focus: Confirming Redis connectivity and cache functionality.*
+*Status: [x] Completed*
 
 ### 2. Hexagonal Architecture Rollout
 **File:** [`plans/hexagonal-architecture-rollout.md`](./hexagonal-architecture-rollout.md)
