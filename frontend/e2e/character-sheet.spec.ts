@@ -66,9 +66,6 @@ test.describe('Character Sheet Feature', () => {
         });
     });
     
-    // Mock dialogs (window.alert)
-    page.on('dialog', dialog => dialog.accept());
-
     // Change Name
     const nameInput = page.locator('input[formControlName="name"]');
     await nameInput.fill('Updated Name');
@@ -78,10 +75,22 @@ test.describe('Character Sheet Feature', () => {
     await expect(saveButton).toBeVisible();
 
     await page.waitForLoadState('networkidle');
+    
+    // Set up promises before the action that triggers them
+    const responsePromise = page.waitForResponse(response => 
+        response.url().includes('/api/characters/1') && response.request().method() === 'PUT'
+    );
+    const dialogPromise = page.waitForEvent('dialog');
+
     await saveButton.click();
 
-    // Verify the PUT request contained the updated name
-    await page.waitForResponse(response => response.url().includes('/api/characters/1') && response.request().method() === 'PUT');
+    // Wait for the dialog and accept it
+    const dialog = await dialogPromise;
+    expect(dialog.message()).toContain('Postać została zapisana pomyślnie');
+    await dialog.accept();
+
+    // Wait for the response
+    await responsePromise;
 
     expect(savedData.name).toBe('Updated Name');
   });
