@@ -7,59 +7,64 @@ import com.rpgmanager.backend.character.domain.repository.CharacterRepository;
 import com.rpgmanager.backend.character.infrastructure.mapper.CharacterPersistenceMapper;
 import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUserRepository;
 import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class CharacterPersistenceAdapter implements CharacterRepository {
 
-    private final JpaCharacterRepository jpaCharacterRepository;
-    private final JpaCampaignRepository jpaCampaignRepository;
-    private final JpaUserRepository userRepository;
+  private final JpaCharacterRepository jpaCharacterRepository;
+  private final JpaCampaignRepository jpaCampaignRepository;
+  private final JpaUserRepository userRepository;
 
-    @Override
-    public List<CharacterDomain> findAll() {
-        return jpaCharacterRepository.findAll().stream()
-                .map(CharacterPersistenceMapper::toDomain)
-                .toList();
+  @Override
+  public List<CharacterDomain> findAll() {
+    return jpaCharacterRepository.findAll().stream()
+        .map(CharacterPersistenceMapper::toDomain)
+        .toList();
+  }
+
+  @Override
+  public Optional<CharacterDomain> findByUuid(UUID uuid) {
+    return jpaCharacterRepository.findByUuid(uuid).map(CharacterPersistenceMapper::toDomain);
+  }
+
+  @Override
+  public CharacterDomain save(CharacterDomain domain) {
+    CharacterEntity entity = jpaCharacterRepository.findByUuid(domain.getUuid()).orElse(null);
+
+    CampaignEntity campaign = null;
+    if (domain.getCampaignId() != null) {
+      campaign =
+          jpaCampaignRepository
+              .findById(domain.getCampaignId())
+              .orElseThrow(
+                  () ->
+                      new RuntimeException(
+                          "Campaign not found with id: " + domain.getCampaignId()));
     }
 
-    @Override
-    public Optional<CharacterDomain> findByUuid(UUID uuid) {
-        return jpaCharacterRepository.findByUuid(uuid)
-                .map(CharacterPersistenceMapper::toDomain);
+    if (entity != null) {
+      // Update
+      CharacterPersistenceMapper.updateEntity(entity, domain, campaign);
+    } else {
+      // Create New
+      UserEntity owner = null;
+      if (domain.getOwnerUsername() != null) {
+        owner =
+            userRepository
+                .findByUsername(domain.getOwnerUsername())
+                .orElseThrow(
+                    () -> new RuntimeException("User not found: " + domain.getOwnerUsername()));
+      }
+      entity = CharacterPersistenceMapper.toEntity(domain, owner, campaign);
     }
 
-    @Override
-    public CharacterDomain save(CharacterDomain domain) {
-        CharacterEntity entity = jpaCharacterRepository.findByUuid(domain.getUuid())
-                .orElse(null);
-
-        CampaignEntity campaign = null;
-        if (domain.getCampaignId() != null) {
-            campaign = jpaCampaignRepository.findById(domain.getCampaignId())
-                    .orElseThrow(() -> new RuntimeException("Campaign not found with id: " + domain.getCampaignId()));
-        }
-
-        if (entity != null) {
-            // Update
-            CharacterPersistenceMapper.updateEntity(entity, domain, campaign);
-        } else {
-            // Create New
-            UserEntity owner = null;
-            if (domain.getOwnerUsername() != null) {
-                owner = userRepository.findByUsername(domain.getOwnerUsername())
-                        .orElseThrow(() -> new RuntimeException("User not found: " + domain.getOwnerUsername()));
-            }
-            entity = CharacterPersistenceMapper.toEntity(domain, owner, campaign);
-        }
-
-        CharacterEntity savedEntity = jpaCharacterRepository.save(entity);
-        return CharacterPersistenceMapper.toDomain(savedEntity);
-    }
+    CharacterEntity savedEntity = jpaCharacterRepository.save(entity);
+    return CharacterPersistenceMapper.toDomain(savedEntity);
+  }
 }

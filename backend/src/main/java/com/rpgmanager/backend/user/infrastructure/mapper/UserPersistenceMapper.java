@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserPersistenceMapper {
-    UserDomain toDomain(UserEntity entity);
-    UserEntity toEntity(UserDomain domain);
+  UserDomain toDomain(UserEntity entity);
+
+  UserEntity toEntity(UserDomain domain);
 }

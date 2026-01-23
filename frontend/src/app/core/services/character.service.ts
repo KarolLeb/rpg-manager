@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Character } from '../models/character.model';
@@ -7,9 +7,9 @@ import { Character } from '../models/character.model';
   providedIn: 'root'
 })
 export class CharacterService {
-  private apiUrl = 'http://localhost:8080/api/characters';
+  private readonly http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private readonly apiUrl = 'http://localhost:8080/api/characters';
 
   getCharacters(): Observable<Character[]> {
     return this.http.get<Character[]>(this.apiUrl);

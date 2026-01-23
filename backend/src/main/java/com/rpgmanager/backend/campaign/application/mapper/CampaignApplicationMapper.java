@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface CampaignApplicationMapper {
 
-    CampaignDTO toDTO(CampaignDomain domain);
+  CampaignDTO toDTO(CampaignDomain domain);
 }

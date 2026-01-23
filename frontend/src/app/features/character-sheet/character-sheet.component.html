@@ -8,25 +8,32 @@
       <div class="basic-info">
         <div class="title-row">
           <h1 class="char-name">
+            <span style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">Imię postaci</span>
             <input formControlName="name" class="header-input" placeholder="Imię">
           </h1>
           <button (click)="onSave()" class="save-btn">ZAPISZ</button>
         </div>
         <div class="sub-info">
-          <label>Profesja:</label>
-          <input formControlName="profession" class="header-input small">
+          <label>
+            Profesja:
+            <input formControlName="profession" class="header-input small">
+          </label>
         </div>
       </div>
     </div>
 
     <div class="motivation-block">
       <div class="motivation-row">
-        <span class="label">Ambicja:</span>
-        <input formControlName="ambition" class="cyber-line-input">
+        <label class="label">
+          Ambicja:
+          <input formControlName="ambition" class="cyber-line-input">
+        </label>
       </div>
       <div class="motivation-row">
-        <span class="label text-danger">Nemezis:</span>
-        <input formControlName="nemesis" class="cyber-line-input">
+        <label class="label text-danger">
+          Nemezis:
+          <input formControlName="nemesis" class="cyber-line-input">
+        </label>
       </div>
     </div>
   </header>

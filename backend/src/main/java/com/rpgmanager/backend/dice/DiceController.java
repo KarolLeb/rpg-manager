@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class DiceController {
 
-    private final DiceService diceService;
+  private final DiceService diceService;
 
-    @GetMapping("/roll/{sides}")
-    public int roll(@PathVariable int sides) {
-        return diceService.roll(sides);
-    }
+  @GetMapping("/roll/{sides}")
+  public int roll(@PathVariable int sides) {
+    return diceService.roll(sides);
+  }
 }

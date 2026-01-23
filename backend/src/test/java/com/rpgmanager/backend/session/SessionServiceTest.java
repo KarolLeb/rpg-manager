@@ -1,7 +1,14 @@
 package com.rpgmanager.backend.session;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
+import java.time.OffsetDateTime;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,90 +16,80 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.OffsetDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class SessionServiceTest {
 
-    @Mock
-    private SessionRepository sessionRepository;
+  @Mock private SessionRepository sessionRepository;
 
-    @Mock
-    private JpaCampaignRepository campaignRepository;
+  @Mock private JpaCampaignRepository campaignRepository;
 
-    @InjectMocks
-    private SessionService sessionService;
+  @InjectMocks private SessionService sessionService;
 
-    private CampaignEntity campaign;
-    private Session session;
+  private CampaignEntity campaign;
+  private Session session;
 
-    @BeforeEach
-    void setUp() {
-        campaign = CampaignEntity.builder()
-                .id(1L)
-                .name("Campaign 1")
-                .build();
+  @BeforeEach
+  void setUp() {
+    campaign = CampaignEntity.builder().id(1L).name("Campaign 1").build();
 
-        session = Session.builder()
-                .id(100L)
-                .uuid(UUID.randomUUID())
-                .campaign(campaign)
-                .name("Session 1")
-                .sessionDate(OffsetDateTime.now())
-                .status(Session.SessionStatus.ACTIVE)
-                .build();
-    }
+    session =
+        Session.builder()
+            .id(100L)
+            .uuid(UUID.randomUUID())
+            .campaign(campaign)
+            .name("Session 1")
+            .sessionDate(OffsetDateTime.now())
+            .status(Session.SessionStatus.ACTIVE)
+            .build();
+  }
 
-    @Test
-    void createSession_shouldSaveAndReturnDTO() {
-        CreateSessionRequest request = new CreateSessionRequest(1L, "New Session", "Desc", OffsetDateTime.now());
-        
-        when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
-        when(sessionRepository.save(any(Session.class))).thenAnswer(invocation -> {
-            Session s = invocation.getArgument(0);
-            s.setId(101L);
-            return s;
-        });
+  @Test
+  void createSession_shouldSaveAndReturnDTO() {
+    CreateSessionRequest request =
+        new CreateSessionRequest(1L, "New Session", "Desc", OffsetDateTime.now());
 
-        SessionDTO result = sessionService.createSession(request);
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+    when(sessionRepository.save(any(Session.class)))
+        .thenAnswer(
+            invocation -> {
+              Session s = invocation.getArgument(0);
+              s.setId(101L);
+              return s;
+            });
 
-        assertThat(result.getName()).isEqualTo("New Session");
-        assertThat(result.getCampaignId()).isEqualTo(1L);
-        verify(sessionRepository).save(any(Session.class));
-    }
+    SessionDTO result = sessionService.createSession(request);
 
-    @Test
-    void getSession_shouldReturnDTO() {
-        when(sessionRepository.findById(100L)).thenReturn(Optional.of(session));
+    assertThat(result.getName()).isEqualTo("New Session");
+    assertThat(result.getCampaignId()).isEqualTo(1L);
+    verify(sessionRepository).save(any(Session.class));
+  }
 
-        SessionDTO result = sessionService.getSession(100L);
+  @Test
+  void getSession_shouldReturnDTO() {
+    when(sessionRepository.findById(100L)).thenReturn(Optional.of(session));
 
-        assertThat(result.getId()).isEqualTo(100L);
-    }
+    SessionDTO result = sessionService.getSession(100L);
 
-    @Test
-    void cancelSession_shouldSetStatusCancelled() {
-        when(sessionRepository.findById(100L)).thenReturn(Optional.of(session));
+    assertThat(result.getId()).isEqualTo(100L);
+  }
 
-        sessionService.cancelSession(100L);
+  @Test
+  void cancelSession_shouldSetStatusCancelled() {
+    when(sessionRepository.findById(100L)).thenReturn(Optional.of(session));
 
-        assertThat(session.getStatus()).isEqualTo(Session.SessionStatus.CANCELLED);
-        verify(sessionRepository).save(session);
-    }
+    sessionService.cancelSession(100L);
 
-    @Test
-    void completeSession_shouldSetStatusFinished() {
-        when(sessionRepository.findById(100L)).thenReturn(Optional.of(session));
+    assertThat(session.getStatus()).isEqualTo(Session.SessionStatus.CANCELLED);
+    verify(sessionRepository).save(session);
+  }
 
-        sessionService.completeSession(100L);
+  @Test
+  void completeSession_shouldSetStatusFinished() {
+    when(sessionRepository.findById(100L)).thenReturn(Optional.of(session));
 
-        assertThat(session.getStatus()).isEqualTo(Session.SessionStatus.FINISHED);
-        verify(sessionRepository).save(session);
-    }
+    sessionService.completeSession(100L);
+
+    assertThat(session.getStatus()).isEqualTo(Session.SessionStatus.FINISHED);
+    verify(sessionRepository).save(session);
+  }
 }

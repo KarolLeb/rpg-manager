@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+
 import { RouterModule } from '@angular/router';
 import { CampaignService } from '../../core/services/campaign.service';
 import { Campaign } from '../../core/models/campaign.model';
@@ -7,7 +7,7 @@ import { Campaign } from '../../core/models/campaign.model';
 @Component({
   selector: 'app-campaign-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
   templateUrl: './campaign-list.component.html',
   styles: [`
     .campaign-container { padding: 20px; }
@@ -20,9 +20,9 @@ import { Campaign } from '../../core/models/campaign.model';
   `]
 })
 export class CampaignListComponent implements OnInit {
-  campaigns: Campaign[] = [];
+  private campaignService = inject(CampaignService);
 
-  constructor(private campaignService: CampaignService) {}
+  campaigns: Campaign[] = [];
 
   ngOnInit(): void {
     this.loadCampaigns();

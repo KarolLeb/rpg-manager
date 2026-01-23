@@ -5,5 +5,5 @@ import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import java.util.UUID;
 
 public interface UpdateCharacterUseCase {
-    CharacterResponse updateCharacter(UUID uuid, CharacterDomain characterDetails);
+  CharacterResponse updateCharacter(UUID uuid, CharacterDomain characterDetails);
 }

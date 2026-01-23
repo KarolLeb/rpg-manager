@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { AuthResponse, LoginRequest, RegisterRequest, User } from '../models/auth.model';
@@ -7,11 +7,13 @@ import { AuthResponse, LoginRequest, RegisterRequest, User } from '../models/aut
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly http = inject(HttpClient);
+
   private readonly apiUrl = 'http://localhost:8080/api/auth';
   private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private readonly http: HttpClient) {
+  constructor() {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
       try {

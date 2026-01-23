@@ -1,13 +1,15 @@
 <div class="form-container">
   <h2>{{ isEditMode ? 'Edit Campaign' : 'Create New Campaign' }}</h2>
-  
+
   <form [formGroup]="campaignForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label for="name">Campaign Name</label>
       <input id="name" type="text" formControlName="name" placeholder="Enter campaign name">
-      <div *ngIf="campaignForm.get('name')?.invalid && campaignForm.get('name')?.touched" style="color: red; font-size: 0.8em;">
-        Name is required.
-      </div>
+      @if (campaignForm.get('name')?.invalid && campaignForm.get('name')?.touched) {
+        <div style="color: red; font-size: 0.8em;">
+          Name is required.
+        </div>
+      }
     </div>
 
     <div class="form-group">

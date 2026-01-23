@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
@@ -11,9 +11,10 @@ import { AuthService } from './core/services/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'RPG Manager';
+  readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  constructor(public readonly authService: AuthService, private readonly router: Router) {}
+  title = 'RPG Manager';
 
   onLogout(): void {
     this.authService.logout();

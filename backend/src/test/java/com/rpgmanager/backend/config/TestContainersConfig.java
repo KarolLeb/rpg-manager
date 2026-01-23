@@ -11,18 +11,18 @@ import org.testcontainers.utility.DockerImageName;
 @TestConfiguration(proxyBeanMethods = false)
 public class TestContainersConfig {
 
-    @Bean
-    @ServiceConnection
-    public PostgreSQLContainer<?> postgresContainer() {
-        return new PostgreSQLContainer<>(DockerImageName.parse("postgres:15-alpine"));
-    }
+  @Bean
+  @ServiceConnection
+  public PostgreSQLContainer<?> postgresContainer() {
+    return new PostgreSQLContainer<>(DockerImageName.parse("postgres:15-alpine"));
+  }
 
-    @Bean
-    @ServiceConnection(name = "redis")
-    public GenericContainer<?> redisContainer() {
-        return new GenericContainer<>(DockerImageName.parse("redis:alpine"))
-                .withExposedPorts(6379)
-                .waitingFor(Wait.forLogMessage(".*Ready to accept connections tcp.*\\n", 1))
-                .withStartupTimeout(java.time.Duration.ofMinutes(2));
-    }
+  @Bean
+  @ServiceConnection(name = "redis")
+  public GenericContainer<?> redisContainer() {
+    return new GenericContainer<>(DockerImageName.parse("redis:alpine"))
+        .withExposedPorts(6379)
+        .waitingFor(Wait.forLogMessage(".*Ready to accept connections tcp.*\\n", 1))
+        .withStartupTimeout(java.time.Duration.ofMinutes(2));
+  }
 }

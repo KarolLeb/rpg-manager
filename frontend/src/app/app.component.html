@@ -1,19 +1,21 @@
 <div class="app-layout">
-  <nav class="main-nav" *ngIf="authService.currentUser$ | async as user">
-    <div class="logo">RPG MANAGER <span class="version">v0.1</span></div>
-    <ul class="nav-links">
-      <li>
-        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-      </li>
-      <li>
-        <a routerLink="/campaigns" routerLinkActive="active">Campaigns</a>
-      </li>
-    </ul>
-    <div class="user-info">
-      <span class="username">{{ user.username }} ({{ user.role }})</span>
-      <button (click)="onLogout()" class="logout-btn">Logout</button>
-    </div>
-  </nav>
+  @if (authService.currentUser$ | async; as user) {
+    <nav class="main-nav">
+      <div class="logo">RPG MANAGER <span class="version">v0.1</span></div>
+      <ul class="nav-links">
+        <li>
+          <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        </li>
+        <li>
+          <a routerLink="/campaigns" routerLinkActive="active">Campaigns</a>
+        </li>
+      </ul>
+      <div class="user-info">
+        <span class="username">{{ user.username }} ({{ user.role }})</span>
+        <button (click)="onLogout()" class="logout-btn">Logout</button>
+      </div>
+    </nav>
+  }
 
   <div class="content-container">
     <router-outlet></router-outlet>

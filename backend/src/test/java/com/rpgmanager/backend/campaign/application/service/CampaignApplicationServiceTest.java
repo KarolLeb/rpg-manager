@@ -1,5 +1,9 @@
 package com.rpgmanager.backend.campaign.application.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.rpgmanager.backend.campaign.application.dto.CampaignDTO;
 import com.rpgmanager.backend.campaign.application.dto.CreateCampaignRequest;
 import com.rpgmanager.backend.campaign.application.mapper.CampaignApplicationMapper;
@@ -7,6 +11,7 @@ import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
 import com.rpgmanager.backend.campaign.domain.repository.CampaignRepository;
 import com.rpgmanager.backend.user.domain.model.UserDomain;
 import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
+import java.util.Optional;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,156 +20,149 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class CampaignApplicationServiceTest {
 
-    @Mock
-    private CampaignRepository campaignRepository;
+  @Mock private CampaignRepository campaignRepository;
 
-    @Mock
-    private UserRepositoryPort userRepository;
+  @Mock private UserRepositoryPort userRepository;
 
-    @Mock
-    private CampaignApplicationMapper campaignApplicationMapper;
+  @Mock private CampaignApplicationMapper campaignApplicationMapper;
 
-    @InjectMocks
-    private CampaignApplicationService campaignService;
+  @InjectMocks private CampaignApplicationService campaignService;
 
-    private UserDomain user;
+  private UserDomain user;
 
-    @BeforeEach
-    void setUp() {
-        user = Instancio.create(UserDomain.class);
-        user.setId(1L);
-    }
+  @BeforeEach
+  void setUp() {
+    user = Instancio.create(UserDomain.class);
+    user.setId(1L);
+  }
 
-    @Test
-    void createCampaign_shouldSaveAndReturnDTO() {
-        CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
-        request.setGameMasterId(1L);
+  @Test
+  void createCampaign_shouldSaveAndReturnDTO() {
+    CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
+    request.setGameMasterId(1L);
 
-        CampaignDomain savedCampaign = Instancio.create(CampaignDomain.class);
-        CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
-        campaignDTO.setName(request.getName());
-        campaignDTO.setGameMasterId(1L);
+    CampaignDomain savedCampaign = Instancio.create(CampaignDomain.class);
+    CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
+    campaignDTO.setName(request.getName());
+    campaignDTO.setGameMasterId(1L);
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(savedCampaign);
-        when(campaignApplicationMapper.toDTO(savedCampaign)).thenReturn(campaignDTO);
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(savedCampaign);
+    when(campaignApplicationMapper.toDTO(savedCampaign)).thenReturn(campaignDTO);
 
-        CampaignDTO result = campaignService.createCampaign(request);
+    CampaignDTO result = campaignService.createCampaign(request);
 
-        assertThat(result.getName()).isEqualTo(request.getName());
-        assertThat(result.getGameMasterId()).isEqualTo(1L);
-        verify(campaignRepository).save(any(CampaignDomain.class));
-    }
+    assertThat(result.getName()).isEqualTo(request.getName());
+    assertThat(result.getGameMasterId()).isEqualTo(1L);
+    verify(campaignRepository).save(any(CampaignDomain.class));
+  }
 
-    @Test
-    void createCampaign_shouldThrowExceptionWhenUserNotFound() {
-        CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
-        request.setGameMasterId(999L);
-        
-        when(userRepository.findById(999L)).thenReturn(Optional.empty());
+  @Test
+  void createCampaign_shouldThrowExceptionWhenUserNotFound() {
+    CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
+    request.setGameMasterId(999L);
 
-        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class, () -> campaignService.createCampaign(request));
-    }
+    when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-    @Test
-    void getAllCampaigns_shouldReturnList() {
-        CampaignDomain campaign = Instancio.create(CampaignDomain.class);
-        CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
-        
-        when(campaignRepository.findAll()).thenReturn(java.util.List.of(campaign));
-        when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
+    org.junit.jupiter.api.Assertions.assertThrows(
+        RuntimeException.class, () -> campaignService.createCampaign(request));
+  }
 
-        java.util.List<CampaignDTO> result = campaignService.getAllCampaigns();
+  @Test
+  void getAllCampaigns_shouldReturnList() {
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
 
-        assertThat(result).hasSize(1);
-    }
+    when(campaignRepository.findAll()).thenReturn(java.util.List.of(campaign));
+    when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
 
-    @Test
-    void getCampaignById_shouldReturnDTO() {
-        CampaignDomain campaign = Instancio.create(CampaignDomain.class);
-        campaign.setId(1L);
-        CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
-        campaignDTO.setId(1L);
-        
-        when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
-        when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
+    java.util.List<CampaignDTO> result = campaignService.getAllCampaigns();
 
-        CampaignDTO result = campaignService.getCampaignById(1L);
+    assertThat(result).hasSize(1);
+  }
 
-        assertThat(result.getId()).isEqualTo(1L);
-    }
+  @Test
+  void getCampaignById_shouldReturnDTO() {
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+    CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
+    campaignDTO.setId(1L);
 
-    @Test
-    void getCampaignById_shouldThrowExceptionWhenNotFound() {
-        when(campaignRepository.findById(1L)).thenReturn(Optional.empty());
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+    when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
 
-        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class, () -> campaignService.getCampaignById(1L));
-    }
+    CampaignDTO result = campaignService.getCampaignById(1L);
 
-    @Test
-    void updateCampaign_shouldUpdateAndReturnDTO() {
-        CampaignDomain campaign = Instancio.create(CampaignDomain.class);
-        campaign.setId(1L);
-        campaign.setGameMasterId(1L);
-        
-        CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
-        request.setGameMasterId(1L);
-        
-        CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
-        campaignDTO.setName(request.getName());
-        
-        when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
-        when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
-        when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
+    assertThat(result.getId()).isEqualTo(1L);
+  }
 
-        CampaignDTO result = campaignService.updateCampaign(1L, request);
+  @Test
+  void getCampaignById_shouldThrowExceptionWhenNotFound() {
+    when(campaignRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThat(result.getName()).isEqualTo(request.getName());
-    }
+    org.junit.jupiter.api.Assertions.assertThrows(
+        RuntimeException.class, () -> campaignService.getCampaignById(1L));
+  }
 
-    @Test
-    void updateCampaign_shouldNotUpdateGM_whenGMIdIsNull() {
-        CampaignDomain campaign = Instancio.create(CampaignDomain.class);
-        campaign.setId(1L);
-        campaign.setGameMasterId(1L);
-        
-        CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
-        request.setGameMasterId(null);
-        
-        CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
-        
-        when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
-        when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
-        when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
+  @Test
+  void updateCampaign_shouldUpdateAndReturnDTO() {
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+    campaign.setGameMasterId(1L);
 
-        campaignService.updateCampaign(1L, request);
+    CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
+    request.setGameMasterId(1L);
 
-        verify(userRepository, never()).findById(anyLong());
-        assertThat(campaign.getGameMasterId()).isEqualTo(1L);
-    }
+    CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
+    campaignDTO.setName(request.getName());
 
-    @Test
-    void deleteCampaign_shouldDelete() {
-        when(campaignRepository.existsById(1L)).thenReturn(true);
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+    when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
+    when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
 
-        campaignService.deleteCampaign(1L);
+    CampaignDTO result = campaignService.updateCampaign(1L, request);
 
-        verify(campaignRepository).deleteById(1L);
-    }
+    assertThat(result.getName()).isEqualTo(request.getName());
+  }
 
-    @Test
-    void deleteCampaign_shouldThrowExceptionWhenNotFound() {
-        when(campaignRepository.existsById(1L)).thenReturn(false);
+  @Test
+  void updateCampaign_shouldNotUpdateGM_whenGMIdIsNull() {
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+    campaign.setGameMasterId(1L);
 
-        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class, () -> campaignService.deleteCampaign(1L));
-    }
+    CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
+    request.setGameMasterId(null);
+
+    CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
+
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+    when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
+    when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
+
+    campaignService.updateCampaign(1L, request);
+
+    verify(userRepository, never()).findById(anyLong());
+    assertThat(campaign.getGameMasterId()).isEqualTo(1L);
+  }
+
+  @Test
+  void deleteCampaign_shouldDelete() {
+    when(campaignRepository.existsById(1L)).thenReturn(true);
+
+    campaignService.deleteCampaign(1L);
+
+    verify(campaignRepository).deleteById(1L);
+  }
+
+  @Test
+  void deleteCampaign_shouldThrowExceptionWhenNotFound() {
+    when(campaignRepository.existsById(1L)).thenReturn(false);
+
+    org.junit.jupiter.api.Assertions.assertThrows(
+        RuntimeException.class, () -> campaignService.deleteCampaign(1L));
+  }
 }

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CampaignService } from '../../core/services/campaign.service';
@@ -8,7 +8,7 @@ import { CreateCampaignRequest, Campaign } from '../../core/models/campaign.mode
 @Component({
   selector: 'app-campaign-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './campaign-form.component.html',
   styles: [`
     .form-container { padding: 20px; max-width: 600px; }
@@ -22,16 +22,16 @@ import { CreateCampaignRequest, Campaign } from '../../core/models/campaign.mode
   `]
 })
 export class CampaignFormComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly campaignService = inject(CampaignService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
   campaignForm: FormGroup;
   isEditMode = false;
   campaignId: number | null = null;
 
-  constructor(
-    private fb: FormBuilder,
-    private campaignService: CampaignService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {
+  constructor() {
     this.campaignForm = this.fb.group({
       name: ['', Validators.required],
       description: ['']
@@ -71,12 +71,16 @@ export class CampaignFormComponent implements OnInit {
 
     if (this.isEditMode && this.campaignId) {
       this.campaignService.updateCampaign(this.campaignId, request).subscribe({
-        next: () => this.router.navigate(['/campaigns']),
+        next: () => {
+          this.router.navigate(['/campaigns']);
+        },
         error: (err: any) => console.error('Error updating campaign', err)
       });
     } else {
       this.campaignService.createCampaign(request).subscribe({
-        next: () => this.router.navigate(['/campaigns']),
+        next: () => {
+          this.router.navigate(['/campaigns']);
+        },
         error: (err: any) => console.error('Error creating campaign', err)
       });
     }

@@ -1,0 +1,39 @@
+{
+  "name": "rpg-manager",
+  "version": "1.0.0",
+  "description": "[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/) [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-brightgreen.svg)](https://spring.io/projects/spring-boot) [![Angular](https://img.shields.io/badge/Angular-19-red.svg)](https://angular.io/) [![Architecture](https://img.shields.io/badge/Architecture-Hexagonal-blue.svg)](#-architecture) [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "backend/src/**/*.java": [
+      "cmd /c \"cd backend && mvnw.cmd -q -B spotless:apply -Dspotless.check.skip=true\"",
+      "cmd /c \"cd backend && mvnw.cmd -q -B test -Dgroups=unit\""
+    ],
+    "frontend/src/**/*.{ts,html}": [
+      "npm --prefix frontend run lint -- -q",
+      "npm --prefix frontend run test:unit -- --no-progress"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KarolLeb/rpg-manager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/KarolLeb/rpg-manager/issues"
+  },
+  "homepage": "https://github.com/KarolLeb/rpg-manager#readme",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
+  }
+}

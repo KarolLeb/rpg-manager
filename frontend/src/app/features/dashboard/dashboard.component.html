@@ -1,35 +1,49 @@
 <div class="dashboard-wrapper">
-  <div *ngIf="userRole === 'GM'" class="gm-dashboard">
-    <h1>GM Dashboard</h1>
-    <section class="campaigns-section">
-      <div class="header">
-        <h2>My Campaigns</h2>
-        <a routerLink="/campaigns/new" class="btn btn-primary">Create New Campaign</a>
-      </div>
-
-      <div *ngIf="isLoading" class="loading">Loading campaigns...</div>
-      <div *ngIf="error" class="error">{{ error }}</div>
-
-      <div class="campaign-grid" *ngIf="!isLoading && !error">
-        <div *ngFor="let campaign of campaigns" class="campaign-card">
-          <h3>{{ campaign.name }}</h3>
-          <p>{{ campaign.description }}</p>
-          <div class="actions">
-            <a [routerLink]="['/campaigns', campaign.id, 'edit']" class="btn btn-secondary">Edit</a>
+  @if (userRole === 'GM') {
+    <div class="gm-dashboard">
+      <h1>GM Dashboard</h1>
+      <section class="campaigns-section">
+        <div class="header">
+          <h2>My Campaigns</h2>
+          <a routerLink="/campaigns/new" class="btn btn-primary">Create New Campaign</a>
+        </div>
+        @if (isLoading) {
+          <div class="loading">Loading campaigns...</div>
+        }
+        @if (error) {
+          <div class="error">{{ error }}</div>
+        }
+        @if (!isLoading && !error) {
+          <div class="campaign-grid">
+            @for (campaign of campaigns; track campaign) {
+              <div class="campaign-card">
+                <h3>{{ campaign.name }}</h3>
+                <p>{{ campaign.description }}</p>
+                <div class="actions">
+                  <a [routerLink]="['/campaigns', campaign.id, 'edit']" class="btn btn-secondary">Edit</a>
+                </div>
+              </div>
+            }
+            @if (campaigns.length === 0) {
+              <div class="no-data">
+                You haven't created any campaigns yet.
+              </div>
+            }
           </div>
-        </div>
-        <div *ngIf="campaigns.length === 0" class="no-data">
-          You haven't created any campaigns yet.
-        </div>
-      </div>
-    </section>
-  </div>
+        }
+      </section>
+    </div>
+  }
 
-  <div *ngIf="userRole === 'PLAYER'" class="player-dashboard">
-    <app-player-dashboard></app-player-dashboard>
-  </div>
+  @if (userRole === 'PLAYER') {
+    <div class="player-dashboard">
+      <app-player-dashboard></app-player-dashboard>
+    </div>
+  }
 
-  <div *ngIf="!userRole" class="error">
-    Unauthorized access. Please <a routerLink="/login">login</a>.
-  </div>
+  @if (!userRole) {
+    <div class="error">
+      Unauthorized access. Please <a routerLink="/login">login</a>.
+    </div>
+  }
 </div>

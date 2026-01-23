@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface GetCharacterUseCase {
-    List<CharacterResponse> getAllCharacters();
-    CharacterResponse getCharacter(UUID uuid);
+  List<CharacterResponse> getAllCharacters();
+
+  CharacterResponse getCharacter(UUID uuid);
 }

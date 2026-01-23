@@ -7,8 +7,11 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CharacterApplicationMapper {
-    
-    @Mapping(target = "characterType", expression = "java(domain.getCharacterType() != null ? domain.getCharacterType().name() : null)")
-    @Mapping(source = "ownerUsername", target = "ownerName")
-    CharacterResponse toResponse(CharacterDomain domain);
+
+  @Mapping(
+      target = "characterType",
+      expression =
+          "java(domain.getCharacterType() != null ? domain.getCharacterType().name() : null)")
+  @Mapping(source = "ownerUsername", target = "ownerName")
+  CharacterResponse toResponse(CharacterDomain domain);
 }

@@ -6,10 +6,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CampaignRepository {
-    List<CampaignDomain> findAll();
-    Optional<CampaignDomain> findById(Long id);
-    Optional<CampaignDomain> findByUuid(UUID uuid);
-    CampaignDomain save(CampaignDomain campaign);
-    void deleteById(Long id);
-    boolean existsById(Long id);
+  List<CampaignDomain> findAll();
+
+  Optional<CampaignDomain> findById(Long id);
+
+  Optional<CampaignDomain> findByUuid(UUID uuid);
+
+  CampaignDomain save(CampaignDomain campaign);
+
+  void deleteById(Long id);
+
+  boolean existsById(Long id);
 }

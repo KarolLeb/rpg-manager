@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+
 import { AuthService } from '../../core/services/auth.service';
 import { CampaignService } from '../../core/services/campaign.service';
 import { Campaign } from '../../core/models/campaign.model';
@@ -9,20 +9,18 @@ import { PlayerDashboardComponent } from './player-dashboard/player-dashboard.co
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, PlayerDashboardComponent],
+  imports: [RouterLink, PlayerDashboardComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
+  private readonly authService = inject(AuthService);
+  private readonly campaignService = inject(CampaignService);
+
   userRole: string | null = null;
   campaigns: Campaign[] = [];
   isLoading = true;
   error: string | null = null;
-
-  constructor(
-    private authService: AuthService,
-    private campaignService: CampaignService
-  ) {}
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {

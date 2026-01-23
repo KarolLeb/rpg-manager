@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+
 import { CharacterService } from '../../../core/services/character.service';
 import { Character } from '../../../core/models/character.model';
 import { RouterLink } from '@angular/router';
@@ -7,28 +7,38 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-player-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   template: `
     <div class="dashboard-container">
       <h1>Player Dashboard</h1>
       <section class="characters-section">
         <h2>My Characters</h2>
-        <div *ngIf="isLoading" class="loading">Loading characters...</div>
-        <div *ngIf="error" class="error">{{ error }}</div>
-        
-        <div class="character-grid" *ngIf="!isLoading && !error">
-          <div *ngFor="let char of characters" class="character-card">
-            <h3>{{ char.name }}</h3>
-            <p>{{ char.characterClass }} - Level {{ char.level }}</p>
-            <a [routerLink]="['/character', char.uuid]" class="btn">View Sheet</a>
+        @if (isLoading) {
+          <div class="loading">Loading characters...</div>
+        }
+        @if (error) {
+          <div class="error">{{ error }}</div>
+        }
+    
+        @if (!isLoading && !error) {
+          <div class="character-grid">
+            @for (char of characters; track char) {
+              <div class="character-card">
+                <h3>{{ char.name }}</h3>
+                <p>{{ char.characterClass }} - Level {{ char.level }}</p>
+                <a [routerLink]="['/character', char.uuid]" class="btn">View Sheet</a>
+              </div>
+            }
+            @if (characters.length === 0) {
+              <div class="no-data">
+                You don't have any characters yet.
+              </div>
+            }
           </div>
-          <div *ngIf="characters.length === 0" class="no-data">
-            You don't have any characters yet.
-          </div>
-        </div>
+        }
       </section>
     </div>
-  `,
+    `,
   styles: [`
     .dashboard-container { padding: 20px; }
     .character-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
@@ -37,11 +47,11 @@ import { RouterLink } from '@angular/router';
   `]
 })
 export class PlayerDashboardComponent implements OnInit {
+  private readonly characterService = inject(CharacterService);
+
   characters: Character[] = [];
   isLoading = true;
   error: string | null = null;
-
-  constructor(private characterService: CharacterService) {}
 
   ngOnInit(): void {
     this.characterService.getCharacters().subscribe({

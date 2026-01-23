@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, FormArray } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AttributeCardComponent } from '../attribute-card/attribute-card.component';
 import { AttributeConfig } from './models/character-data.model';
 import { CharacterService } from '../../core/services/character.service';
@@ -10,11 +10,15 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-character-sheet',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AttributeCardComponent],
+  imports: [ReactiveFormsModule, AttributeCardComponent],
   templateUrl: './character-sheet.component.html',
   styleUrls: ['./character-sheet.component.scss']
 })
 export class CharacterSheetPageComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly characterService = inject(CharacterService);
+  private readonly route = inject(ActivatedRoute);
+
   characterForm: FormGroup;
   currentCharacterId?: string;
   isLoading = true;
@@ -35,11 +39,7 @@ export class CharacterSheetPageComponent implements OnInit {
     { key: 'willpower', label: 'Siła Woli' }
   ];
 
-  constructor(
-    private fb: FormBuilder,
-    private characterService: CharacterService,
-    private route: ActivatedRoute
-  ) {
+  constructor() {
     this.characterForm = this.fb.group({
       info: this.fb.group({
         name: [''],

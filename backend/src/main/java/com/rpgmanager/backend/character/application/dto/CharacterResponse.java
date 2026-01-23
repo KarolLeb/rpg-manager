@@ -10,5 +10,4 @@ public record CharacterResponse(
     String stats,
     String ownerName,
     String campaignName,
-    String characterType
-) {}
+    String characterType) {}
