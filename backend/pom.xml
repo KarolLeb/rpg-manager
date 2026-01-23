@@ -37,7 +37,7 @@
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<!-- Security Patch Overrides -->
 		<spring-framework.version>6.2.2</spring-framework.version>
-		<tomcat.version>10.1.35</tomcat.version>
+		<tomcat.version>10.1.40</tomcat.version>
 		<postgresql.version>42.7.7</postgresql.version>
 		<logback.version>1.5.19</logback.version>
 	</properties>
@@ -267,6 +267,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/*Tests.java</include>
+					</includes>
 					<excludes>
 						<exclude>**/*IntegrationTest.java</exclude>
 						<exclude>**/*IT.java</exclude>
