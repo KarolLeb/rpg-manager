@@ -65,6 +65,11 @@ graph TD
 - **Environment:** Docker Compose
 - **Testing:** JUnit 5, Mockito, Testcontainers, Playwright (E2E)
 
+## 🧪 Testing & Development
+
+For detailed instructions on running tests (Backend, Frontend, and E2E) and setting up your environment, see:
+- **[Development Setup & Testing Guide](docs/engineering/development-setup.md)**
+
 ## 🗺️ Project Tracking
 
 - **[Strategic Roadmap](plans/ROADMAP.md):** High-level phases and long-term milestones.

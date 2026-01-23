@@ -16,8 +16,8 @@
       "cmd /c \"cd backend && mvnw.cmd -q -B test -Dgroups=unit\""
     ],
     "frontend/src/**/*.{ts,html}": [
-      "npm --prefix frontend run lint",
-      "npm --prefix frontend run test:unit"
+      "cmd /c \"cd frontend && npm run lint & rem\"",
+      "cmd /c \"cd frontend && npm run test:unit & rem\""
     ]
   },
   "repository": {

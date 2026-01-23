@@ -47,3 +47,15 @@ This forces Flyway to wipe the schema when it detects a mismatch, effectively re
 **Issue:** White screen on startup.
 **Cause:** `JSON.parse` in `AuthService` threw an error on corrupted localStorage data.
 **Solution:** Always wrap `JSON.parse(localStorage.getItem(...))` in a `try-catch` block and clear the storage on error.
+
+### 3. E2E Tests: Port 4200 Conflict
+**Issue:** `Error: http://localhost:4200 is already used` when running Playwright tests.
+**Cause:** Playwright is configured to start its own Angular dev server. If the frontend is already running (e.g., via Docker or `ng serve`), the port is occupied.
+**Solution:** 
+The project is now configured with `reuseExistingServer: true` in `playwright.config.ts`. This allows Playwright to reuse an existing server instance. 
+
+If you still encounter issues or want to ensure a completely clean test run against the latest code, stop the main application first:
+```bash
+cd docker
+docker compose down
+```

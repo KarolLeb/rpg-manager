@@ -68,4 +68,35 @@ act --rm
 | **pgAdmin** | [http://localhost:5050](http://localhost:5050) | `admin@admin.com` / `admin` | 
 | **SonarQube** | [http://localhost:9000](http://localhost:9000) | | 
 | **Grafana** | [http://localhost:3000](http://localhost:3000) | `admin` / `admin` | 
-| **Prometheus** | [http://localhost:9090](http://localhost:9090) | | 
+| Prometheus | [http://localhost:9090](http://localhost:9090) | | 
+
+## 🧪 Testing
+
+### Backend
+Run unit and integration tests using Maven:
+```powershell
+cd backend
+./mvnw test
+```
+
+### Frontend
+Run unit tests with Karma:
+```powershell
+cd frontend
+npm test
+```
+
+### End-to-End (E2E)
+Run E2E tests using Playwright. 
+
+> [!TIP]
+> **Port 4200:** Playwright is configured with `reuseExistingServer: true`. If the application is already running (e.g., via Docker or `ng serve`), Playwright will use that instance. If not, it will attempt to start a new one automatically.
+```powershell
+# 1. Stop main app
+cd docker
+docker compose down
+
+# 2. Run E2E tests
+cd ../frontend
+npm run e2e:cli
+```
