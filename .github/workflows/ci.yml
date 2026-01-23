@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "main", "master", "develop" ]
   pull_request:
-    branches: [ "main", "develop" ]
+    branches: [ "main", "master", "develop" ]
 
 jobs:
   backend:
@@ -154,7 +154,7 @@ jobs:
   publish:
     needs: [backend, frontend, e2e]
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
     permissions:
       contents: read
       packages: write
