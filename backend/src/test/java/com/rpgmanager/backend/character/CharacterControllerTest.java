@@ -23,9 +23,9 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(CharacterController.class)
@@ -33,15 +33,15 @@ class CharacterControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private GetCharacterUseCase getCharacterUseCase;
+  @MockitoBean private GetCharacterUseCase getCharacterUseCase;
 
-  @MockBean private UpdateCharacterUseCase updateCharacterUseCase;
+  @MockitoBean private UpdateCharacterUseCase updateCharacterUseCase;
 
-  @MockBean private JoinCampaignUseCase joinCampaignUseCase;
+  @MockitoBean private JoinCampaignUseCase joinCampaignUseCase;
 
-  @MockBean private JwtUtil jwtUtil;
+  @MockitoBean private JwtUtil jwtUtil;
 
-  @MockBean private UserDetailsService userDetailsService;
+  @MockitoBean private UserDetailsService userDetailsService;
 
   @Autowired private ObjectMapper objectMapper;
 

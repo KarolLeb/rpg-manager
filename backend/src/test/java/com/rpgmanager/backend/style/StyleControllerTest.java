@@ -12,10 +12,10 @@ import com.rpgmanager.backend.security.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(StyleController.class)
@@ -24,11 +24,11 @@ class StyleControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private StyleService styleService;
+  @MockitoBean private StyleService styleService;
 
-  @MockBean private JwtUtil jwtUtil;
+  @MockitoBean private JwtUtil jwtUtil;
 
-  @MockBean private UserDetailsService userDetailsService;
+  @MockitoBean private UserDetailsService userDetailsService;
 
   @Test
   @WithMockUser
