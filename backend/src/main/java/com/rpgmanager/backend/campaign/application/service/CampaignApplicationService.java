@@ -20,12 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CampaignApplicationService implements CreateCampaignUseCase, GetCampaignUseCase, UpdateCampaignUseCase, DeleteCampaignUseCase {
 
+    private static final String CAMPAIGN_NOT_FOUND_MSG = "Campaign not found with id: ";
+    private static final String USER_NOT_FOUND_MSG = "User not found with id: ";
     private final CampaignRepository campaignRepository;
     private final UserRepositoryPort userRepository;
     private final CampaignApplicationMapper campaignApplicationMapper;
@@ -35,14 +36,14 @@ public class CampaignApplicationService implements CreateCampaignUseCase, GetCam
     public List<CampaignDTO> getAllCampaigns() {
         return campaignRepository.findAll().stream()
                 .map(campaignApplicationMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public CampaignDTO getCampaignById(Long id) {
         CampaignDomain campaign = campaignRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Campaign not found with id: " + id));
+                .orElseThrow(() -> new IllegalArgumentException(CAMPAIGN_NOT_FOUND_MSG + id));
         return campaignApplicationMapper.toDTO(campaign);
     }
 
@@ -51,7 +52,7 @@ public class CampaignApplicationService implements CreateCampaignUseCase, GetCam
     @CacheEvict(value = "campaigns", allEntries = true)
     public CampaignDTO createCampaign(CreateCampaignRequest request) {
         UserDomain gameMaster = userRepository.findById(request.getGameMasterId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getGameMasterId()));
+                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND_MSG + request.getGameMasterId()));
 
         CampaignDomain campaign = CampaignDomain.builder()
                 .name(request.getName())
@@ -72,14 +73,14 @@ public class CampaignApplicationService implements CreateCampaignUseCase, GetCam
     @CacheEvict(value = "campaigns", allEntries = true)
     public CampaignDTO updateCampaign(Long id, CreateCampaignRequest request) {
         CampaignDomain campaign = campaignRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Campaign not found with id: " + id));
+                .orElseThrow(() -> new IllegalArgumentException(CAMPAIGN_NOT_FOUND_MSG + id));
 
         campaign.setName(request.getName());
         campaign.setDescription(request.getDescription());
 
         if (request.getGameMasterId() != null && !request.getGameMasterId().equals(campaign.getGameMasterId())) {
             UserDomain newGameMaster = userRepository.findById(request.getGameMasterId())
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getGameMasterId()));
+                    .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND_MSG + request.getGameMasterId()));
             campaign.setGameMasterId(newGameMaster.getId());
             campaign.setGameMasterName(newGameMaster.getUsername());
         }
@@ -92,7 +93,7 @@ public class CampaignApplicationService implements CreateCampaignUseCase, GetCam
     @CacheEvict(value = "campaigns", allEntries = true)
     public void deleteCampaign(Long id) {
         if (!campaignRepository.existsById(id)) {
-            throw new RuntimeException("Campaign not found with id: " + id);
+            throw new IllegalArgumentException(CAMPAIGN_NOT_FOUND_MSG + id);
         }
         campaignRepository.deleteById(id);
     }

@@ -14,9 +14,10 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // W rzeczywistej aplikacji użyj zmiennej środowiskowej
-    private final String secret = "bardzo_dlugi_i_bezpieczny_klucz_do_podpisywania_tokenow_jwt_1234567890";
-    private final long expiration = 86400000; // 24h
+    @Value("${jwt.secret}")
+    private String secret;
+    @Value("${jwt.expiration}")
+    private long expiration;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));

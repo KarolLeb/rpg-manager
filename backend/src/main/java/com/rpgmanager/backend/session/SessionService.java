@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class SessionService {
 
+    private static final String SESSION_NOT_FOUND_MSG = "Session not found with id: ";
     private final SessionRepository sessionRepository;
     private final JpaCampaignRepository campaignRepository;
 
@@ -36,7 +36,7 @@ public class SessionService {
     @Transactional(readOnly = true)
     public SessionDTO getSession(Long id) {
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
         return toDTO(session);
     }
 
@@ -44,13 +44,13 @@ public class SessionService {
     public List<SessionDTO> getSessionsByCampaign(Long campaignId) {
         return sessionRepository.findByCampaignId(campaignId).stream()
                 .map(this::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
     public SessionDTO updateSession(Long id, CreateSessionRequest request) {
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
 
         session.setName(request.getName());
         session.setDescription(request.getDescription());
@@ -62,7 +62,7 @@ public class SessionService {
     @Transactional
     public void cancelSession(Long id) {
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
         session.setStatus(Session.SessionStatus.CANCELLED);
         sessionRepository.save(session);
     }
@@ -70,7 +70,7 @@ public class SessionService {
     @Transactional
     public void completeSession(Long id) {
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
         session.setStatus(Session.SessionStatus.FINISHED);
         sessionRepository.save(session);
     }

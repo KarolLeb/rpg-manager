@@ -8,10 +8,10 @@ import { AuthResponse, LoginRequest, RegisterRequest, User } from '../models/aut
 })
 export class AuthService {
   private readonly apiUrl = 'http://localhost:8080/api/auth';
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
       try {

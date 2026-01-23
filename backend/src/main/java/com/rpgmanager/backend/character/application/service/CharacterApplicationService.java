@@ -13,12 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CharacterApplicationService implements GetCharacterUseCase, UpdateCharacterUseCase, JoinCampaignUseCase {
 
+    private static final String CHARACTER_NOT_FOUND_MSG = "Character not found with uuid: ";
     private final CharacterRepository characterRepository;
     private final CharacterApplicationMapper characterApplicationMapper;
 
@@ -27,14 +27,14 @@ public class CharacterApplicationService implements GetCharacterUseCase, UpdateC
     public List<CharacterResponse> getAllCharacters() {
         return characterRepository.findAll().stream()
                 .map(characterApplicationMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public CharacterResponse getCharacter(UUID uuid) {
         CharacterDomain character = characterRepository.findByUuid(uuid)
-                .orElseThrow(() -> new RuntimeException("Character not found with uuid: " + uuid));
+                .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG +  uuid));
         return characterApplicationMapper.toResponse(character);
     }
 
@@ -42,7 +42,7 @@ public class CharacterApplicationService implements GetCharacterUseCase, UpdateC
     @Transactional
     public CharacterResponse updateCharacter(UUID uuid, CharacterDomain characterDetails) {
         CharacterDomain character = characterRepository.findByUuid(uuid)
-                .orElseThrow(() -> new RuntimeException("Character not found with uuid: " + uuid));
+                .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG +  uuid));
 
         character.setName(characterDetails.getName());
         character.setCharacterClass(characterDetails.getCharacterClass());
@@ -57,7 +57,7 @@ public class CharacterApplicationService implements GetCharacterUseCase, UpdateC
     @Transactional
     public CharacterResponse joinCampaign(UUID characterUuid, Long campaignId) {
         CharacterDomain character = characterRepository.findByUuid(characterUuid)
-                .orElseThrow(() -> new RuntimeException("Character not found with uuid: " + characterUuid));
+                .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG +  characterUuid));
 
         // Note: Campaign verification should ideally happen here via a CampaignPort
         // For now, we trust the ID or handle it in the persistence adapter

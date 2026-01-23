@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class CampaignPersistenceAdapter implements CampaignRepository {
     public List<CampaignDomain> findAll() {
         return jpaCampaignRepository.findAll().stream()
                 .map(CampaignPersistenceMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

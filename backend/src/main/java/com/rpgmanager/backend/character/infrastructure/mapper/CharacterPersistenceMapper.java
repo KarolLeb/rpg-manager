@@ -7,6 +7,10 @@ import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserE
 
 public class CharacterPersistenceMapper {
 
+    private CharacterPersistenceMapper() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
     public static CharacterDomain toDomain(CharacterEntity entity) {
         if (entity == null) {
             return null;

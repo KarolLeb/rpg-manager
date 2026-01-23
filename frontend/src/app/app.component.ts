@@ -13,7 +13,7 @@ import { AuthService } from './core/services/auth.service';
 export class AppComponent {
   title = 'RPG Manager';
 
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(public readonly authService: AuthService, private readonly router: Router) {}
 
   onLogout(): void {
     this.authService.logout();

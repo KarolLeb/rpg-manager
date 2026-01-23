@@ -6,6 +6,10 @@ import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserE
 
 public class CampaignPersistenceMapper {
 
+    private CampaignPersistenceMapper() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
     public static CampaignDomain toDomain(CampaignEntity entity) {
         if (entity == null) {
             return null;

@@ -117,12 +117,13 @@ class CharacterControllerTest {
         given(updateCharacterUseCase.updateCharacter(eq(charId), any(CharacterDomain.class)))
                 .willThrow(new RuntimeException("Character not found"));
 
+        String content = objectMapper.writeValueAsString(updateRequest);
         org.junit.jupiter.api.Assertions.assertThrows(Exception.class, () -> {
             mockMvc.perform(put("/api/characters/{id}", charId)
                             .with(csrf())
                             .with(user("user"))
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(updateRequest)));
+                            .content(content));
         });
     }
 }
