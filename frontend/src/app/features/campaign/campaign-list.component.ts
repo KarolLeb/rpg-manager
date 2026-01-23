@@ -20,7 +20,7 @@ import { Campaign } from '../../core/models/campaign.model';
   `]
 })
 export class CampaignListComponent implements OnInit {
-  private campaignService = inject(CampaignService);
+  private readonly campaignService = inject(CampaignService);
 
   campaigns: Campaign[] = [];
 

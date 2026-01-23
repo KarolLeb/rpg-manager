@@ -3,7 +3,7 @@ $color-bg-dark: #0f172a;     // Ciemne tło
 $color-bg-card: #1e293b;     // Tło karty
 $color-neon: #06b6d4;        // Główny akcent (Cyan)
 $color-text-main: #e2e8f0;   // Jasny tekst
-$color-text-muted: #94a3b8;  // Wygaszony tekst
+$color-text-muted: #a1b0c3;  // Wygaszony tekst (jaśniejszy dla kontrastu)
 $border-radius: 4px;
 
 .hud-card {
@@ -141,9 +141,9 @@ $border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 1.1rem;
   font-weight: bold;
-  color: #fff;
+  color: #1e293b;
   text-align: center;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.8);
   padding: 2px;
   border-radius: 2px;
 }

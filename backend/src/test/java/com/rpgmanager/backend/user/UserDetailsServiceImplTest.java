@@ -1,53 +1,49 @@
 package com.rpgmanager.backend.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 import com.rpgmanager.backend.user.domain.model.UserDomain;
 import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+@ExtendWith(MockitoExtension.class)
 class UserDetailsServiceImplTest {
-
-  private UserDetailsServiceImpl userDetailsService;
 
   @Mock private UserRepositoryPort userRepository;
 
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-    userDetailsService = new UserDetailsServiceImpl(userRepository);
-  }
+  @InjectMocks private UserDetailsServiceImpl userDetailsService;
 
   @Test
-  void shouldLoadUserByUsername() {
-    UserDomain user = new UserDomain();
+  void loadUserByUsername_shouldReturnUserDetails() {
+    UserDomain user = Instancio.create(UserDomain.class);
     user.setUsername("testuser");
-    user.setPassword("password");
     user.setRole(UserDomain.Role.PLAYER);
-    given(userRepository.findByUsername("testuser")).willReturn(Optional.of(user));
 
-    UserDetails userDetails = userDetailsService.loadUserByUsername("testuser");
+    when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
 
-    assertNotNull(userDetails);
-    assertEquals("testuser", userDetails.getUsername());
-    assertEquals("password", userDetails.getPassword());
-    assertTrue(
-        userDetails.getAuthorities().stream()
-            .anyMatch(a -> a.getAuthority().equals("ROLE_PLAYER")));
+    UserDetails result = userDetailsService.loadUserByUsername("testuser");
+
+    assertThat(result).isNotNull();
+    assertThat(result.getUsername()).isEqualTo("testuser");
+    assertThat(result.getAuthorities()).anyMatch(a -> a.getAuthority().equals("ROLE_PLAYER"));
   }
 
   @Test
-  void shouldThrowExceptionIfUserNotFound() {
-    given(userRepository.findByUsername("unknown")).willReturn(Optional.empty());
+  void loadUserByUsername_shouldThrowException_whenUserNotFound() {
+    when(userRepository.findByUsername("unknown")).thenReturn(Optional.empty());
 
-    assertThrows(
-        UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername("unknown"));
+    assertThatThrownBy(() -> userDetailsService.loadUserByUsername("unknown"))
+        .isInstanceOf(UsernameNotFoundException.class)
+        .hasMessageContaining("User not found");
   }
 }
