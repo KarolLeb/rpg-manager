@@ -41,6 +41,16 @@ jobs:
         name: backend-coverage
         path: backend/target/site/jacoco
 
+    - name: SonarQube Scan (Backend)
+      if: success() && env.ACT
+      run: |
+        cd backend
+        SONAR_ARGS="-Dsonar.host.url=http://localhost:9000"
+        if [ ! -z "${{ secrets.SONAR_TOKEN }}" ]; then
+          SONAR_ARGS="$SONAR_ARGS -Dsonar.token=${{ secrets.SONAR_TOKEN }}"
+        fi
+        ./mvnw sonar:sonar $SONAR_ARGS
+
   frontend:
     runs-on: ubuntu-latest
     steps:
@@ -87,6 +97,12 @@ jobs:
     - name: Enforce Coverage
       run: |
         node scripts/enforce-coverage.js --file frontend/coverage/rpg-client/coverage-summary.json --global 74 --core 30 --critical 30
+
+    - name: SonarQube Scan (Frontend)
+      if: success() && env.ACT
+      run: |
+        cd frontend
+        npm run sonar -- -Dsonar.host.url=http://localhost:9000
 
     - name: Build Application
       run: |

@@ -8,7 +8,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky"
+    "prepare": "husky",
+    "sonar:backend": "cd backend && ./mvnw sonar:sonar",
+    "sonar:frontend": "cd frontend && npm run sonar",
+    "sonar": "npm run sonar:backend && npm run sonar:frontend"
   },
   "lint-staged": {
     "backend/src/**/*.java": [
