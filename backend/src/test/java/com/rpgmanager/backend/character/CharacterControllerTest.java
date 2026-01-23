@@ -108,7 +108,7 @@ class CharacterControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUpdatingNonExistentCharacter() {
+    void shouldThrowExceptionWhenUpdatingNonExistentCharacter() throws Exception {
         UUID charId = UUID.randomUUID();
         CharacterDomain updateRequest = CharacterDomain.builder()
                 .name("Ghost")

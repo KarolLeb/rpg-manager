@@ -4,6 +4,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,6 +19,8 @@ class JwtUtilTest {
     @BeforeEach
     void setUp() {
         jwtUtil = new JwtUtil();
+        ReflectionTestUtils.setField(jwtUtil, "secret", secret);
+        ReflectionTestUtils.setField(jwtUtil, "expiration", 86400000L);
     }
 
     @Test
