@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./pg-data:/var/lib/postgresql/data
+      - rpg-postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -25,6 +25,8 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    volumes:
+      - rpg-redis-data:/data
     networks:
       - rpg-network
 
@@ -37,6 +39,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
+    volumes:
+      - rpg-pgadmin-data:/var/lib/pgadmin
     depends_on:
       postgres:
         condition: service_healthy
@@ -74,7 +78,7 @@ services:
     ports:
       - "4200:4200"
     volumes:
-      - /app/node_modules
+      - rpg-frontend-node-modules:/app/node_modules
     develop:
       watch:
         - action: sync
@@ -87,3 +91,13 @@ networks:
   rpg-network:
     name: rpg-network
     driver: bridge
+
+volumes:
+  rpg-frontend-node-modules:
+    name: rpg-frontend-node-modules
+  rpg-postgres-data:
+    name: rpg-postgres-data
+  rpg-redis-data:
+    name: rpg-redis-data
+  rpg-pgadmin-data:
+    name: rpg-pgadmin-data

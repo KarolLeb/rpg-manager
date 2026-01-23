@@ -22,6 +22,7 @@ services:
     restart: always
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - rpg-prometheus-data:/prometheus
     ports:
       - "9090:9090"
     networks:
@@ -44,6 +45,7 @@ services:
     volumes:
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - rpg-grafana-data:/var/lib/grafana
     depends_on:
       - prometheus
     networks:
@@ -51,8 +53,15 @@ services:
 
 volumes:
   sonarqube_data:
+    name: rpg-sonarqube-data
   sonarqube_extensions:
+    name: rpg-sonarqube-extensions
   sonarqube_logs:
+    name: rpg-sonarqube-logs
+  rpg-prometheus-data:
+    name: rpg-prometheus-data
+  rpg-grafana-data:
+    name: rpg-grafana-data
 
 networks:
   rpg-network:
