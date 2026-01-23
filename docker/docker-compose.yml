@@ -48,7 +48,9 @@ services:
       - rpg-network
 
   backend:
-    build: .././backend
+    build:
+      context: .././backend
+      target: development
     container_name: rpg-backend
     ports:
       - "8080:8080"
@@ -73,7 +75,9 @@ services:
       - rpg-network
 
   frontend:
-    build: .././frontend
+    build:
+      context: .././frontend
+      target: development
     container_name: rpg-frontend
     ports:
       - "4200:4200"
