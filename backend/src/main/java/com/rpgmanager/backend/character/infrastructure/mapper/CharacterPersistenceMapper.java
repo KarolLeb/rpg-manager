@@ -16,7 +16,7 @@ public class CharacterPersistenceMapper {
       return null;
     }
     return CharacterDomain.builder()
-        .uuid(entity.getUuid())
+        .id(entity.getId())
         .name(entity.getName())
         .characterClass(entity.getCharacterClass())
         .level(entity.getLevel())
@@ -37,8 +37,8 @@ public class CharacterPersistenceMapper {
       return null;
     }
     CharacterEntity entity = new CharacterEntity();
-    entity.setUuid(domain.getUuid());
     entity.setName(domain.getName());
+    ;
     entity.setCharacterClass(domain.getCharacterClass());
     entity.setLevel(domain.getLevel());
     entity.setStats(domain.getStats());

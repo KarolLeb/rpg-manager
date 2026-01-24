@@ -1,6 +1,5 @@
 export interface Campaign {
   id: number;
-  uuid: string;
   name: string;
   description: string;
   creationDate: string;

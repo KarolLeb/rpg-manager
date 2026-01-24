@@ -3,7 +3,6 @@ package com.rpgmanager.backend.session;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +18,6 @@ public class Session {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Column(nullable = false, unique = true)
-  private UUID uuid;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "campaign_id")
@@ -44,9 +40,6 @@ public class Session {
   protected void onCreate() {
     if (sessionDate == null) {
       sessionDate = OffsetDateTime.now();
-    }
-    if (uuid == null) {
-      uuid = UUID.randomUUID();
     }
   }
 

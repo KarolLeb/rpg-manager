@@ -1,7 +1,6 @@
 package com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist;
 
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,9 +17,6 @@ public class UserEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, unique = true)
-  private UUID uuid;
-
   @Column(nullable = false, unique = true, length = 50)
   private String username;
 
@@ -35,11 +31,7 @@ public class UserEntity {
   private Role role;
 
   @PrePersist
-  protected void onCreate() {
-    if (uuid == null) {
-      uuid = UUID.randomUUID();
-    }
-  }
+  protected void onCreate() {}
 
   public enum Role {
     GM,

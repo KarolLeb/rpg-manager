@@ -1,7 +1,6 @@
 -- Users Table
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
-    uuid UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -11,7 +10,6 @@ CREATE TABLE users (
 -- Campaigns Table (Replaces independent Sessions as the main container)
 CREATE TABLE campaigns (
     id BIGSERIAL PRIMARY KEY,
-    uuid UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     description TEXT,
     creation_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -22,7 +20,6 @@ CREATE TABLE campaigns (
 -- Sessions Table (Now belongs to a Campaign)
 CREATE TABLE sessions (
     id BIGSERIAL PRIMARY KEY,
-    uuid UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     campaign_id BIGINT REFERENCES campaigns(id),
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -33,7 +30,6 @@ CREATE TABLE sessions (
 -- Characters Table (Belongs to a Campaign, not just a Session)
 CREATE TABLE characters (
     id BIGSERIAL PRIMARY KEY,
-    uuid UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     character_class VARCHAR(255),
     level INTEGER NOT NULL,
@@ -46,7 +42,6 @@ CREATE TABLE characters (
 
 CREATE TABLE race_styles (
     id BIGSERIAL PRIMARY KEY,
-    uuid UUID NOT NULL UNIQUE,
     race_name VARCHAR(255) NOT NULL UNIQUE,
     css_content TEXT
 );

@@ -3,7 +3,6 @@ package com.rpgmanager.backend.auth;
 import com.rpgmanager.backend.security.JwtUtil;
 import com.rpgmanager.backend.user.domain.model.UserDomain;
 import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,7 +41,6 @@ public class AuthService {
     }
 
     UserDomain user = new UserDomain();
-    user.setUuid(UUID.randomUUID());
     user.setUsername(request.getUsername());
     user.setPassword(passwordEncoder.encode(request.getPassword()));
     user.setEmail(request.getEmail());

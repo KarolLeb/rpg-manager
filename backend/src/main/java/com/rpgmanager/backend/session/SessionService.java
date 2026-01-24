@@ -88,7 +88,6 @@ public class SessionService {
   private SessionDTO toDTO(Session session) {
     return SessionDTO.builder()
         .id(session.getId())
-        .uuid(session.getUuid())
         .campaignId(session.getCampaign().getId())
         .campaignName(session.getCampaign().getName())
         .name(session.getName())

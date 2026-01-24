@@ -16,7 +16,6 @@ public class CampaignPersistenceMapper {
     }
     return CampaignDomain.builder()
         .id(entity.getId())
-        .uuid(entity.getUuid())
         .name(entity.getName())
         .description(entity.getDescription())
         .creationDate(entity.getCreationDate())
@@ -36,7 +35,6 @@ public class CampaignPersistenceMapper {
     }
     return CampaignEntity.builder()
         .id(domain.getId())
-        .uuid(domain.getUuid())
         .name(domain.getName())
         .description(domain.getDescription())
         .creationDate(domain.getCreationDate())

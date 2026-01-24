@@ -3,7 +3,6 @@ package com.rpgmanager.backend.character.infrastructure.adapter.outgoing.persist
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -15,9 +14,6 @@ public class CharacterEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Column(nullable = false, unique = true)
-  private UUID uuid;
 
   @Column(nullable = false)
   private String name;
@@ -49,11 +45,7 @@ public class CharacterEntity {
   private CharacterType characterType = CharacterType.PERMANENT;
 
   @PrePersist
-  protected void onCreate() {
-    if (uuid == null) {
-      uuid = UUID.randomUUID();
-    }
-  }
+  protected void onCreate() {}
 
   public enum CharacterType {
     PERMANENT,

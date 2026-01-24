@@ -1,9 +1,7 @@
 package com.rpgmanager.backend.character.application.dto;
 
-import java.util.UUID;
-
 public record CharacterResponse(
-    UUID uuid,
+    Long id,
     String name,
     String characterClass,
     Integer level,

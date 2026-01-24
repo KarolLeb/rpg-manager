@@ -3,7 +3,6 @@ package com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist;
 import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +18,6 @@ public class CampaignEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Column(nullable = false, unique = true)
-  private UUID uuid;
 
   @Column(nullable = false)
   private String name;
@@ -44,9 +40,6 @@ public class CampaignEntity {
   protected void onCreate() {
     if (creationDate == null) {
       creationDate = OffsetDateTime.now();
-    }
-    if (uuid == null) {
-      uuid = UUID.randomUUID();
     }
   }
 

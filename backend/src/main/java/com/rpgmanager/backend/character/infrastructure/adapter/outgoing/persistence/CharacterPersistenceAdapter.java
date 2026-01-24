@@ -9,7 +9,6 @@ import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUs
 import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -29,13 +28,16 @@ public class CharacterPersistenceAdapter implements CharacterRepository {
   }
 
   @Override
-  public Optional<CharacterDomain> findByUuid(UUID uuid) {
-    return jpaCharacterRepository.findByUuid(uuid).map(CharacterPersistenceMapper::toDomain);
+  public Optional<CharacterDomain> findById(Long id) {
+    return jpaCharacterRepository.findById(id).map(CharacterPersistenceMapper::toDomain);
   }
 
   @Override
   public CharacterDomain save(CharacterDomain domain) {
-    CharacterEntity entity = jpaCharacterRepository.findByUuid(domain.getUuid()).orElse(null);
+    CharacterEntity entity = null;
+    if (domain.getId() != null) {
+      entity = jpaCharacterRepository.findById(domain.getId()).orElse(null);
+    }
 
     CampaignEntity campaign = null;
     if (domain.getCampaignId() != null) {

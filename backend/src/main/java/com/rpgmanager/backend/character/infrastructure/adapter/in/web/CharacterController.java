@@ -6,7 +6,6 @@ import com.rpgmanager.backend.character.application.port.in.JoinCampaignUseCase;
 import com.rpgmanager.backend.character.application.port.in.UpdateCharacterUseCase;
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,20 +23,20 @@ public class CharacterController {
     return getCharacterUseCase.getAllCharacters();
   }
 
-  @GetMapping("/{uuid}")
-  public CharacterResponse getCharacter(@PathVariable UUID uuid) {
-    return getCharacterUseCase.getCharacter(uuid);
+  @GetMapping("/{id}")
+  public CharacterResponse getCharacter(@PathVariable Long id) {
+    return getCharacterUseCase.getCharacter(id);
   }
 
-  @PutMapping("/{uuid}")
+  @PutMapping("/{id}")
   public CharacterResponse updateCharacter(
-      @PathVariable UUID uuid, @RequestBody CharacterDomain characterDetails) {
+      @PathVariable Long id, @RequestBody CharacterDomain characterDetails) {
     // In a real scenario, map a Request DTO to CharacterDomain here
-    return updateCharacterUseCase.updateCharacter(uuid, characterDetails);
+    return updateCharacterUseCase.updateCharacter(id, characterDetails);
   }
 
-  @PostMapping("/{uuid}/join-campaign/{campaignId}")
-  public CharacterResponse joinCampaign(@PathVariable UUID uuid, @PathVariable Long campaignId) {
-    return joinCampaignUseCase.joinCampaign(uuid, campaignId);
+  @PostMapping("/{id}/join-campaign/{campaignId}")
+  public CharacterResponse joinCampaign(@PathVariable Long id, @PathVariable Long campaignId) {
+    return joinCampaignUseCase.joinCampaign(id, campaignId);
   }
 }

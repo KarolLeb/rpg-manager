@@ -2,7 +2,6 @@ package com.rpgmanager.backend.session;
 
 import com.rpgmanager.backend.session.Session.SessionStatus;
 import java.time.OffsetDateTime;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,7 +9,6 @@ import lombok.Data;
 @Builder
 public class SessionDTO {
   private Long id;
-  private UUID uuid;
   private Long campaignId;
   private String campaignName;
   private String name;

@@ -8,7 +8,6 @@ import com.rpgmanager.backend.character.application.port.in.UpdateCharacterUseCa
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import com.rpgmanager.backend.character.domain.repository.CharacterRepository;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CharacterApplicationService
     implements GetCharacterUseCase, UpdateCharacterUseCase, JoinCampaignUseCase {
 
-  private static final String CHARACTER_NOT_FOUND_MSG = "Character not found with uuid: ";
+  private static final String CHARACTER_NOT_FOUND_MSG = "Character not found with id: ";
   private final CharacterRepository characterRepository;
   private final CharacterApplicationMapper characterApplicationMapper;
 
@@ -32,21 +31,21 @@ public class CharacterApplicationService
 
   @Override
   @Transactional(readOnly = true)
-  public CharacterResponse getCharacter(UUID uuid) {
+  public CharacterResponse getCharacter(Long id) {
     CharacterDomain character =
         characterRepository
-            .findByUuid(uuid)
-            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + uuid));
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
     return characterApplicationMapper.toResponse(character);
   }
 
   @Override
   @Transactional
-  public CharacterResponse updateCharacter(UUID uuid, CharacterDomain characterDetails) {
+  public CharacterResponse updateCharacter(Long id, CharacterDomain characterDetails) {
     CharacterDomain character =
         characterRepository
-            .findByUuid(uuid)
-            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + uuid));
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
 
     character.setName(characterDetails.getName());
     character.setCharacterClass(characterDetails.getCharacterClass());
@@ -59,12 +58,11 @@ public class CharacterApplicationService
 
   @Override
   @Transactional
-  public CharacterResponse joinCampaign(UUID characterUuid, Long campaignId) {
+  public CharacterResponse joinCampaign(Long characterId, Long campaignId) {
     CharacterDomain character =
         characterRepository
-            .findByUuid(characterUuid)
-            .orElseThrow(
-                () -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + characterUuid));
+            .findById(characterId)
+            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + characterId));
 
     // Note: Campaign verification should ideally happen here via a CampaignPort
     // For now, we trust the ID or handle it in the persistence adapter

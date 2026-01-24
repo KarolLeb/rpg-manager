@@ -13,7 +13,6 @@ import com.rpgmanager.backend.user.domain.model.UserDomain;
 import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -67,7 +66,6 @@ public class CampaignApplicationService
             .description(request.getDescription())
             .status(CampaignDomain.CampaignStatus.ACTIVE)
             .creationDate(OffsetDateTime.now())
-            .uuid(UUID.randomUUID())
             .gameMasterId(gameMaster.getId())
             .gameMasterName(gameMaster.getUsername())
             .build();

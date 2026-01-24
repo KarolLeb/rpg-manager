@@ -15,8 +15,8 @@
   },
   "lint-staged": {
     "backend/src/**/*.java": [
-      "cmd /c \"cd backend && mvnw.cmd -q -B spotless:apply -Dspotless.check.skip=true\"",
-      "cmd /c \"cd backend && mvnw.cmd -q -B test -Dgroups=unit\""
+      "cmd /c \"cd backend && mvnw.cmd -q -B spotless:apply -Dspotless.check.skip=true & rem\"",
+      "cmd /c \"cd backend && mvnw.cmd -q -B test -Dgroups=unit & rem\""
     ],
     "frontend/src/**/*.{ts,html}": [
       "cmd /c \"cd frontend && npm run lint & rem\"",

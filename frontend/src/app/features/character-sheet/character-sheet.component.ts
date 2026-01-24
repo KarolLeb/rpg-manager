@@ -20,7 +20,7 @@ export class CharacterSheetPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   characterForm: FormGroup;
-  currentCharacterId?: string;
+  currentCharacterId?: number;
   isLoading = true;
 
   physicalAttributes: AttributeConfig[] = [
@@ -55,7 +55,7 @@ export class CharacterSheetPageComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.currentCharacterId = id;
+      this.currentCharacterId = +id;
       this.characterService.getCharacter(this.currentCharacterId).subscribe({
         next: (character: Character) => {
           this.loadCharacterData(character);
@@ -90,7 +90,7 @@ export class CharacterSheetPageComponent implements OnInit {
     });
 
     const characterToSave: Character = {
-      uuid: this.currentCharacterId,
+      id: this.currentCharacterId,
       name: formVal.info.name,
       characterClass: formVal.info.profession,
       level: 1,
