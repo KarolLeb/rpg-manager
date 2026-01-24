@@ -7,25 +7,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.rpgmanager.backend.BaseIntegrationTest;
 import com.rpgmanager.backend.campaign.application.dto.CreateCampaignRequest;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
-import com.rpgmanager.backend.config.TestContainersConfig;
 import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUserRepository;
 import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest
-@Import(TestContainersConfig.class)
-class CampaignIntegrationTest {
+class CampaignIntegrationTest extends BaseIntegrationTest {
 
   private MockMvc mockMvc;
 

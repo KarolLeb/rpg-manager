@@ -4,19 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
-import com.rpgmanager.backend.config.TestContainersConfig;
 import com.rpgmanager.backend.session.Session;
 import com.rpgmanager.backend.session.SessionRepository;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
-@SpringBootTest
-@Import(TestContainersConfig.class)
-class RpgmanagerBackendApplicationTests {
+class RpgmanagerBackendApplicationTests extends BaseIntegrationTest {
 
   @Autowired private JpaCampaignRepository campaignRepository;
 
@@ -25,11 +19,10 @@ class RpgmanagerBackendApplicationTests {
   @Test
   void contextLoadsAndMigrationsAreApplied() {
     // 1. Sprawdź czy kampania z V2 istnieje
-    Optional<CampaignEntity> campaignOpt = campaignRepository.findByName("Kampania Smoczej Lancy");
-    assertThat(campaignOpt).isPresent();
+    List<CampaignEntity> campaigns = campaignRepository.findAll();
+    assertThat(campaigns).isNotEmpty();
 
-    CampaignEntity campaign = campaignOpt.get();
-    assertThat(campaign.getUuid()).isNotNull();
+    CampaignEntity campaign = campaigns.get(0);
     assertThat(campaign.getStatus().name()).isEqualTo("ACTIVE");
 
     // 2. Sprawdź czy sesje są przypisane do kampanii

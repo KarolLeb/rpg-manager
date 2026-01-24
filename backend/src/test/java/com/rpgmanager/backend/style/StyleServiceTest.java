@@ -2,15 +2,11 @@ package com.rpgmanager.backend.style;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.rpgmanager.backend.config.TestContainersConfig;
+import com.rpgmanager.backend.BaseIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
-@SpringBootTest
-@Import(TestContainersConfig.class)
-class StyleServiceTest {
+class StyleServiceTest extends BaseIntegrationTest {
 
   @Autowired private StyleService styleService;
 

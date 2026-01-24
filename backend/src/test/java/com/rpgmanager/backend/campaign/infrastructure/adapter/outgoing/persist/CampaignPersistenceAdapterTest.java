@@ -10,7 +10,6 @@ import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUs
 import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,17 +45,6 @@ class CampaignPersistenceAdapterTest {
 
     assertThat(result).isPresent();
     verify(jpaCampaignRepository).findById(1L);
-  }
-
-  @Test
-  void findByUuid_shouldReturnDomain() {
-    UUID uuid = UUID.randomUUID();
-    CampaignEntity entity = Instancio.create(CampaignEntity.class);
-    when(jpaCampaignRepository.findByUuid(uuid)).thenReturn(Optional.of(entity));
-
-    Optional<CampaignDomain> result = adapter.findByUuid(uuid);
-
-    assertThat(result).isPresent();
   }
 
   @Test

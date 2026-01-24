@@ -7,7 +7,6 @@ import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUs
 import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,11 +27,6 @@ public class CampaignPersistenceAdapter implements CampaignRepository {
   @Override
   public Optional<CampaignDomain> findById(Long id) {
     return jpaCampaignRepository.findById(id).map(CampaignPersistenceMapper::toDomain);
-  }
-
-  @Override
-  public Optional<CampaignDomain> findByUuid(UUID uuid) {
-    return jpaCampaignRepository.findByUuid(uuid).map(CampaignPersistenceMapper::toDomain);
   }
 
   @Override
