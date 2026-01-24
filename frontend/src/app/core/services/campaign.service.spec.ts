@@ -26,8 +26,8 @@ describe('CampaignService', () => {
 
   it('should retrieve all campaigns', () => {
     const dummyCampaigns: Campaign[] = [
-      { id: 1, uuid: 'uuid1', name: 'Campaign 1', description: 'Desc 1', creationDate: '2023-01-01T00:00:00Z', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' },
-      { id: 2, uuid: 'uuid2', name: 'Campaign 2', description: 'Desc 2', creationDate: '2023-01-02T00:00:00Z', status: 'FINISHED', gameMasterId: 10, gameMasterName: 'GM1' }
+      { id: 1, name: 'Campaign 1', description: 'Desc 1', creationDate: '2023-01-01T00:00:00Z', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' },
+      { id: 2, name: 'Campaign 2', description: 'Desc 2', creationDate: '2023-01-02T00:00:00Z', status: 'FINISHED', gameMasterId: 10, gameMasterName: 'GM1' }
     ];
 
     service.getCampaigns().subscribe(campaigns => {
@@ -41,7 +41,7 @@ describe('CampaignService', () => {
   });
 
   it('should retrieve a campaign by ID', () => {
-    const dummyCampaign: Campaign = { id: 1, uuid: 'uuid1', name: 'Campaign 1', description: 'Desc 1', creationDate: '2023-01-01T00:00:00Z', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' };
+    const dummyCampaign: Campaign = { id: 1, name: 'Campaign 1', description: 'Desc 1', creationDate: '2023-01-01T00:00:00Z', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' };
 
     service.getCampaign(1).subscribe(campaign => {
       expect(campaign).toEqual(dummyCampaign);
@@ -54,7 +54,7 @@ describe('CampaignService', () => {
 
   it('should create a campaign', () => {
     const newCampaignRequest: CreateCampaignRequest = { name: 'New Campaign', description: 'New Desc', gameMasterId: 10 };
-    const createdCampaign: Campaign = { id: 1, uuid: 'uuid1', name: 'New Campaign', description: 'New Desc', creationDate: '2023-01-01T00:00:00Z', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' };
+    const createdCampaign: Campaign = { id: 1, name: 'New Campaign', description: 'New Desc', creationDate: '2023-01-01T00:00:00Z', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' };
 
     service.createCampaign(newCampaignRequest).subscribe(campaign => {
       expect(campaign).toEqual(createdCampaign);
@@ -68,7 +68,7 @@ describe('CampaignService', () => {
 
   it('should update a campaign', () => {
     const updateRequest: CreateCampaignRequest = { name: 'Updated Campaign', description: 'Updated Desc', gameMasterId: 10 };
-    const updatedCampaign: Campaign = { id: 1, uuid: 'uuid1', name: 'Updated Campaign', description: 'Updated Desc', creationDate: '2023-01-01T00:00:00Z', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' };
+    const updatedCampaign: Campaign = { id: 1, name: 'Updated Campaign', description: 'Updated Desc', creationDate: '2023-01-01T00:00:00Z', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' };
 
     service.updateCampaign(1, updateRequest).subscribe(campaign => {
       expect(campaign).toEqual(updatedCampaign);

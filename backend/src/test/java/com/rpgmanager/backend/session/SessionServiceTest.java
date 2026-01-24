@@ -8,7 +8,6 @@ import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.C
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
 import java.time.OffsetDateTime;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +34,6 @@ class SessionServiceTest {
     session =
         Session.builder()
             .id(100L)
-            .uuid(UUID.randomUUID())
             .campaign(campaign)
             .name("Session 1")
             .sessionDate(OffsetDateTime.now())

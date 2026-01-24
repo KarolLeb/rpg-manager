@@ -13,7 +13,7 @@ describe('CharacterSheetPageComponent', () => {
   let mockCharacterService: jasmine.SpyObj<CharacterService>;
 
   const dummyCharacter: Character = {
-    uuid: '1',
+    id: 1,
     name: 'Test Char',
     characterClass: 'Soldier',
     level: 1,
@@ -55,7 +55,7 @@ describe('CharacterSheetPageComponent', () => {
 
   it('should load character data on init when id is provided', () => {
     fixture.detectChanges();
-    expect(component.currentCharacterId).toBe('1');
+    expect(component.currentCharacterId).toBe(1);
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
     
     // Check if attribute groups are created
@@ -74,7 +74,7 @@ describe('CharacterSheetPageComponent', () => {
 
     expect(mockCharacterService.updateCharacter).toHaveBeenCalled();
     const args = mockCharacterService.updateCharacter.calls.mostRecent().args;
-    expect(args[0]).toBe('1');
+    expect(args[0]).toBe(1);
     expect(args[1].name).toBe('Updated Char');
     
     // Check if stats are correctly serialized back

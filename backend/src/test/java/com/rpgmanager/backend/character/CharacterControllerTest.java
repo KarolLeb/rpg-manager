@@ -19,7 +19,6 @@ import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import com.rpgmanager.backend.character.infrastructure.adapter.in.web.CharacterController;
 import com.rpgmanager.backend.security.JwtUtil;
 import java.util.List;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,14 +48,7 @@ class CharacterControllerTest {
   void shouldReturnAllCharactersAsResponses() throws Exception {
     CharacterResponse response =
         new CharacterResponse(
-            UUID.randomUUID(),
-            "Test Char",
-            "Warrior",
-            5,
-            "Str: 10",
-            "Owner",
-            "Campaign",
-            "PERMANENT");
+            1L, "Test Char", "Warrior", 5, "Str: 10", "Owner", "Campaign", "PERMANENT");
 
     given(getCharacterUseCase.getAllCharacters()).willReturn(List.of(response));
 
@@ -69,7 +61,7 @@ class CharacterControllerTest {
 
   @Test
   void shouldUpdateCharacterAndReturnResponse() throws Exception {
-    UUID charId = UUID.randomUUID();
+    Long charId = 1L;
     CharacterDomain updateRequest =
         CharacterDomain.builder().name("New Name").level(2).stats("Str: 12").build();
 
@@ -94,7 +86,7 @@ class CharacterControllerTest {
 
   @Test
   void shouldThrowExceptionWhenUpdatingNonExistentCharacter() throws Exception {
-    UUID charId = UUID.randomUUID();
+    Long charId = 1L;
     CharacterDomain updateRequest = CharacterDomain.builder().name("Ghost").build();
 
     given(updateCharacterUseCase.updateCharacter(eq(charId), any(CharacterDomain.class)))

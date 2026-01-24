@@ -21,7 +21,6 @@ class CampaignPersistenceMapperTest {
 
     assertThat(domain).isNotNull();
     assertThat(domain.getId()).isEqualTo(entity.getId());
-    assertThat(domain.getUuid()).isEqualTo(entity.getUuid());
     assertThat(domain.getName()).isEqualTo(entity.getName());
     assertThat(domain.getStatus().name()).isEqualTo(entity.getStatus().name());
     assertThat(domain.getGameMasterId()).isEqualTo(gm.getId());

@@ -23,7 +23,7 @@ class CharacterPersistenceMapperTest {
     CharacterDomain domain = CharacterPersistenceMapper.toDomain(entity);
 
     assertThat(domain).isNotNull();
-    assertThat(domain.getUuid()).isEqualTo(entity.getUuid());
+    assertThat(domain.getId()).isEqualTo(entity.getId());
     assertThat(domain.getCharacterType().name()).isEqualTo(entity.getCharacterType().name());
   }
 
@@ -37,7 +37,6 @@ class CharacterPersistenceMapperTest {
     CharacterEntity entity = CharacterPersistenceMapper.toEntity(domain, user, campaign);
 
     assertThat(entity).isNotNull();
-    assertThat(entity.getUuid()).isEqualTo(domain.getUuid());
     assertThat(entity.getUser()).isEqualTo(user);
     assertThat(entity.getCampaign()).isEqualTo(campaign);
   }

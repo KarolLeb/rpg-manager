@@ -26,7 +26,7 @@ describe('CharacterService', () => {
 
   it('should fetch characters', () => {
     const mockCharacters: Character[] = [
-      { uuid: '1', name: 'Char 1', characterClass: 'Class 1', level: 1, stats: '{}' }
+      { id: 1, name: 'Char 1', characterClass: 'Class 1', level: 1, stats: '{}' }
     ];
 
     service.getCharacters().subscribe(characters => {
@@ -40,9 +40,9 @@ describe('CharacterService', () => {
   });
 
   it('should update character', () => {
-    const mockCharacter: Character = { uuid: '1', name: 'Updated Char', characterClass: 'Class 1', level: 1, stats: '{}' };
+    const mockCharacter: Character = { id: 1, name: 'Updated Char', characterClass: 'Class 1', level: 1, stats: '{}' };
 
-    service.updateCharacter('1', mockCharacter).subscribe(character => {
+    service.updateCharacter(1, mockCharacter).subscribe(character => {
       expect(character).toEqual(mockCharacter);
     });
 

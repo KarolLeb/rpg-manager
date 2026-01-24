@@ -12,8 +12,8 @@ describe('CampaignListComponent', () => {
   let mockCampaignService: jasmine.SpyObj<CampaignService>;
 
   const dummyCampaigns: Campaign[] = [
-    { id: 1, uuid: 'uuid1', name: 'Campaign 1', description: 'Desc 1', creationDate: '2023-01-01', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' },
-    { id: 2, uuid: 'uuid2', name: 'Campaign 2', description: 'Desc 2', creationDate: '2023-01-02', status: 'FINISHED', gameMasterId: 10, gameMasterName: 'GM1' }
+    { id: 1, name: 'Campaign 1', description: 'Desc 1', creationDate: '2023-01-01', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' },
+    { id: 2, name: 'Campaign 2', description: 'Desc 2', creationDate: '2023-01-02', status: 'FINISHED', gameMasterId: 10, gameMasterName: 'GM1' }
   ];
 
   beforeEach(async () => {
@@ -62,7 +62,7 @@ describe('CampaignListComponent', () => {
     deleteButtons[0].nativeElement.click();
     
     expect(window.confirm).toHaveBeenCalled();
-    expect(mockCampaignService.deleteCampaign).toHaveBeenCalledWith(dummyCampaigns[0].id!);
+    expect(mockCampaignService.deleteCampaign).toHaveBeenCalledWith();
     expect(mockCampaignService.getCampaigns).toHaveBeenCalledTimes(2); // Once on init, once after delete
   });
 

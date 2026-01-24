@@ -15,7 +15,7 @@ describe('CampaignFormComponent', () => {
   let paramsSubject: BehaviorSubject<any>;
 
   const dummyCampaign: Campaign = {
-    id: 1, uuid: 'uuid1', name: 'Test Campaign', description: 'Test Desc', 
+    id: 1, name: 'Test Campaign', description: 'Test Desc', 
     creationDate: '2023-01-01', status: 'ACTIVE', gameMasterId: 1, gameMasterName: 'GM'
   };
 
