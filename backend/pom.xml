@@ -58,6 +58,9 @@
 		<sonar.links.scm>https://github.com/KarolLeb/rpg-manager</sonar.links.scm>
 		<sonar.links.issue>https://github.com/KarolLeb/rpg-manager/issues</sonar.links.issue>
 		<sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
+		<sonar.pitest.mode>reuseReport</sonar.pitest.mode>
+		<sonar.pitest.reportsDirectory>target/pit-reports</sonar.pitest.reportsDirectory>
+		<sonar.externalIssuesReportPaths>target/sonar-pitest.json</sonar.externalIssuesReportPaths>
 		<!-- Security Patch Overrides -->
 		<spring-framework.version>6.2.2</spring-framework.version>
 		<tomcat.version>10.1.40</tomcat.version>
@@ -417,7 +420,7 @@
 						<param>com.rpgmanager.backend.*.application.dto.*</param>
 						<param>com.rpgmanager.backend.RpgManagerBackendApplication</param>
 					</excludedClasses>
-					<mutationThreshold>0</mutationThreshold> <!-- Set to a higher value like 80 to fail build if logic isn't verified -->
+					<mutationThreshold>80</mutationThreshold> <!-- Global baseline; Domain logic target is 90%, Security 100% -->
 					<outputFormats>
 						<value>HTML</value>
 						<value>XML</value>
