@@ -30,6 +30,8 @@
 		<java.version>21</java.version>
 		<lombok.version>1.18.36</lombok.version>
 		<testcontainers.version>1.20.4</testcontainers.version>
+		<pitest.version>1.17.0</pitest.version>
+		<pitest-junit5.version>1.2.1</pitest-junit5.version>
 		<spring-cloud.version>2024.0.0</spring-cloud.version>
 		<sonar.projectKey>RPG-manager-backend</sonar.projectKey>
 		<sonar.projectName>RPG Manager Backend</sonar.projectName>
@@ -390,6 +392,37 @@
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>4.0.0.4121</version>
+			</plugin>
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>${pitest.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-junit5-plugin</artifactId>
+						<version>${pitest-junit5.version}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<targetClasses>
+						<param>com.rpgmanager.backend.*</param>
+					</targetClasses>
+					<targetTests>
+						<param>com.rpgmanager.backend.*</param>
+					</targetTests>
+					<excludedClasses>
+						<param>com.rpgmanager.backend.config.*</param>
+						<param>com.rpgmanager.backend.*.infrastructure.adapter.outgoing.persist.*Entity</param>
+						<param>com.rpgmanager.backend.*.application.dto.*</param>
+						<param>com.rpgmanager.backend.RpgManagerBackendApplication</param>
+					</excludedClasses>
+					<mutationThreshold>0</mutationThreshold> <!-- Set to a higher value like 80 to fail build if logic isn't verified -->
+					<outputFormats>
+						<value>HTML</value>
+						<value>XML</value>
+					</outputFormats>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.diffplug.spotless</groupId>

@@ -14,6 +14,7 @@ Follow idiomatic practices for the chosen programming language and framework. Pr
 - **Error Handling**: Implement robust error handling and logging to ensure system stability and ease of debugging.
 - **Configuration Management**: Externalize configuration from code. Use environment variables or configuration files. Do not commit secrets to version control.
 - **Testing**: Write unit tests for business logic and integration tests for critical paths. Aim for high test coverage, especially on new code.
+  - **Mutation Testing**: Use PITest (`mvn pitest:mutationCoverage`) to verify assertion quality. Mutation testing ensures your assertions actually verify business logic, not just execute lines.
 
 ## Language-Specific Guidelines
 

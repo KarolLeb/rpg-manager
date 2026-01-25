@@ -79,6 +79,13 @@ cd backend
 ./mvnw test
 ```
 
+Run Mutation Testing (PITest) to verify assertion quality:
+```powershell
+cd backend
+./mvnw pitest:mutationCoverage
+```
+The report will be generated in `backend/target/pit-reports/index.html`.
+
 ### Frontend
 Run unit tests with Karma:
 ```powershell
