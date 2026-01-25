@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,12 +64,48 @@ class SessionServiceTest {
   }
 
   @Test
+  void createSession_shouldThrowIfCampaignNotFound() {
+    CreateSessionRequest request = new CreateSessionRequest(1L, "N", "D", null);
+    when(campaignRepository.findById(1L)).thenReturn(Optional.empty());
+
+    org.junit.jupiter.api.Assertions.assertThrows(
+        RuntimeException.class, () -> sessionService.createSession(request));
+  }
+
+  @Test
   void getSession_shouldReturnDTO() {
     when(sessionRepository.findById(100L)).thenReturn(Optional.of(session));
 
     SessionDto result = sessionService.getSession(100L);
 
     assertThat(result.getId()).isEqualTo(100L);
+  }
+
+  @Test
+  void getSession_shouldThrowIfNotFound() {
+    when(sessionRepository.findById(1L)).thenReturn(Optional.empty());
+    org.junit.jupiter.api.Assertions.assertThrows(
+        RuntimeException.class, () -> sessionService.getSession(1L));
+  }
+
+  @Test
+  void getSessionsByCampaign_shouldReturnList() {
+    when(sessionRepository.findByCampaignId(1L)).thenReturn(List.of(session));
+    List<SessionDto> result = sessionService.getSessionsByCampaign(1L);
+    assertThat(result).hasSize(1);
+  }
+
+  @Test
+  void updateSession_shouldUpdateAndReturnDTO() {
+    CreateSessionRequest request =
+        new CreateSessionRequest(1L, "Updated", "New Desc", OffsetDateTime.now());
+    when(sessionRepository.findById(100L)).thenReturn(Optional.of(session));
+    when(sessionRepository.save(any())).thenReturn(session);
+
+    SessionDto result = sessionService.updateSession(100L, request);
+
+    assertThat(result.getName()).isEqualTo("Updated");
+    verify(sessionRepository).save(any());
   }
 
   @Test

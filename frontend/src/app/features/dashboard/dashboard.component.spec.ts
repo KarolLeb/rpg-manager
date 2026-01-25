@@ -4,7 +4,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { BehaviorSubject, of } from 'rxjs';
+import { CampaignService } from '../../core/services/campaign.service';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { User } from '../../core/models/auth.model';
 
 describe('DashboardComponent', () => {
@@ -52,5 +53,24 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.player-dashboard')).toBeTruthy();
+  });
+
+  it('should handle error when loading campaigns', () => {
+    const campaignService = TestBed.inject(CampaignService);
+    spyOn(campaignService, 'getCampaigns').and.returnValue(throwError(() => new Error('Error')));
+    
+    userSubject.next({ username: 'gm', role: 'GM' });
+    fixture.detectChanges();
+    
+    expect(component.error).toBe('Failed to load campaigns.');
+    expect(component.isLoading).toBeFalse();
+  });
+
+  it('should not load campaigns for non-GM users', () => {
+    userSubject.next({ username: 'player', role: 'PLAYER' });
+    fixture.detectChanges();
+    
+    expect(component.isLoading).toBeFalse();
+    expect(component.campaigns.length).toBe(0);
   });
 });

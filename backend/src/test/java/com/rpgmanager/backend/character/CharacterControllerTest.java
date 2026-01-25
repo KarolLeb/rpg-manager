@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,6 +61,20 @@ class CharacterControllerTest {
   }
 
   @Test
+  void shouldReturnCharacterById() throws Exception {
+    CharacterResponse response =
+        new CharacterResponse(
+            1L, "Test Char", "Warrior", 5, "Str: 10", "Owner", "Campaign", "PERMANENT");
+
+    given(getCharacterUseCase.getCharacter(1L)).willReturn(response);
+
+    mockMvc
+        .perform(get("/api/characters/1").with(user("user")))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value("Test Char"));
+  }
+
+  @Test
   void shouldUpdateCharacterAndReturnResponse() throws Exception {
     Long charId = 1L;
     CharacterDomain updateRequest =
@@ -103,5 +118,19 @@ class CharacterControllerTest {
                   .contentType(MediaType.APPLICATION_JSON)
                   .content(content));
         });
+  }
+
+  @Test
+  void shouldJoinCampaign() throws Exception {
+    CharacterResponse response =
+        new CharacterResponse(
+            1L, "Test Char", "Warrior", 5, "Str: 10", "Owner", "Campaign", "PERMANENT");
+
+    given(joinCampaignUseCase.joinCampaign(1L, 1L)).willReturn(response);
+
+    mockMvc
+        .perform(post("/api/characters/1/join-campaign/1").with(csrf()).with(user("user")))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.campaignName").value("Campaign"));
   }
 }

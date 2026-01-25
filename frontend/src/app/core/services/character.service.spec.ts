@@ -50,4 +50,16 @@ describe('CharacterService', () => {
     expect(req.request.method).toBe('PUT');
     req.flush(mockCharacter);
   });
+
+  it('should fetch single character', () => {
+    const mockCharacter: Character = { id: 1, name: 'Char 1', characterClass: 'Class 1', level: 1, stats: '{}' };
+
+    service.getCharacter(1).subscribe(character => {
+      expect(character).toEqual(mockCharacter);
+    });
+
+    const req = httpMock.expectOne('http://localhost:8080/api/characters/1');
+    expect(req.request.method).toBe('GET');
+    req.flush(mockCharacter);
+  });
 });

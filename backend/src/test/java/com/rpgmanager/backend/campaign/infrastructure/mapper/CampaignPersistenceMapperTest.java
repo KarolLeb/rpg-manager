@@ -1,13 +1,40 @@
 package com.rpgmanager.backend.campaign.infrastructure.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 class CampaignPersistenceMapperTest {
+
+  @Test
+  void constructor_shouldThrowException() throws Exception {
+    Constructor<CampaignPersistenceMapper> constructor =
+        CampaignPersistenceMapper.class.getDeclaredConstructor();
+    constructor.setAccessible(true);
+    InvocationTargetException exception =
+        assertThrows(InvocationTargetException.class, constructor::newInstance);
+    assertThat(exception.getCause()).isInstanceOf(UnsupportedOperationException.class);
+  }
+
+  @Test
+  void toDomain_shouldHandleNullFields() {
+    CampaignEntity entity = new CampaignEntity();
+    CampaignDomain domain = CampaignPersistenceMapper.toDomain(entity);
+    assertThat(domain.getStatus()).isNull();
+  }
+
+  @Test
+  void toEntity_shouldHandleNullFields() {
+    CampaignDomain domain = CampaignDomain.builder().build();
+    CampaignEntity entity = CampaignPersistenceMapper.toEntity(domain);
+    assertThat(entity.getStatus()).isNull();
+  }
 
   @Test
   void toDomain_shouldMapAllFields() {

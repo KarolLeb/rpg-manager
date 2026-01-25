@@ -33,6 +33,7 @@
 		<sonar.projectKey>RPG-manager-backend</sonar.projectKey>
 		<sonar.projectName>RPG Manager Backend</sonar.projectName>
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.qualitygate.wait>true</sonar.qualitygate.wait>
 		<sonar.java.binaries>target/classes</sonar.java.binaries>
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.coverage.exclusions>
