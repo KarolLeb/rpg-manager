@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Domain model representing a Character. */
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,6 +23,7 @@ public class CharacterDomain {
   private Long campaignId; // Needed for joining campaigns
   private CharacterType characterType;
 
+  /** Type of the character. */
   public enum CharacterType {
     PERMANENT,
     TEMPORARY

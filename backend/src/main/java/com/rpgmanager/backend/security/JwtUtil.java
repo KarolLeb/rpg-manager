@@ -10,6 +10,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/** Utility class for handling JWT tokens. */
 @Component
 public class JwtUtil {
 
@@ -23,6 +24,12 @@ public class JwtUtil {
     return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
   }
 
+  /**
+   * Generates a JWT token for a given username.
+   *
+   * @param username the username
+   * @return the generated token
+   */
   public String generateToken(String username) {
     return Jwts.builder()
         .subject(username)
@@ -32,10 +39,24 @@ public class JwtUtil {
         .compact();
   }
 
+  /**
+   * Extracts the username from a JWT token.
+   *
+   * @param token the JWT token
+   * @return the username
+   */
   public String extractUsername(String token) {
     return extractClaim(token, Claims::getSubject);
   }
 
+  /**
+   * Extracts a specific claim from a JWT token.
+   *
+   * @param token the JWT token
+   * @param claimsResolver the function to resolve the claim
+   * @param <T> the type of the claim
+   * @return the claim value
+   */
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
     final Claims claims = extractAllClaims(token);
     return claimsResolver.apply(claims);
@@ -45,6 +66,13 @@ public class JwtUtil {
     return Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
   }
 
+  /**
+   * Validates a JWT token against a username.
+   *
+   * @param token the JWT token
+   * @param username the username to validate against
+   * @return true if the token is valid, false otherwise
+   */
   public boolean validateToken(String token, String username) {
     final String extractedUsername = extractUsername(token);
     return (extractedUsername.equals(username) && !isTokenExpired(token));

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Domain model representing a Campaign. */
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class CampaignDomain {
   private Long gameMasterId;
   private String gameMasterName;
 
+  /** Status of the campaign. */
   public enum CampaignStatus {
     ACTIVE,
     FINISHED,

@@ -1,12 +1,21 @@
 package com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Entity representing a Campaign in the database. */
 @Entity
 @Table(name = "campaigns")
 @Data
@@ -34,6 +43,7 @@ public class CampaignEntity {
   @Column(name = "game_master_id", nullable = false)
   private Long gameMasterId;
 
+  /** Sets the creation date to the current timestamp before persisting if it's null. */
   @PrePersist
   protected void onCreate() {
     if (creationDate == null) {
@@ -41,6 +51,7 @@ public class CampaignEntity {
     }
   }
 
+  /** Status of the campaign. */
   public enum CampaignStatus {
     ACTIVE,
     FINISHED,

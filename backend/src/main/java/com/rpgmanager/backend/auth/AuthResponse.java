@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Response object for authentication. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

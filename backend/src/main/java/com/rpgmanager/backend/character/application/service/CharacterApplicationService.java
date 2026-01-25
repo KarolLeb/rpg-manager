@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Service implementation for Character application use cases. */
 @Service
 @RequiredArgsConstructor
 public class CharacterApplicationService
@@ -21,6 +22,11 @@ public class CharacterApplicationService
   private final CharacterRepository characterRepository;
   private final CharacterApplicationMapper characterApplicationMapper;
 
+  /**
+   * Retrieves all characters.
+   *
+   * @return a list of all character responses
+   */
   @Override
   @Transactional(readOnly = true)
   public List<CharacterResponse> getAllCharacters() {
@@ -29,6 +35,12 @@ public class CharacterApplicationService
         .toList();
   }
 
+  /**
+   * Retrieves a specific character by ID.
+   *
+   * @param id the character ID
+   * @return the character response
+   */
   @Override
   @Transactional(readOnly = true)
   public CharacterResponse getCharacter(Long id) {
@@ -39,6 +51,13 @@ public class CharacterApplicationService
     return characterApplicationMapper.toResponse(character);
   }
 
+  /**
+   * Updates an existing character.
+   *
+   * @param id the ID of the character to update
+   * @param characterDetails the new character details
+   * @return the updated character response
+   */
   @Override
   @Transactional
   public CharacterResponse updateCharacter(Long id, CharacterDomain characterDetails) {
@@ -56,6 +75,13 @@ public class CharacterApplicationService
     return characterApplicationMapper.toResponse(savedCharacter);
   }
 
+  /**
+   * Allows a character to join a campaign.
+   *
+   * @param characterId the ID of the character
+   * @param campaignId the ID of the campaign
+   * @return the updated character response
+   */
   @Override
   @Transactional
   public CharacterResponse joinCampaign(Long characterId, Long campaignId) {

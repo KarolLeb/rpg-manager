@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Adapter implementation for Campaign persistence. */
 @Component
 @RequiredArgsConstructor
 public class CampaignPersistenceAdapter implements CampaignRepository {
@@ -16,6 +17,11 @@ public class CampaignPersistenceAdapter implements CampaignRepository {
   private final JpaCampaignRepository jpaCampaignRepository;
   private final UserRepositoryPort userRepository;
 
+  /**
+   * Retrieves all campaigns.
+   *
+   * @return a list of all campaigns
+   */
   @Override
   public List<CampaignDomain> findAll() {
     return jpaCampaignRepository.findAll().stream()
@@ -24,6 +30,12 @@ public class CampaignPersistenceAdapter implements CampaignRepository {
         .toList();
   }
 
+  /**
+   * Finds a campaign by its ID.
+   *
+   * @param id the campaign ID
+   * @return an optional containing the campaign if found
+   */
   @Override
   public Optional<CampaignDomain> findById(Long id) {
     return jpaCampaignRepository
@@ -32,6 +44,12 @@ public class CampaignPersistenceAdapter implements CampaignRepository {
         .map(this::enrichWithGameMasterName);
   }
 
+  /**
+   * Saves a campaign.
+   *
+   * @param campaign the campaign domain object to save
+   * @return the saved campaign domain object
+   */
   @Override
   public CampaignDomain save(CampaignDomain campaign) {
     CampaignEntity entity = CampaignPersistenceMapper.toEntity(campaign);
@@ -48,11 +66,22 @@ public class CampaignPersistenceAdapter implements CampaignRepository {
     return campaign;
   }
 
+  /**
+   * Deletes a campaign by its ID.
+   *
+   * @param id the campaign ID
+   */
   @Override
   public void deleteById(Long id) {
     jpaCampaignRepository.deleteById(id);
   }
 
+  /**
+   * Checks if a campaign exists by its ID.
+   *
+   * @param id the campaign ID
+   * @return true if the campaign exists, false otherwise
+   */
   @Override
   public boolean existsById(Long id) {
     return jpaCampaignRepository.existsById(id);

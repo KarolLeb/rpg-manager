@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** DTO for the campaign creation request payload. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Request object for user registration. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

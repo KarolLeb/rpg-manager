@@ -5,9 +5,16 @@ import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/** Mapper for converting between Character domain objects and response DTOs. */
 @Mapper(componentModel = "spring")
 public interface CharacterApplicationMapper {
 
+  /**
+   * Converts a CharacterDomain object to a CharacterResponse DTO.
+   *
+   * @param domain the domain object
+   * @return the response DTO
+   */
   @Mapping(
       target = "characterType",
       expression =

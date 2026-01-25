@@ -3,12 +3,19 @@ package com.rpgmanager.backend.campaign.infrastructure.mapper;
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 
+/** Mapper for converting between Campaign domain objects and persistence entities. */
 public class CampaignPersistenceMapper {
 
   private CampaignPersistenceMapper() {
     throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
+  /**
+   * Converts a CampaignEntity to a CampaignDomain object.
+   *
+   * @param entity the entity to convert
+   * @return the domain object
+   */
   public static CampaignDomain toDomain(CampaignEntity entity) {
     if (entity == null) {
       return null;
@@ -26,6 +33,12 @@ public class CampaignPersistenceMapper {
         .build();
   }
 
+  /**
+   * Converts a CampaignDomain object to a CampaignEntity.
+   *
+   * @param domain the domain object to convert
+   * @return the entity
+   */
   public static CampaignEntity toEntity(CampaignDomain domain) {
     if (domain == null) {
       return null;

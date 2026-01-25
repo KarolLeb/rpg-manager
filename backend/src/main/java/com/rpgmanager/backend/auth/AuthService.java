@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Service for handling authentication and user registration. */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -20,6 +21,12 @@ public class AuthService {
   private final UserRepositoryPort userRepository;
   private final PasswordEncoder passwordEncoder;
 
+  /**
+   * Authenticates a user and generates a JWT token.
+   *
+   * @param request the login request containing username and password
+   * @return the authentication response containing the JWT token
+   */
   public AuthResponse login(LoginRequest request) {
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
@@ -34,6 +41,11 @@ public class AuthService {
     return new AuthResponse(token, user.getUsername(), user.getRole().name());
   }
 
+  /**
+   * Registers a new user.
+   *
+   * @param request the registration request containing user details
+   */
   @Transactional
   public void register(RegisterRequest request) {
     if (userRepository.findByUsername(request.getUsername()).isPresent()) {

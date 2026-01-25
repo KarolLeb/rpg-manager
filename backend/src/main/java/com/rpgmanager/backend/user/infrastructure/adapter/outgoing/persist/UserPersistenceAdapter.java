@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Adapter implementation for User persistence. */
 @Component
 @RequiredArgsConstructor
 public class UserPersistenceAdapter implements UserRepositoryPort {
