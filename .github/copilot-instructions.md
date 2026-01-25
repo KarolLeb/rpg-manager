@@ -382,13 +382,12 @@ Principles:
 - Transparency: Exceptions must be explicit and justified in the PR.
 
 Tiered Targets:
-- Core domain logic: target ≥ 95% line/branch coverage
-- Integrations/adapters: target ≥ 85%
+- All application code: target ≥ 95% line/branch coverage
 - Generated scaffolds and spikes: opportunistic; may be exempt if tagged and justified in PR
 
 Enforcement:
-- Global threshold: CI fails if overall repository coverage < 90%
-- Module threshold: CI fails if any core module drops below its target (≥ 95%)
+- Global threshold: CI fails if overall repository coverage < 95%
+- Per-file threshold: CI fails if any file drops below target (≥ 95%)
 
 Critical Coverage (must be 100%):
 - Hot paths (performance- or user-critical flows)

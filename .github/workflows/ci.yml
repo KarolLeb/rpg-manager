@@ -96,7 +96,7 @@ jobs:
 
     - name: Enforce Coverage
       run: |
-        node scripts/enforce-coverage.js --file frontend/coverage/rpg-client/coverage-summary.json --global 90 --core 95 --critical 100
+        node scripts/enforce-coverage.js --file frontend/coverage/rpg-client/coverage-summary.json --global 95 --per-file 95 --critical 100
 
     - name: SonarQube Scan (Frontend)
       if: success() && env.ACT
