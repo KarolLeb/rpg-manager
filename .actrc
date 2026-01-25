@@ -5,3 +5,4 @@
 --container-options -v act-maven-cache:/root/.m2
 --container-options -v act-npm-cache:/root/.npm
 --container-options -v act-playwright-cache:/root/.cache/ms-playwright
+--container-options "--add-host=host.docker.internal:host-gateway"

@@ -45,7 +45,7 @@ jobs:
       if: success() && env.ACT
       run: |
         cd backend
-        SONAR_ARGS="-Dsonar.host.url=http://localhost:9000"
+        SONAR_ARGS="-Dsonar.host.url=http://host.docker.internal:9000"
         if [ ! -z "${{ secrets.SONAR_TOKEN }}" ]; then
           SONAR_ARGS="$SONAR_ARGS -Dsonar.token=${{ secrets.SONAR_TOKEN }}"
         fi
@@ -102,7 +102,7 @@ jobs:
       if: success() && env.ACT
       run: |
         cd frontend
-        npm run sonar -- -Dsonar.host.url=http://localhost:9000
+        npm run sonar -- -Dsonar.host.url=http://host.docker.internal:9000
 
     - name: Build Application
       run: |
