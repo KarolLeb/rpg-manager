@@ -15,7 +15,8 @@
     "test:e2e": "playwright test",
     "e2e": "npm run test:e2e",
     "e2e:ui": "playwright test --ui",
-    "e2e:cli": "playwright test --reporter=list"
+    "e2e:cli": "playwright test --reporter=list",
+    "stryker": "stryker run"
   },
   "private": true,
   "overrides": {
@@ -42,6 +43,10 @@
     "@angular/cli": "^19.2.19",
     "@angular/compiler-cli": "^19.2.0",
     "@playwright/test": "^1.57.0",
+    "@stryker-mutator/core": "^9.4.0",
+    "@stryker-mutator/jasmine-runner": "^9.4.0",
+    "@stryker-mutator/karma-runner": "^9.4.0",
+    "@stryker-mutator/typescript-checker": "^9.4.0",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^8.53.1",
     "@typescript-eslint/parser": "^8.53.1",

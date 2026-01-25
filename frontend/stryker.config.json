@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-mutator/master/packages/api/schema/stryker-config.json",
+  "mutate": [
+    "src/**/*.ts",
+    "!src/**/*.spec.ts",
+    "!src/**/*.test.ts",
+    "!src/**/*.mock.ts",
+    "!src/main.ts",
+    "!src/environments/*.ts"
+  ],
+  "testRunner": "karma",
+  "karma": {
+    "projectType": "angular-cli",
+    "configFile": "karma.conf.js",
+    "config": {
+      "browsers": ["ChromeHeadlessCI"]
+    }
+  },
+  "reporters": ["progress", "clear-text", "html", "json"],
+  "checkers": [],
+  "timeoutMS": 60000,
+    "thresholds": {
+      "high": 90,
+      "low": 80,
+      "break": 80
+    },
+  "tempDirName": "stryker-tmp"
+}
