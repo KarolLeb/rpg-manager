@@ -27,6 +27,7 @@ yarn-error.log
 /connect.lock
 /coverage
 /reports
+/stryker-tmp
 /.stryker-tmp
 /libpeerconnection.log
 testem.log
