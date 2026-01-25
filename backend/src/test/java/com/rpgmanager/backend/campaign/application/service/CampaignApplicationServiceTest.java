@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import com.rpgmanager.backend.campaign.application.dto.CampaignDTO;
+import com.rpgmanager.backend.campaign.application.dto.CampaignDto;
 import com.rpgmanager.backend.campaign.application.dto.CreateCampaignRequest;
 import com.rpgmanager.backend.campaign.application.mapper.CampaignApplicationMapper;
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
@@ -45,15 +45,15 @@ class CampaignApplicationServiceTest {
     request.setGameMasterId(1L);
 
     CampaignDomain savedCampaign = Instancio.create(CampaignDomain.class);
-    CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
-    campaignDTO.setName(request.getName());
-    campaignDTO.setGameMasterId(1L);
+    CampaignDto campaignDto = Instancio.create(CampaignDto.class);
+    campaignDto.setName(request.getName());
+    campaignDto.setGameMasterId(1L);
 
     when(userRepository.findById(1L)).thenReturn(Optional.of(user));
     when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(savedCampaign);
-    when(campaignApplicationMapper.toDTO(savedCampaign)).thenReturn(campaignDTO);
+    when(campaignApplicationMapper.toDto(savedCampaign)).thenReturn(campaignDto);
 
-    CampaignDTO result = campaignService.createCampaign(request);
+    CampaignDto result = campaignService.createCampaign(request);
 
     assertThat(result.getName()).isEqualTo(request.getName());
     assertThat(result.getGameMasterId()).isEqualTo(1L);
@@ -74,12 +74,12 @@ class CampaignApplicationServiceTest {
   @Test
   void getAllCampaigns_shouldReturnList() {
     CampaignDomain campaign = Instancio.create(CampaignDomain.class);
-    CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
+    CampaignDto campaignDto = Instancio.create(CampaignDto.class);
 
     when(campaignRepository.findAll()).thenReturn(java.util.List.of(campaign));
-    when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
+    when(campaignApplicationMapper.toDto(campaign)).thenReturn(campaignDto);
 
-    java.util.List<CampaignDTO> result = campaignService.getAllCampaigns();
+    java.util.List<CampaignDto> result = campaignService.getAllCampaigns();
 
     assertThat(result).hasSize(1);
   }
@@ -88,13 +88,13 @@ class CampaignApplicationServiceTest {
   void getCampaignById_shouldReturnDTO() {
     CampaignDomain campaign = Instancio.create(CampaignDomain.class);
     campaign.setId(1L);
-    CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
-    campaignDTO.setId(1L);
+    CampaignDto campaignDto = Instancio.create(CampaignDto.class);
+    campaignDto.setId(1L);
 
     when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
-    when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
+    when(campaignApplicationMapper.toDto(campaign)).thenReturn(campaignDto);
 
-    CampaignDTO result = campaignService.getCampaignById(1L);
+    CampaignDto result = campaignService.getCampaignById(1L);
 
     assertThat(result.getId()).isEqualTo(1L);
   }
@@ -116,14 +116,14 @@ class CampaignApplicationServiceTest {
     CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
     request.setGameMasterId(1L);
 
-    CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
-    campaignDTO.setName(request.getName());
+    CampaignDto campaignDto = Instancio.create(CampaignDto.class);
+    campaignDto.setName(request.getName());
 
     when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
     when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
-    when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
+    when(campaignApplicationMapper.toDto(campaign)).thenReturn(campaignDto);
 
-    CampaignDTO result = campaignService.updateCampaign(1L, request);
+    CampaignDto result = campaignService.updateCampaign(1L, request);
 
     assertThat(result.getName()).isEqualTo(request.getName());
   }
@@ -137,11 +137,11 @@ class CampaignApplicationServiceTest {
     CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
     request.setGameMasterId(null);
 
-    CampaignDTO campaignDTO = Instancio.create(CampaignDTO.class);
+    CampaignDto campaignDto = Instancio.create(CampaignDto.class);
 
     when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
     when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
-    when(campaignApplicationMapper.toDTO(campaign)).thenReturn(campaignDTO);
+    when(campaignApplicationMapper.toDto(campaign)).thenReturn(campaignDto);
 
     campaignService.updateCampaign(1L, request);
 

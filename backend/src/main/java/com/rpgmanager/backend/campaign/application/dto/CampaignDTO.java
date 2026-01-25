@@ -8,11 +8,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Data Transfer Object for Campaign information. */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CampaignDTO implements Serializable {
+public class CampaignDto implements Serializable {
   private static final long serialVersionUID = 1L;
   private Long id;
   private String name;

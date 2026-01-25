@@ -1,6 +1,6 @@
 package com.rpgmanager.backend.campaign.application.service;
 
-import com.rpgmanager.backend.campaign.application.dto.CampaignDTO;
+import com.rpgmanager.backend.campaign.application.dto.CampaignDto;
 import com.rpgmanager.backend.campaign.application.dto.CreateCampaignRequest;
 import com.rpgmanager.backend.campaign.application.mapper.CampaignApplicationMapper;
 import com.rpgmanager.backend.campaign.application.port.in.CreateCampaignUseCase;
@@ -19,6 +19,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Service implementation for Campaign application use cases. */
 @Service
 @RequiredArgsConstructor
 public class CampaignApplicationService
@@ -33,27 +34,44 @@ public class CampaignApplicationService
   private final UserRepositoryPort userRepository;
   private final CampaignApplicationMapper campaignApplicationMapper;
 
+  /**
+   * Retrieves all campaigns.
+   *
+   * @return a list of all campaign DTOs
+   */
   @Override
   @Transactional(readOnly = true)
   @Cacheable(value = "campaigns")
-  public List<CampaignDTO> getAllCampaigns() {
-    return campaignRepository.findAll().stream().map(campaignApplicationMapper::toDTO).toList();
+  public List<CampaignDto> getAllCampaigns() {
+    return campaignRepository.findAll().stream().map(campaignApplicationMapper::toDto).toList();
   }
 
+  /**
+   * Retrieves a specific campaign by ID.
+   *
+   * @param id the campaign ID
+   * @return the campaign DTO
+   */
   @Override
   @Transactional(readOnly = true)
-  public CampaignDTO getCampaignById(Long id) {
+  public CampaignDto getCampaignById(Long id) {
     CampaignDomain campaign =
         campaignRepository
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException(CAMPAIGN_NOT_FOUND_MSG + id));
-    return campaignApplicationMapper.toDTO(campaign);
+    return campaignApplicationMapper.toDto(campaign);
   }
 
+  /**
+   * Creates a new campaign.
+   *
+   * @param request the campaign creation request
+   * @return the created campaign DTO
+   */
   @Override
   @Transactional
   @CacheEvict(value = "campaigns", allEntries = true)
-  public CampaignDTO createCampaign(CreateCampaignRequest request) {
+  public CampaignDto createCampaign(CreateCampaignRequest request) {
     UserDomain gameMaster =
         userRepository
             .findById(request.getGameMasterId())
@@ -71,13 +89,20 @@ public class CampaignApplicationService
             .build();
 
     CampaignDomain savedCampaign = campaignRepository.save(campaign);
-    return campaignApplicationMapper.toDTO(savedCampaign);
+    return campaignApplicationMapper.toDto(savedCampaign);
   }
 
+  /**
+   * Updates an existing campaign.
+   *
+   * @param id the ID of the campaign to update
+   * @param request the campaign update request
+   * @return the updated campaign DTO
+   */
   @Override
   @Transactional
   @CacheEvict(value = "campaigns", allEntries = true)
-  public CampaignDTO updateCampaign(Long id, CreateCampaignRequest request) {
+  public CampaignDto updateCampaign(Long id, CreateCampaignRequest request) {
     CampaignDomain campaign =
         campaignRepository
             .findById(id)
@@ -98,9 +123,14 @@ public class CampaignApplicationService
       campaign.setGameMasterName(newGameMaster.getUsername());
     }
 
-    return campaignApplicationMapper.toDTO(campaignRepository.save(campaign));
+    return campaignApplicationMapper.toDto(campaignRepository.save(campaign));
   }
 
+  /**
+   * Deletes a campaign by ID.
+   *
+   * @param id the ID of the campaign to delete
+   */
   @Override
   @Transactional
   @CacheEvict(value = "campaigns", allEntries = true)

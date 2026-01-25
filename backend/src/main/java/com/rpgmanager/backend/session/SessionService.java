@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Service for managing game sessions. */
 @Service
 @RequiredArgsConstructor
 public class SessionService {
@@ -15,8 +16,14 @@ public class SessionService {
   private final SessionRepository sessionRepository;
   private final JpaCampaignRepository campaignRepository;
 
+  /**
+   * Creates a new session for a campaign.
+   *
+   * @param request the session creation request
+   * @return the created session DTO
+   */
   @Transactional
-  public SessionDTO createSession(CreateSessionRequest request) {
+  public SessionDto createSession(CreateSessionRequest request) {
     CampaignEntity campaign =
         campaignRepository
             .findById(request.getCampaignId())
@@ -34,25 +41,44 @@ public class SessionService {
             .build();
 
     Session savedSession = sessionRepository.save(session);
-    return toDTO(savedSession);
+    return toDto(savedSession);
   }
 
+  /**
+   * Retrieves a session by its ID.
+   *
+   * @param id the ID of the session
+   * @return the session DTO
+   */
   @Transactional(readOnly = true)
-  public SessionDTO getSession(Long id) {
+  public SessionDto getSession(Long id) {
     Session session =
         sessionRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
-    return toDTO(session);
+    return toDto(session);
   }
 
+  /**
+   * Retrieves all sessions associated with a specific campaign.
+   *
+   * @param campaignId the ID of the campaign
+   * @return a list of session DTOs
+   */
   @Transactional(readOnly = true)
-  public List<SessionDTO> getSessionsByCampaign(Long campaignId) {
-    return sessionRepository.findByCampaignId(campaignId).stream().map(this::toDTO).toList();
+  public List<SessionDto> getSessionsByCampaign(Long campaignId) {
+    return sessionRepository.findByCampaignId(campaignId).stream().map(this::toDto).toList();
   }
 
+  /**
+   * Updates an existing session.
+   *
+   * @param id the ID of the session to update
+   * @param request the updated session details
+   * @return the updated session DTO
+   */
   @Transactional
-  public SessionDTO updateSession(Long id, CreateSessionRequest request) {
+  public SessionDto updateSession(Long id, CreateSessionRequest request) {
     Session session =
         sessionRepository
             .findById(id)
@@ -62,9 +88,14 @@ public class SessionService {
     session.setDescription(request.getDescription());
     session.setSessionDate(request.getSessionDate());
 
-    return toDTO(sessionRepository.save(session));
+    return toDto(sessionRepository.save(session));
   }
 
+  /**
+   * Cancels a session.
+   *
+   * @param id the ID of the session to cancel
+   */
   @Transactional
   public void cancelSession(Long id) {
     Session session =
@@ -75,6 +106,11 @@ public class SessionService {
     sessionRepository.save(session);
   }
 
+  /**
+   * Marks a session as completed.
+   *
+   * @param id the ID of the session to complete
+   */
   @Transactional
   public void completeSession(Long id) {
     Session session =
@@ -85,8 +121,8 @@ public class SessionService {
     sessionRepository.save(session);
   }
 
-  private SessionDTO toDTO(Session session) {
-    return SessionDTO.builder()
+  private SessionDto toDto(Session session) {
+    return SessionDto.builder()
         .id(session.getId())
         .campaignId(session.getCampaign().getId())
         .campaignName(session.getCampaign().getName())

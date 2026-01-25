@@ -55,7 +55,7 @@ class SessionServiceTest {
               return s;
             });
 
-    SessionDTO result = sessionService.createSession(request);
+    SessionDto result = sessionService.createSession(request);
 
     assertThat(result.getName()).isEqualTo("New Session");
     assertThat(result.getCampaignId()).isEqualTo(1L);
@@ -66,7 +66,7 @@ class SessionServiceTest {
   void getSession_shouldReturnDTO() {
     when(sessionRepository.findById(100L)).thenReturn(Optional.of(session));
 
-    SessionDTO result = sessionService.getSession(100L);
+    SessionDto result = sessionService.getSession(100L);
 
     assertThat(result.getId()).isEqualTo(100L);
   }

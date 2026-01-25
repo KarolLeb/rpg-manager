@@ -33,7 +33,7 @@ class SessionControllerTest {
   void createSession_shouldReturnDTO() throws Exception {
     CreateSessionRequest request =
         new CreateSessionRequest(1L, "Session", "Desc", OffsetDateTime.now());
-    SessionDTO response = Instancio.create(SessionDTO.class);
+    SessionDto response = Instancio.create(SessionDto.class);
     response.setName("Session");
 
     when(sessionService.createSession(any())).thenReturn(response);
@@ -51,7 +51,7 @@ class SessionControllerTest {
   @Test
   @WithMockUser
   void getSession_shouldReturnDTO() throws Exception {
-    SessionDTO response = Instancio.create(SessionDTO.class);
+    SessionDto response = Instancio.create(SessionDto.class);
     when(sessionService.getSession(1L)).thenReturn(response);
 
     mockMvc.perform(get("/api/sessions/1")).andExpect(status().isOk());
