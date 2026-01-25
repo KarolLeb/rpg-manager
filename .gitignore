@@ -27,3 +27,6 @@ frontend/e2e-output.log
 .gemini-clipboard/
 .scannerwork/
 .scannerwork
+
+.gemini/
+gha-creds-*.json

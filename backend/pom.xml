@@ -35,6 +35,25 @@
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
 		<sonar.java.binaries>target/classes</sonar.java.binaries>
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.coverage.exclusions>
+			**/config/**,
+			**/model/**,
+			**/entity/**,
+			**/dto/**,
+			**/*Application.java
+		</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>
+			**/config/**,
+			**/model/**,
+			**/entity/**,
+			**/dto/**,
+			**/*Application.java
+		</sonar.cpd.exclusions>
+		<sonar.links.homepage>https://github.com/KarolLeb/rpg-manager</sonar.links.homepage>
+		<sonar.links.ci>https://github.com/KarolLeb/rpg-manager/actions</sonar.links.ci>
+		<sonar.links.scm>https://github.com/KarolLeb/rpg-manager</sonar.links.scm>
+		<sonar.links.issue>https://github.com/KarolLeb/rpg-manager/issues</sonar.links.issue>
+		<sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
 		<!-- Security Patch Overrides -->
 		<spring-framework.version>6.2.2</spring-framework.version>
 		<tomcat.version>10.1.40</tomcat.version>

@@ -81,7 +81,7 @@ jobs:
     - name: Lint Code
       run: |
         cd frontend
-        npm run lint
+        npm run lint:report
 
     - name: Security Audit
       run: |
@@ -96,7 +96,7 @@ jobs:
 
     - name: Enforce Coverage
       run: |
-        node scripts/enforce-coverage.js --file frontend/coverage/rpg-client/coverage-summary.json --global 74 --core 30 --critical 30
+        node scripts/enforce-coverage.js --file frontend/coverage/rpg-client/coverage-summary.json --global 90 --core 95 --critical 100
 
     - name: SonarQube Scan (Frontend)
       if: success() && env.ACT
