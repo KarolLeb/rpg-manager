@@ -1,6 +1,5 @@
 package com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist;
 
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
@@ -32,9 +31,8 @@ public class CampaignEntity {
   @Column(nullable = false, length = 20)
   private CampaignStatus status;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "game_master_id", nullable = false)
-  private UserEntity gameMaster;
+  @Column(name = "game_master_id", nullable = false)
+  private Long gameMasterId;
 
   @PrePersist
   protected void onCreate() {

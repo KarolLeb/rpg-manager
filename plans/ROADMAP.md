@@ -37,6 +37,7 @@ Strategic milestones and high-level project evolution.
 - **Jan 2026:** Achieved 100% Hexagonal Architecture compliance across all modules.
 - **Jan 2026:** Integrated Redis for campaign list caching and verified eviction logic.
 - **Jan 2026:** Established SonarQube quality gates for both Frontend and Backend.
+- **Jan 2026:** Completed Logical Decoupling of Auth/User module from Core domains.
 
 ---
 *Last Updated: 2026-01-25*

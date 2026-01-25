@@ -15,7 +15,9 @@ public class CharacterDomain {
   private String characterClass;
   private Integer level;
   private String stats;
+  private Long ownerId;
   private String ownerUsername;
+  private Long controllerId;
   private String campaignName;
   private Long campaignId; // Needed for joining campaigns
   private CharacterType characterType;

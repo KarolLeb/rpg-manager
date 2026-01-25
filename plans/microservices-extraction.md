@@ -6,8 +6,8 @@ Strategically decompose the current monolithic backend by extracting the `Admin`
 ## 3. Current status
 ```yaml
 owner: AI Agent
-state: proposed
-last_updated: 2026-01-18
+state: in progress
+last_updated: 2026-01-25
 blockers: []
 ```
 
@@ -39,7 +39,8 @@ blockers: []
 - Kubernetes deployment.
 
 ## 9. Task list
-- T-001 | Analyze dependencies and boundaries for Auth and Admin modules | AI Agent | complexity: S | done: false
+- T-001 | Analyze dependencies and boundaries for Auth and Admin modules | AI Agent | complexity: S | done: true
+- T-001.5 | Refactor Core Entities (`Campaign`, `Character`) to store `userId` instead of `UserEntity` relation | AI Agent | complexity: M | deps: [T-001] | done: true
 - T-002 | Scaffold new Spring Boot project for `rpg-auth-service` | AI Agent | complexity: M | deps: [T-001] | done: false
 - T-003 | Migrate User/Auth logic and DB schema to `rpg-auth-service` | AI Agent | complexity: L | deps: [T-002] | done: false
 - T-004 | Scaffold new Spring Boot project for `rpg-admin-service` | AI Agent | complexity: M | deps: [T-001] | done: false

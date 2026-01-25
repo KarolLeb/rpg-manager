@@ -1,13 +1,12 @@
 package com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUserRepository;
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
+import com.rpgmanager.backend.user.domain.model.UserDomain;
+import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import java.util.List;
 import java.util.Optional;
 import org.instancio.Instancio;
@@ -21,29 +20,35 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class CampaignPersistenceAdapterTest {
 
   @Mock private JpaCampaignRepository jpaCampaignRepository;
-  @Mock private JpaUserRepository userRepository;
+  @Mock private UserRepositoryPort userRepository;
 
   @InjectMocks private CampaignPersistenceAdapter adapter;
 
   @Test
   void findAll_shouldReturnList() {
     CampaignEntity entity = Instancio.create(CampaignEntity.class);
+    UserDomain user = Instancio.create(UserDomain.class);
     when(jpaCampaignRepository.findAll()).thenReturn(List.of(entity));
+    when(userRepository.findById(entity.getGameMasterId())).thenReturn(Optional.of(user));
 
     List<CampaignDomain> result = adapter.findAll();
 
     assertThat(result).hasSize(1);
+    assertThat(result.get(0).getGameMasterName()).isEqualTo(user.getUsername());
     verify(jpaCampaignRepository).findAll();
   }
 
   @Test
   void findById_shouldReturnDomain() {
     CampaignEntity entity = Instancio.create(CampaignEntity.class);
+    UserDomain user = Instancio.create(UserDomain.class);
     when(jpaCampaignRepository.findById(1L)).thenReturn(Optional.of(entity));
+    when(userRepository.findById(entity.getGameMasterId())).thenReturn(Optional.of(user));
 
     Optional<CampaignDomain> result = adapter.findById(1L);
 
     assertThat(result).isPresent();
+    assertThat(result.get().getGameMasterName()).isEqualTo(user.getUsername());
     verify(jpaCampaignRepository).findById(1L);
   }
 
@@ -51,28 +56,18 @@ class CampaignPersistenceAdapterTest {
   void save_shouldSaveAndReturnDomain() {
     CampaignDomain domain = Instancio.create(CampaignDomain.class);
     domain.setGameMasterId(1L);
-    UserEntity gm = Instancio.create(UserEntity.class);
+    UserDomain user = Instancio.create(UserDomain.class);
     CampaignEntity entity = Instancio.create(CampaignEntity.class);
+    entity.setGameMasterId(1L);
 
-    when(userRepository.findById(1L)).thenReturn(Optional.of(gm));
     when(jpaCampaignRepository.save(any())).thenReturn(entity);
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
     CampaignDomain result = adapter.save(domain);
 
     assertThat(result).isNotNull();
+    assertThat(result.getGameMasterName()).isEqualTo(user.getUsername());
     verify(jpaCampaignRepository).save(any());
-  }
-
-  @Test
-  void save_shouldThrowException_whenGMNotFound() {
-    CampaignDomain domain = Instancio.create(CampaignDomain.class);
-    domain.setGameMasterId(1L);
-
-    when(userRepository.findById(1L)).thenReturn(Optional.empty());
-
-    assertThatThrownBy(() -> adapter.save(domain))
-        .isInstanceOf(RuntimeException.class)
-        .hasMessageContaining("Game Master not found");
   }
 
   @Test

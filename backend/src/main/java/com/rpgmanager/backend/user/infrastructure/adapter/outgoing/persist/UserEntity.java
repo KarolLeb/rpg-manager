@@ -30,9 +30,6 @@ public class UserEntity {
   @Column(nullable = false, length = 20)
   private Role role;
 
-  @PrePersist
-  protected void onCreate() {}
-
   public enum Role {
     GM,
     PLAYER

@@ -5,8 +5,7 @@ import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.J
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import com.rpgmanager.backend.character.domain.repository.CharacterRepository;
 import com.rpgmanager.backend.character.infrastructure.mapper.CharacterPersistenceMapper;
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUserRepository;
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
+import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -18,18 +17,22 @@ public class CharacterPersistenceAdapter implements CharacterRepository {
 
   private final JpaCharacterRepository jpaCharacterRepository;
   private final JpaCampaignRepository jpaCampaignRepository;
-  private final JpaUserRepository userRepository;
+  private final UserRepositoryPort userRepository;
 
   @Override
   public List<CharacterDomain> findAll() {
     return jpaCharacterRepository.findAll().stream()
         .map(CharacterPersistenceMapper::toDomain)
+        .map(this::enrichWithUserData)
         .toList();
   }
 
   @Override
   public Optional<CharacterDomain> findById(Long id) {
-    return jpaCharacterRepository.findById(id).map(CharacterPersistenceMapper::toDomain);
+    return jpaCharacterRepository
+        .findById(id)
+        .map(CharacterPersistenceMapper::toDomain)
+        .map(this::enrichWithUserData);
   }
 
   @Override
@@ -55,18 +58,24 @@ public class CharacterPersistenceAdapter implements CharacterRepository {
       CharacterPersistenceMapper.updateEntity(entity, domain, campaign);
     } else {
       // Create New
-      UserEntity owner = null;
-      if (domain.getOwnerUsername() != null) {
-        owner =
-            userRepository
-                .findByUsername(domain.getOwnerUsername())
-                .orElseThrow(
-                    () -> new RuntimeException("User not found: " + domain.getOwnerUsername()));
+      if (domain.getOwnerId() == null && domain.getOwnerUsername() != null) {
+        userRepository
+            .findByUsername(domain.getOwnerUsername())
+            .ifPresent(user -> domain.setOwnerId(user.getId()));
       }
-      entity = CharacterPersistenceMapper.toEntity(domain, owner, campaign);
+      entity = CharacterPersistenceMapper.toEntity(domain, campaign);
     }
 
     CharacterEntity savedEntity = jpaCharacterRepository.save(entity);
-    return CharacterPersistenceMapper.toDomain(savedEntity);
+    return enrichWithUserData(CharacterPersistenceMapper.toDomain(savedEntity));
+  }
+
+  private CharacterDomain enrichWithUserData(CharacterDomain character) {
+    if (character != null && character.getOwnerId() != null) {
+      userRepository
+          .findById(character.getOwnerId())
+          .ifPresent(user -> character.setOwnerUsername(user.getUsername()));
+    }
+    return character;
   }
 }

@@ -16,7 +16,4 @@ public class RaceStyle {
 
   @Column(name = "css_content", columnDefinition = "text")
   private String cssContent;
-
-  @PrePersist
-  protected void onCreate() {}
 }

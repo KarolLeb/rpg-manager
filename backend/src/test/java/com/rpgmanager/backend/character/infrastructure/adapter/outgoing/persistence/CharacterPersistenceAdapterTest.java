@@ -7,8 +7,8 @@ import static org.mockito.Mockito.*;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUserRepository;
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
+import com.rpgmanager.backend.user.domain.model.UserDomain;
+import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import java.util.List;
 import java.util.Optional;
 import org.instancio.Instancio;
@@ -23,29 +23,35 @@ class CharacterPersistenceAdapterTest {
 
   @Mock private JpaCharacterRepository jpaCharacterRepository;
   @Mock private JpaCampaignRepository jpaCampaignRepository;
-  @Mock private JpaUserRepository userRepository;
+  @Mock private UserRepositoryPort userRepository;
 
   @InjectMocks private CharacterPersistenceAdapter adapter;
 
   @Test
   void findAll_shouldReturnList() {
     CharacterEntity entity = Instancio.create(CharacterEntity.class);
+    UserDomain user = Instancio.create(UserDomain.class);
     when(jpaCharacterRepository.findAll()).thenReturn(List.of(entity));
+    when(userRepository.findById(entity.getUserId())).thenReturn(Optional.of(user));
 
     List<CharacterDomain> result = adapter.findAll();
 
     assertThat(result).hasSize(1);
+    assertThat(result.get(0).getOwnerUsername()).isEqualTo(user.getUsername());
   }
 
   @Test
   void findByUuid_shouldReturnDomain() {
     Long id = 1L;
     CharacterEntity entity = Instancio.create(CharacterEntity.class);
+    UserDomain user = Instancio.create(UserDomain.class);
     when(jpaCharacterRepository.findById(id)).thenReturn(Optional.of(entity));
+    when(userRepository.findById(entity.getUserId())).thenReturn(Optional.of(user));
 
     Optional<CharacterDomain> result = adapter.findById(id);
 
     assertThat(result).isPresent();
+    assertThat(result.get().getOwnerUsername()).isEqualTo(user.getUsername());
   }
 
   @Test
@@ -53,21 +59,28 @@ class CharacterPersistenceAdapterTest {
     Long id = 1L;
     CharacterDomain domain = Instancio.create(CharacterDomain.class);
     domain.setId(id);
+    domain.setOwnerId(null);
     domain.setOwnerUsername("owner");
     domain.setCampaignId(1L);
 
-    UserEntity owner = Instancio.create(UserEntity.class);
+    UserDomain owner = Instancio.create(UserDomain.class);
+    owner.setId(10L);
+    owner.setUsername("owner");
+
     CampaignEntity campaign = Instancio.create(CampaignEntity.class);
     CharacterEntity entity = Instancio.create(CharacterEntity.class);
+    entity.setUserId(10L);
 
     when(jpaCharacterRepository.findById(id)).thenReturn(Optional.empty());
     when(jpaCampaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
     when(userRepository.findByUsername("owner")).thenReturn(Optional.of(owner));
     when(jpaCharacterRepository.save(any())).thenReturn(entity);
+    when(userRepository.findById(10L)).thenReturn(Optional.of(owner));
 
     CharacterDomain result = adapter.save(domain);
 
     assertThat(result).isNotNull();
+    assertThat(result.getOwnerUsername()).isEqualTo("owner");
     verify(jpaCharacterRepository).save(any());
   }
 
@@ -77,15 +90,21 @@ class CharacterPersistenceAdapterTest {
     CharacterDomain domain = Instancio.create(CharacterDomain.class);
     domain.setId(id);
     domain.setCampaignId(null);
+    domain.setOwnerId(10L);
 
     CharacterEntity existingEntity = Instancio.create(CharacterEntity.class);
+    existingEntity.setUserId(10L);
+    UserDomain owner = Instancio.create(UserDomain.class);
+    owner.setUsername("owner");
 
     when(jpaCharacterRepository.findById(id)).thenReturn(Optional.of(existingEntity));
     when(jpaCharacterRepository.save(any())).thenReturn(existingEntity);
+    when(userRepository.findById(10L)).thenReturn(Optional.of(owner));
 
     CharacterDomain result = adapter.save(domain);
 
     assertThat(result).isNotNull();
+    assertThat(result.getOwnerUsername()).isEqualTo("owner");
     verify(jpaCharacterRepository).save(any());
   }
 }

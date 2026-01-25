@@ -2,7 +2,6 @@ package com.rpgmanager.backend.campaign.infrastructure.mapper;
 
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 
 public class CampaignPersistenceMapper {
 
@@ -23,13 +22,11 @@ public class CampaignPersistenceMapper {
             entity.getStatus() != null
                 ? CampaignDomain.CampaignStatus.valueOf(entity.getStatus().name())
                 : null)
-        .gameMasterId(entity.getGameMaster() != null ? entity.getGameMaster().getId() : null)
-        .gameMasterName(
-            entity.getGameMaster() != null ? entity.getGameMaster().getUsername() : null)
+        .gameMasterId(entity.getGameMasterId())
         .build();
   }
 
-  public static CampaignEntity toEntity(CampaignDomain domain, UserEntity gameMaster) {
+  public static CampaignEntity toEntity(CampaignDomain domain) {
     if (domain == null) {
       return null;
     }
@@ -42,7 +39,7 @@ public class CampaignPersistenceMapper {
             domain.getStatus() != null
                 ? CampaignEntity.CampaignStatus.valueOf(domain.getStatus().name())
                 : null)
-        .gameMaster(gameMaster)
+        .gameMasterId(domain.getGameMasterId())
         .build();
   }
 }

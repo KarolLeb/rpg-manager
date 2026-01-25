@@ -5,7 +5,7 @@ Operational task list and active execution plans.
 ## 🚀 Active Plans
 1.  **Microservices Extraction (Admin & Auth)**
     *   **Plan:** [`plans/microservices-extraction.md`](./microservices-extraction.md)
-    *   **Status:** Proposed - Pending analysis.
+    *   **Status:** In Progress - Logical Decoupling complete.
 
 ## 📋 Backlog (Short Tasks)
 - [ ] **Frontend:** Implement visual indicators for cache hits (debug mode).

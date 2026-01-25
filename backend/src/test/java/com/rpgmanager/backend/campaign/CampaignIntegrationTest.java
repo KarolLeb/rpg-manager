@@ -79,7 +79,7 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
         CampaignEntity.builder()
             .name("List Test Campaign")
             .description("Desc")
-            .gameMaster(gameMaster)
+            .gameMasterId(gameMaster.getId())
             .status(CampaignEntity.CampaignStatus.ACTIVE)
             .build();
     campaignRepository.save(campaign);
@@ -97,7 +97,7 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
         CampaignEntity.builder()
             .name("Get By Id Campaign")
             .description("Desc")
-            .gameMaster(gameMaster)
+            .gameMasterId(gameMaster.getId())
             .status(CampaignEntity.CampaignStatus.ACTIVE)
             .build();
     campaign = campaignRepository.save(campaign);
@@ -115,7 +115,7 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
         CampaignEntity.builder()
             .name("Original Name")
             .description("Original Desc")
-            .gameMaster(gameMaster)
+            .gameMasterId(gameMaster.getId())
             .status(CampaignEntity.CampaignStatus.ACTIVE)
             .build();
     campaign = campaignRepository.save(campaign);
@@ -139,7 +139,7 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
         CampaignEntity.builder()
             .name("To Be Deleted")
             .description("Desc")
-            .gameMaster(gameMaster)
+            .gameMasterId(gameMaster.getId())
             .status(CampaignEntity.CampaignStatus.ACTIVE)
             .build();
     campaign = campaignRepository.save(campaign);

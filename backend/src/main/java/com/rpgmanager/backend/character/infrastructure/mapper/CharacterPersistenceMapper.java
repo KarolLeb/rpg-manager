@@ -3,7 +3,6 @@ package com.rpgmanager.backend.character.infrastructure.mapper;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import com.rpgmanager.backend.character.infrastructure.adapter.outgoing.persistence.CharacterEntity;
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
 
 public class CharacterPersistenceMapper {
 
@@ -21,7 +20,8 @@ public class CharacterPersistenceMapper {
         .characterClass(entity.getCharacterClass())
         .level(entity.getLevel())
         .stats(entity.getStats())
-        .ownerUsername(entity.getUser() != null ? entity.getUser().getUsername() : null)
+        .ownerId(entity.getUserId())
+        .controllerId(entity.getControllerId())
         .campaignName(entity.getCampaign() != null ? entity.getCampaign().getName() : null)
         .campaignId(entity.getCampaign() != null ? entity.getCampaign().getId() : null)
         .characterType(
@@ -31,18 +31,17 @@ public class CharacterPersistenceMapper {
         .build();
   }
 
-  public static CharacterEntity toEntity(
-      CharacterDomain domain, UserEntity owner, CampaignEntity campaign) {
+  public static CharacterEntity toEntity(CharacterDomain domain, CampaignEntity campaign) {
     if (domain == null) {
       return null;
     }
     CharacterEntity entity = new CharacterEntity();
     entity.setName(domain.getName());
-    ;
     entity.setCharacterClass(domain.getCharacterClass());
     entity.setLevel(domain.getLevel());
     entity.setStats(domain.getStats());
-    entity.setUser(owner);
+    entity.setUserId(domain.getOwnerId());
+    entity.setControllerId(domain.getControllerId());
     entity.setCampaign(campaign);
     if (domain.getCharacterType() != null) {
       entity.setCharacterType(
@@ -60,6 +59,8 @@ public class CharacterPersistenceMapper {
     entity.setCharacterClass(domain.getCharacterClass());
     entity.setLevel(domain.getLevel());
     entity.setStats(domain.getStats());
+    entity.setUserId(domain.getOwnerId());
+    entity.setControllerId(domain.getControllerId());
     // Only update campaign if provided or logic dictates
     if (campaign != null) {
       entity.setCampaign(campaign);

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -26,12 +26,17 @@ export class RegisterComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
-    }, { validators: [this.passwordMatchValidator] });
+    }, { validators: this.passwordMatchValidator() });
   }
 
-  passwordMatchValidator(g: FormGroup) {
-    return g.get('password')?.value === g.get('confirmPassword')?.value
-       ? null : { mismatch: true };
+  passwordMatchValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const password = control.get('password');
+      const confirmPassword = control.get('confirmPassword');
+
+      return password && confirmPassword && password.value === confirmPassword.value
+        ? null : { mismatch: true };
+    };
   }
 
   onSubmit(): void {
