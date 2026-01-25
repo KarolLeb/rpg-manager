@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<lombok.version>1.18.36</lombok.version>
 		<testcontainers.version>1.20.4</testcontainers.version>
 		<spring-cloud.version>2024.0.0</spring-cloud.version>
 		<sonar.projectKey>RPG-manager-backend</sonar.projectKey>
@@ -138,7 +139,6 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -232,6 +232,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
 						</path>
 						<path>
 							<groupId>org.mapstruct</groupId>

@@ -3,11 +3,17 @@ package com.rpgmanager.backend.session;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /** Request object for creating a new game session. */
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
