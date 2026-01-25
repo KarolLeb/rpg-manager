@@ -6,6 +6,9 @@ Operational task list and active execution plans.
 1.  **Microservices Extraction (Admin & Auth)**
     *   **Plan:** [`plans/microservices-extraction.md`](./microservices-extraction.md)
     *   **Status:** In Progress - Logical Decoupling complete.
+2.  **Frontend Mutation Testing**
+    *   **Plan:** [`plans/frontend-mutation-testing.md`](./frontend-mutation-testing.md)
+    *   **Status:** Initial Setup Complete.
 
 ## 📋 Backlog (Short Tasks)
 - [ ] **Frontend:** Implement visual indicators for cache hits (debug mode).

@@ -383,11 +383,16 @@ Principles:
 
 Tiered Targets:
 - All application code: target ≥ 95% line/branch coverage
+- Mutation Testing (Tiered Score Targets):
+    - **Global/UI Components**: target ≥ 80% mutation score
+    - **Core Domain & Utilities**: target ≥ 90% mutation score
+    - **Security & Critical Paths**: target 100% mutation score (Aligned with 100% line coverage mandate)
 - Generated scaffolds and spikes: opportunistic; may be exempt if tagged and justified in PR
 
 Enforcement:
 - Global threshold: CI fails if overall repository coverage < 95%
 - Per-file threshold: CI fails if any file drops below target (≥ 95%)
+- Mutation Testing: Enforced via scheduled workflows and manual verification for critical PRs. Failure to kill mutants in security/critical paths is considered a blocker.
 
 Critical Coverage (must be 100%):
 - Hot paths (performance- or user-critical flows)

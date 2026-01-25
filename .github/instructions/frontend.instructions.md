@@ -61,7 +61,12 @@ PROMPTING: Reference, don't duplicate. Keep actions concrete for frontend.
 	- Keep scenarios small and stable; tag appropriately (e.g., `@ui`, `@smoke`).
 	- Prefer testids sparingly; select by role/name first.
 
-4. **Coverage Policy**
+4. **Mutation Testing (Stryker Mutator)**
+	- Use Stryker to verify test effectiveness for complex business logic and shared utilities.
+	- **Targets**: >= 80% (Global/UI), >= 90% (Domain/Utils), 100% (Security/Critical).
+	- Run limited mutation tests on changed files using: `npx stryker run --mutate src/path/to/file.ts`.
+
+5. **Coverage Policy**
 	- Follow central Quality & Coverage Policy in `.github/copilot-instructions.md#quality-policy`.
 	- Ensure hot paths and error paths are fully covered (100%).
 

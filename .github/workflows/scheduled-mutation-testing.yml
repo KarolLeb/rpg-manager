@@ -1,0 +1,54 @@
+name: Scheduled Mutation Testing
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Weekly on Sundays at midnight
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  backend-mutation:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+    - name: Run Pitest (Full)
+      run: |
+        cd backend
+        chmod +x mvnw
+        ./mvnw pitest:mutationCoverage -B
+    - name: Upload Pitest Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: pitest-full-report
+        path: backend/target/pit-reports
+
+  frontend-mutation:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    - name: Install Dependencies
+      run: |
+        cd frontend
+        npm install --legacy-peer-deps
+    - name: Run Stryker (Full)
+      run: |
+        cd frontend
+        npm run stryker
+    - name: Upload Stryker Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: stryker-full-report
+        path: frontend/reports/mutation
