@@ -19,17 +19,25 @@ class StyleServiceTest extends BaseIntegrationTest {
     String updatedCss = ".test { color: red; }";
 
     // 1. Save initial style
-    styleService.saveStyle(raceName, initialCss);
+    RaceStyle saved = styleService.saveStyle(raceName, initialCss);
+    assertThat(saved).isNotNull().extracting(RaceStyle::getRaceName).isEqualTo(raceName);
 
     // 2. Fetch to populate cache
-    String cachedCss = styleService.getCssForRace(raceName);
-    assertThat(cachedCss).isEqualTo(initialCss);
+    assertThat(styleService.getCssForRace(raceName)).isEqualTo(initialCss);
 
     // 3. Update style
     styleService.saveStyle(raceName, updatedCss);
 
-    // 4. Fetch again - should be updated (fails if cache is not evicted/updated)
-    String newCss = styleService.getCssForRace(raceName);
-    assertThat(newCss).isEqualTo(updatedCss);
+    // 4. Fetch again - should be updated
+    assertThat(styleService.getCssForRace(raceName)).isEqualTo(updatedCss);
+  }
+
+  @Test
+  void shouldReturnDefaultCss_whenStyleNotFound() {
+    String raceName = "UNKNOWN_RACE";
+
+    assertThat(styleService.getCssForRace(raceName))
+        .contains("Default style for UNKNOWN_RACE")
+        .contains("--race-theme-color: #cccccc;");
   }
 }

@@ -58,6 +58,7 @@ class SessionServiceTest {
 
     SessionDto result = sessionService.createSession(request);
 
+    assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("New Session");
     assertThat(result.getCampaignId()).isEqualTo(1L);
     verify(sessionRepository)
@@ -78,7 +79,7 @@ class SessionServiceTest {
 
     org.assertj.core.api.Assertions.assertThatThrownBy(() -> sessionService.createSession(request))
         .isInstanceOf(RuntimeException.class)
-        .hasMessageContaining("Campaign not found");
+        .hasMessageContaining("Campaign not found with id: 1");
   }
 
   @Test
@@ -87,6 +88,7 @@ class SessionServiceTest {
 
     SessionDto result = sessionService.getSession(100L);
 
+    assertThat(result).isNotNull();
     assertThat(result.getId()).isEqualTo(100L);
   }
 
@@ -95,14 +97,14 @@ class SessionServiceTest {
     when(sessionRepository.findById(1L)).thenReturn(Optional.empty());
     org.assertj.core.api.Assertions.assertThatThrownBy(() -> sessionService.getSession(1L))
         .isInstanceOf(RuntimeException.class)
-        .hasMessageContaining("Session not found");
+        .hasMessageContaining("Session not found with id: 1");
   }
 
   @Test
   void getSessionsByCampaign_shouldReturnList() {
     when(sessionRepository.findByCampaignId(1L)).thenReturn(List.of(session));
     List<SessionDto> result = sessionService.getSessionsByCampaign(1L);
-    assertThat(result).hasSize(1);
+    assertThat(result).isNotNull().hasSize(1);
   }
 
   @Test
@@ -114,6 +116,7 @@ class SessionServiceTest {
 
     SessionDto result = sessionService.updateSession(100L, request);
 
+    assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("Updated");
     verify(sessionRepository)
         .save(
@@ -121,6 +124,7 @@ class SessionServiceTest {
                 s -> {
                   assertThat(s.getName()).isEqualTo("Updated");
                   assertThat(s.getDescription()).isEqualTo("New Desc");
+                  assertThat(s.getSessionDate()).isEqualTo(request.getSessionDate());
                   return true;
                 }));
   }
@@ -134,7 +138,7 @@ class SessionServiceTest {
     org.assertj.core.api.Assertions.assertThatThrownBy(
             () -> sessionService.updateSession(100L, request))
         .isInstanceOf(RuntimeException.class)
-        .hasMessageContaining("Session not found");
+        .hasMessageContaining("Session not found with id: 100");
   }
 
   @Test
@@ -153,7 +157,7 @@ class SessionServiceTest {
 
     org.assertj.core.api.Assertions.assertThatThrownBy(() -> sessionService.cancelSession(100L))
         .isInstanceOf(RuntimeException.class)
-        .hasMessageContaining("Session not found");
+        .hasMessageContaining("Session not found with id: 100");
   }
 
   @Test
@@ -172,6 +176,6 @@ class SessionServiceTest {
 
     org.assertj.core.api.Assertions.assertThatThrownBy(() -> sessionService.completeSession(100L))
         .isInstanceOf(RuntimeException.class)
-        .hasMessageContaining("Session not found");
+        .hasMessageContaining("Session not found with id: 100");
   }
 }

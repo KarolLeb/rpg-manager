@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class DiceService {
 
   private final DiceRollerClient diceRollerClient;
-  private final SecureRandom random = new SecureRandom();
+  private final SecureRandom random;
 
   /**
    * Rolls a die with the specified number of sides using an external API, falling back to a local

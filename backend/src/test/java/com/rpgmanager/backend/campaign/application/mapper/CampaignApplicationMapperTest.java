@@ -22,4 +22,9 @@ class CampaignApplicationMapperTest {
     assertThat(dto.getId()).isEqualTo(domain.getId());
     assertThat(dto.getName()).isEqualTo(domain.getName());
   }
+
+  @Test
+  void toDTO_shouldHandleNull() {
+    assertThat(mapper.toDto(null)).isNull();
+  }
 }

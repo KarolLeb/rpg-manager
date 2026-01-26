@@ -72,8 +72,9 @@ class CharacterPersistenceMapperTest {
     CampaignEntity campaign = Instancio.create(CampaignEntity.class);
     CharacterEntity entity = Instancio.create(CharacterEntity.class);
     entity.setUserId(1L);
+    entity.setControllerId(2L);
     entity.setCampaign(campaign);
-    entity.setCharacterType(CharacterEntity.CharacterType.PERMANENT);
+    entity.setCharacterType(CharacterEntity.CharacterType.TEMPORARY);
 
     CharacterDomain domain = CharacterPersistenceMapper.toDomain(entity);
 
@@ -81,7 +82,7 @@ class CharacterPersistenceMapperTest {
     assertThat(domain.getId()).isEqualTo(entity.getId());
     assertThat(domain.getCharacterType().name()).isEqualTo(entity.getCharacterType().name());
     assertThat(domain.getOwnerId()).isEqualTo(1L);
-    assertThat(domain.getControllerId()).isEqualTo(entity.getControllerId());
+    assertThat(domain.getControllerId()).isEqualTo(2L);
   }
 
   @Test
@@ -89,31 +90,43 @@ class CharacterPersistenceMapperTest {
     CampaignEntity campaign = Instancio.create(CampaignEntity.class);
     CharacterDomain domain = Instancio.create(CharacterDomain.class);
     domain.setOwnerId(1L);
-    domain.setCharacterType(CharacterDomain.CharacterType.PERMANENT);
+    domain.setControllerId(2L);
+    domain.setCharacterType(CharacterDomain.CharacterType.TEMPORARY);
 
     CharacterEntity entity = CharacterPersistenceMapper.toEntity(domain, campaign);
 
     assertThat(entity).isNotNull();
+    assertThat(entity.getName()).isEqualTo(domain.getName());
+    assertThat(entity.getCharacterClass()).isEqualTo(domain.getCharacterClass());
+    assertThat(entity.getLevel()).isEqualTo(domain.getLevel());
+    assertThat(entity.getStats()).isEqualTo(domain.getStats());
     assertThat(entity.getUserId()).isEqualTo(1L);
     assertThat(entity.getCampaign()).isEqualTo(campaign);
-    assertThat(entity.getControllerId()).isEqualTo(domain.getControllerId());
+    assertThat(entity.getControllerId()).isEqualTo(2L);
     assertThat(entity.getCharacterType().name()).isEqualTo(domain.getCharacterType().name());
   }
 
   @Test
   void updateEntity_shouldUpdateProvidedFields() {
     CharacterEntity entity = new CharacterEntity();
+    // Default is PERMANENT
+    assertThat(entity.getCharacterType()).isEqualTo(CharacterEntity.CharacterType.PERMANENT);
+
     CharacterDomain domain = Instancio.create(CharacterDomain.class);
     domain.setOwnerId(1L);
+    domain.setControllerId(2L);
     domain.setCharacterType(CharacterDomain.CharacterType.TEMPORARY);
     CampaignEntity campaign = Instancio.create(CampaignEntity.class);
 
     CharacterPersistenceMapper.updateEntity(entity, domain, campaign);
 
     assertThat(entity.getName()).isEqualTo(domain.getName());
+    assertThat(entity.getCharacterClass()).isEqualTo(domain.getCharacterClass());
+    assertThat(entity.getLevel()).isEqualTo(domain.getLevel());
+    assertThat(entity.getStats()).isEqualTo(domain.getStats());
     assertThat(entity.getCampaign()).isEqualTo(campaign);
     assertThat(entity.getUserId()).isEqualTo(1L);
-    assertThat(entity.getControllerId()).isEqualTo(domain.getControllerId());
+    assertThat(entity.getControllerId()).isEqualTo(2L);
     assertThat(entity.getCharacterType().name()).isEqualTo("TEMPORARY");
   }
 }

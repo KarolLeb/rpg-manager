@@ -25,4 +25,9 @@ class CharacterApplicationMapperTest {
     assertThat(response.characterType()).isEqualTo("PERMANENT");
     assertThat(response.ownerName()).isEqualTo("testuser");
   }
+
+  @Test
+  void toResponse_shouldHandleNull() {
+    assertThat(mapper.toResponse(null)).isNull();
+  }
 }

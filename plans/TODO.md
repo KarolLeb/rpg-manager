@@ -14,7 +14,7 @@ Operational task list and active execution plans.
 - [ ] **Frontend:** Implement visual indicators for cache hits (debug mode).
 
 ## ✅ Recently Finished (Pending Archive)
-- [ ] **Quality:** Update SonarQube Quality Gate "RPG Manager Gate" to require 95% coverage (Manual action required in UI).
+- [x] **Quality:** Update SonarQube Quality Gate "RPG Manager Gate" to require 95% coverage (Manual action required in UI).
 - [x] **Quality:** Enforce 95% minimum coverage in CI, Maven (JaCoCo), and project policy.
 
 

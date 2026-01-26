@@ -78,6 +78,9 @@ class AuthServiceTest {
         .save(
             org.mockito.ArgumentMatchers.argThat(
                 user -> {
+                  assertEquals("newuser", user.getUsername());
+                  assertEquals("encodedPass", user.getPassword());
+                  assertEquals("new@example.com", user.getEmail());
                   assertEquals(UserDomain.Role.PLAYER, user.getRole());
                   return true;
                 }));

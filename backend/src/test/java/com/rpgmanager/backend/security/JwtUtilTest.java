@@ -62,4 +62,18 @@ class JwtUtilTest {
     assertThrows(
         io.jsonwebtoken.ExpiredJwtException.class, () -> jwtUtil.validateToken(token, username));
   }
+
+  @Test
+  void shouldThrowExceptionWhenTokenIsExpired() {
+    String token =
+        Jwts.builder()
+            .subject(username)
+            .expiration(new Date(System.currentTimeMillis() - 1000))
+            .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
+            .compact();
+
+    assertThrows(
+        io.jsonwebtoken.ExpiredJwtException.class,
+        () -> ReflectionTestUtils.invokeMethod(jwtUtil, "isTokenExpired", token));
+  }
 }

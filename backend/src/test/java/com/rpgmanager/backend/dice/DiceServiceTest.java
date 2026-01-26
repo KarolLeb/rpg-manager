@@ -1,9 +1,9 @@
 package com.rpgmanager.backend.dice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
+import java.security.SecureRandom;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,11 +15,12 @@ class DiceServiceTest {
   private DiceService diceService;
 
   @Mock private DiceRollerClient diceRollerClient;
+  @Mock private SecureRandom secureRandom;
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    diceService = new DiceService(diceRollerClient);
+    diceService = new DiceService(diceRollerClient, secureRandom);
   }
 
   @Test
@@ -33,8 +34,10 @@ class DiceServiceTest {
 
   @Test
   void shouldRollLocallyOnFallback() {
+    given(secureRandom.nextInt(20)).willReturn(5);
+
     int result = diceService.localRoll(20, new RuntimeException("error"));
 
-    assertTrue(result >= 1 && result <= 20);
+    assertEquals(6, result);
   }
 }

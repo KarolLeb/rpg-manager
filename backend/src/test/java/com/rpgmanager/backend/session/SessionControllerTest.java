@@ -2,6 +2,7 @@ package com.rpgmanager.backend.session;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -56,7 +57,10 @@ class SessionControllerTest {
     SessionDto response = Instancio.create(SessionDto.class);
     when(sessionService.getSession(1L)).thenReturn(response);
 
-    mockMvc.perform(get("/api/sessions/1")).andExpect(status().isOk());
+    mockMvc
+        .perform(get("/api/sessions/1"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(response.getId()));
   }
 
   @Test
@@ -65,7 +69,10 @@ class SessionControllerTest {
     List<SessionDto> response = Instancio.ofList(SessionDto.class).size(2).create();
     when(sessionService.getSessionsByCampaign(1L)).thenReturn(response);
 
-    mockMvc.perform(get("/api/sessions/campaign/1")).andExpect(status().isOk());
+    mockMvc
+        .perform(get("/api/sessions/campaign/1"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(2));
   }
 
   @Test
@@ -92,11 +99,13 @@ class SessionControllerTest {
   @WithMockUser
   void cancelSession_shouldReturnOk() throws Exception {
     mockMvc.perform(post("/api/sessions/1/cancel").with(csrf())).andExpect(status().isOk());
+    verify(sessionService).cancelSession(1L);
   }
 
   @Test
   @WithMockUser
   void completeSession_shouldReturnOk() throws Exception {
     mockMvc.perform(post("/api/sessions/1/complete").with(csrf())).andExpect(status().isOk());
+    verify(sessionService).completeSession(1L);
   }
 }

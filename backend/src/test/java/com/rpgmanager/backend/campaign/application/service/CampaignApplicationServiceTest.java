@@ -214,6 +214,27 @@ class CampaignApplicationServiceTest {
   }
 
   @Test
+  void updateCampaign_shouldNotUpdateGameMaster_whenIdIsSame() {
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+    campaign.setGameMasterId(1L);
+
+    CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
+    request.setGameMasterId(1L); // Same ID
+
+    CampaignDto campaignDto = Instancio.create(CampaignDto.class);
+
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+    when(campaignRepository.save(any(CampaignDomain.class))).thenReturn(campaign);
+    when(campaignApplicationMapper.toDto(campaign)).thenReturn(campaignDto);
+
+    campaignService.updateCampaign(1L, request);
+
+    verify(userRepository, never()).findById(anyLong());
+    assertThat(campaign.getGameMasterId()).isEqualTo(1L);
+  }
+
+  @Test
   void deleteCampaign_shouldDelete() {
     when(campaignRepository.existsById(1L)).thenReturn(true);
 

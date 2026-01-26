@@ -44,7 +44,8 @@ class AuthControllerTest {
             post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(content().json(objectMapper.writeValueAsString(response)));
   }
 
   @Test

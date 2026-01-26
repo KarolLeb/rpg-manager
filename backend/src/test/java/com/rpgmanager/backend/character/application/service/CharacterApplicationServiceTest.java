@@ -111,7 +111,8 @@ class CharacterApplicationServiceTest {
     when(characterRepository.findById(id)).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> service.updateCharacter(id, details))
-        .isInstanceOf(IllegalArgumentException.class);
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Character not found with id: " + id);
   }
 
   @Test
@@ -121,6 +122,7 @@ class CharacterApplicationServiceTest {
     when(characterRepository.findById(id)).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> service.joinCampaign(id, campaignId))
-        .isInstanceOf(IllegalArgumentException.class);
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Character not found with id: " + id);
   }
 }

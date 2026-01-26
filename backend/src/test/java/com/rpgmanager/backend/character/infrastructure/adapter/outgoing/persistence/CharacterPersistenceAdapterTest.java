@@ -93,6 +93,60 @@ class CharacterPersistenceAdapterTest {
   }
 
   @Test
+  void save_shouldCreateNewCharacter_whenIdIsNull() {
+    CharacterDomain domain = Instancio.create(CharacterDomain.class);
+    domain.setId(null);
+    domain.setOwnerId(null);
+    domain.setOwnerUsername("owner");
+    domain.setCampaignId(1L);
+
+    UserDomain owner = Instancio.create(UserDomain.class);
+    owner.setId(10L);
+    owner.setUsername("owner");
+
+    CampaignEntity campaign = Instancio.create(CampaignEntity.class);
+
+    when(jpaCampaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+    when(userRepository.findByUsername("owner")).thenReturn(Optional.of(owner));
+    when(jpaCharacterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+    when(userRepository.findById(10L)).thenReturn(Optional.of(owner));
+
+    CharacterDomain result = adapter.save(domain);
+
+    assertThat(result).isNotNull();
+    assertThat(result.getOwnerId()).isEqualTo(10L);
+    verify(jpaCharacterRepository, never()).findById(any());
+    verify(jpaCharacterRepository).save(any());
+  }
+
+  @Test
+  void save_shouldCreateNewCharacter_whenIdNotFound_andOwnerIdProvided() {
+    Long id = 999L;
+    CharacterDomain domain = Instancio.create(CharacterDomain.class);
+    domain.setId(id);
+    domain.setOwnerId(10L); // Provided
+    domain.setCampaignId(1L);
+
+    CampaignEntity campaign = Instancio.create(CampaignEntity.class);
+    UserDomain owner = Instancio.create(UserDomain.class);
+    owner.setId(10L);
+    owner.setUsername("owner");
+
+    when(jpaCharacterRepository.findById(id)).thenReturn(Optional.empty());
+    when(jpaCampaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+    // Should NOT look up user by username because ownerId is present
+    when(jpaCharacterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+    when(userRepository.findById(10L)).thenReturn(Optional.of(owner));
+
+    CharacterDomain result = adapter.save(domain);
+
+    assertThat(result).isNotNull();
+    assertThat(result.getOwnerId()).isEqualTo(10L);
+    verify(userRepository, never()).findByUsername(any());
+    verify(jpaCharacterRepository).save(any());
+  }
+
+  @Test
   void save_shouldUpdateExistingCharacter() {
     Long id = 1L;
     CharacterDomain domain = Instancio.create(CharacterDomain.class);
@@ -140,7 +194,29 @@ class CharacterPersistenceAdapterTest {
     when(jpaCharacterRepository.findById(any())).thenReturn(Optional.empty());
     when(jpaCampaignRepository.findById(999L)).thenReturn(Optional.empty());
 
-    org.junit.jupiter.api.Assertions.assertThrows(
-        RuntimeException.class, () -> adapter.save(domain));
+    RuntimeException exception =
+        org.junit.jupiter.api.Assertions.assertThrows(
+            RuntimeException.class, () -> adapter.save(domain));
+
+    assertThat(exception.getMessage()).isEqualTo("Campaign not found with id: 999");
+  }
+
+  @Test
+  void save_shouldSaveCharacter_whenCampaignIdIsNull() {
+    CharacterDomain domain = Instancio.create(CharacterDomain.class);
+    domain.setCampaignId(null);
+    domain.setId(null); // Create new
+
+    // Ensure owner logic doesn't interfere
+    domain.setOwnerId(null);
+    domain.setOwnerUsername(null);
+
+    when(jpaCharacterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+    CharacterDomain result = adapter.save(domain);
+
+    assertThat(result).isNotNull();
+    verify(jpaCampaignRepository, never()).findById(any());
+    verify(jpaCharacterRepository).save(any());
   }
 }

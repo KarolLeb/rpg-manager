@@ -44,7 +44,8 @@
 			**/model/**,
 			**/entity/**,
 			**/dto/**,
-			**/*Application.java
+			**/*Application.java,
+			**/*MapperImpl.java
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>
 			**/config/**,

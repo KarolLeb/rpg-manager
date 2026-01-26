@@ -1,5 +1,6 @@
 package com.rpgmanager.backend.security;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -74,7 +75,10 @@ class JwtFilterTest {
     jwtFilter.doFilterInternal(request, response, filterChain);
 
     verify(filterChain).doFilter(request, response);
-    assert SecurityContextHolder.getContext().getAuthentication() != null;
+    org.springframework.security.core.Authentication auth =
+        SecurityContextHolder.getContext().getAuthentication();
+    assertThat(auth).isNotNull();
+    assertThat(auth.getDetails()).isNotNull();
   }
 
   @Test
@@ -119,5 +123,17 @@ class JwtFilterTest {
 
     verify(filterChain).doFilter(request, response);
     verify(userDetailsService, never()).loadUserByUsername(anyString());
+  }
+
+  @Test
+  void shouldContinueChainWhenExceptionOccurs() throws ServletException, IOException {
+    String token = "malformed-token";
+    given(request.getHeader("Authorization")).willReturn("Bearer " + token);
+    given(jwtUtil.extractUsername(token)).willThrow(new RuntimeException("Parsing error"));
+
+    jwtFilter.doFilterInternal(request, response, filterChain);
+
+    verify(filterChain).doFilter(request, response);
+    assert SecurityContextHolder.getContext().getAuthentication() == null;
   }
 }
