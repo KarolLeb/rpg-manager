@@ -81,6 +81,7 @@ class CharacterPersistenceMapperTest {
     assertThat(domain.getId()).isEqualTo(entity.getId());
     assertThat(domain.getCharacterType().name()).isEqualTo(entity.getCharacterType().name());
     assertThat(domain.getOwnerId()).isEqualTo(1L);
+    assertThat(domain.getControllerId()).isEqualTo(entity.getControllerId());
   }
 
   @Test
@@ -95,6 +96,8 @@ class CharacterPersistenceMapperTest {
     assertThat(entity).isNotNull();
     assertThat(entity.getUserId()).isEqualTo(1L);
     assertThat(entity.getCampaign()).isEqualTo(campaign);
+    assertThat(entity.getControllerId()).isEqualTo(domain.getControllerId());
+    assertThat(entity.getCharacterType().name()).isEqualTo(domain.getCharacterType().name());
   }
 
   @Test
@@ -110,6 +113,7 @@ class CharacterPersistenceMapperTest {
     assertThat(entity.getName()).isEqualTo(domain.getName());
     assertThat(entity.getCampaign()).isEqualTo(campaign);
     assertThat(entity.getUserId()).isEqualTo(1L);
+    assertThat(entity.getControllerId()).isEqualTo(domain.getControllerId());
     assertThat(entity.getCharacterType().name()).isEqualTo("TEMPORARY");
   }
 }

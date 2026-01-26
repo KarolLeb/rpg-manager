@@ -57,7 +57,15 @@ class CampaignApplicationServiceTest {
 
     assertThat(result.getName()).isEqualTo(request.getName());
     assertThat(result.getGameMasterId()).isEqualTo(1L);
-    verify(campaignRepository).save(any(CampaignDomain.class));
+    verify(campaignRepository)
+        .save(
+            argThat(
+                campaign -> {
+                  assertThat(campaign.getName()).isEqualTo(request.getName());
+                  assertThat(campaign.getDescription()).isEqualTo(request.getDescription());
+                  assertThat(campaign.getGameMasterId()).isEqualTo(1L);
+                  return true;
+                }));
   }
 
   @Test
@@ -68,7 +76,7 @@ class CampaignApplicationServiceTest {
     when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
     org.junit.jupiter.api.Assertions.assertThrows(
-        RuntimeException.class, () -> campaignService.createCampaign(request));
+        IllegalArgumentException.class, () -> campaignService.createCampaign(request));
   }
 
   @Test
@@ -104,7 +112,7 @@ class CampaignApplicationServiceTest {
     when(campaignRepository.findById(1L)).thenReturn(Optional.empty());
 
     org.junit.jupiter.api.Assertions.assertThrows(
-        RuntimeException.class, () -> campaignService.getCampaignById(1L));
+        IllegalArgumentException.class, () -> campaignService.getCampaignById(1L));
   }
 
   @Test
@@ -126,6 +134,62 @@ class CampaignApplicationServiceTest {
     CampaignDto result = campaignService.updateCampaign(1L, request);
 
     assertThat(result.getName()).isEqualTo(request.getName());
+    verify(campaignRepository)
+        .save(
+            argThat(
+                c -> {
+                  assertThat(c.getName()).isEqualTo(request.getName());
+                  assertThat(c.getDescription()).isEqualTo(request.getDescription());
+                  return true;
+                }));
+  }
+
+  @Test
+  void updateCampaign_shouldUpdateGameMaster_whenChanged() {
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+    campaign.setGameMasterId(1L);
+
+    CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
+    request.setGameMasterId(2L);
+
+    UserDomain newGM = Instancio.create(UserDomain.class);
+    newGM.setId(2L);
+    newGM.setUsername("newGM");
+
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+    when(userRepository.findById(2L)).thenReturn(Optional.of(newGM));
+    when(campaignRepository.save(any(CampaignDomain.class))).thenAnswer(i -> i.getArguments()[0]);
+    when(campaignApplicationMapper.toDto(any())).thenReturn(Instancio.create(CampaignDto.class));
+
+    campaignService.updateCampaign(1L, request);
+
+    assertThat(campaign.getGameMasterId()).isEqualTo(2L);
+    assertThat(campaign.getGameMasterName()).isEqualTo("newGM");
+  }
+
+  @Test
+  void updateCampaign_shouldThrowException_whenCampaignNotFound() {
+    CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
+    when(campaignRepository.findById(1L)).thenReturn(Optional.empty());
+
+    org.junit.jupiter.api.Assertions.assertThrows(
+        IllegalArgumentException.class, () -> campaignService.updateCampaign(1L, request));
+  }
+
+  @Test
+  void updateCampaign_shouldThrowException_whenUserNotFound() {
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+    campaign.setGameMasterId(1L);
+    CreateCampaignRequest request = Instancio.create(CreateCampaignRequest.class);
+    request.setGameMasterId(2L);
+
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+    when(userRepository.findById(2L)).thenReturn(Optional.empty());
+
+    org.junit.jupiter.api.Assertions.assertThrows(
+        IllegalArgumentException.class, () -> campaignService.updateCampaign(1L, request));
   }
 
   @Test
@@ -163,6 +227,6 @@ class CampaignApplicationServiceTest {
     when(campaignRepository.existsById(1L)).thenReturn(false);
 
     org.junit.jupiter.api.Assertions.assertThrows(
-        RuntimeException.class, () -> campaignService.deleteCampaign(1L));
+        IllegalArgumentException.class, () -> campaignService.deleteCampaign(1L));
   }
 }

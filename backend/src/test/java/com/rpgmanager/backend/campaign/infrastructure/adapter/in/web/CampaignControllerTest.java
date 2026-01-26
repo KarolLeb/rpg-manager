@@ -140,5 +140,7 @@ class CampaignControllerTest {
     mockMvc
         .perform(delete("/api/campaigns/1").with(csrf()).with(user("user")))
         .andExpect(status().isNoContent());
+
+    org.mockito.Mockito.verify(deleteCampaignUseCase).deleteCampaign(1L);
   }
 }

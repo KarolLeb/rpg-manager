@@ -12,6 +12,7 @@ describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
   let mockAuthService: any;
+  let mockCampaignService: any;
   let userSubject: BehaviorSubject<User | null>;
 
   beforeEach(async () => {
@@ -20,6 +21,9 @@ describe('DashboardComponent', () => {
       currentUser$: userSubject.asObservable(),
       isLoggedIn: () => true
     };
+    mockCampaignService = {
+      getCampaigns: jasmine.createSpy('getCampaigns').and.returnValue(of([]))
+    };
 
     await TestBed.configureTestingModule({
       imports: [DashboardComponent],
@@ -27,7 +31,8 @@ describe('DashboardComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([]),
-        { provide: AuthService, useValue: mockAuthService }
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: CampaignService, useValue: mockCampaignService }
       ]
     })
     .compileComponents();
@@ -56,8 +61,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should handle error when loading campaigns', () => {
-    const campaignService = TestBed.inject(CampaignService);
-    spyOn(campaignService, 'getCampaigns').and.returnValue(throwError(() => new Error('Error')));
+    mockCampaignService.getCampaigns.and.returnValue(throwError(() => new Error('Error')));
     
     userSubject.next({ username: 'gm', role: 'GM' });
     fixture.detectChanges();

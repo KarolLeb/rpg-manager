@@ -74,7 +74,13 @@ class AuthServiceTest {
 
     authService.register(request);
 
-    verify(userRepository).save(any(UserDomain.class));
+    verify(userRepository)
+        .save(
+            org.mockito.ArgumentMatchers.argThat(
+                user -> {
+                  assertEquals(UserDomain.Role.PLAYER, user.getRole());
+                  return true;
+                }));
   }
 
   @Test

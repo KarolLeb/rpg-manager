@@ -75,7 +75,16 @@ class CharacterApplicationServiceTest {
     CharacterResponse result = service.updateCharacter(id, details);
 
     assertThat(result).isNotNull();
-    verify(characterRepository).save(any());
+    verify(characterRepository)
+        .save(
+            argThat(
+                c -> {
+                  assertThat(c.getName()).isEqualTo(details.getName());
+                  assertThat(c.getCharacterClass()).isEqualTo(details.getCharacterClass());
+                  assertThat(c.getLevel()).isEqualTo(details.getLevel());
+                  assertThat(c.getStats()).isEqualTo(details.getStats());
+                  return true;
+                }));
   }
 
   @Test
@@ -93,5 +102,25 @@ class CharacterApplicationServiceTest {
 
     assertThat(result).isNotNull();
     assertThat(character.getCampaignId()).isEqualTo(campaignId);
+  }
+
+  @Test
+  void updateCharacter_shouldThrowException_whenNotFound() {
+    Long id = 1L;
+    CharacterDomain details = Instancio.create(CharacterDomain.class);
+    when(characterRepository.findById(id)).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> service.updateCharacter(id, details))
+        .isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
+  void joinCampaign_shouldThrowException_whenNotFound() {
+    Long id = 1L;
+    Long campaignId = 10L;
+    when(characterRepository.findById(id)).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> service.joinCampaign(id, campaignId))
+        .isInstanceOf(IllegalArgumentException.class);
   }
 }

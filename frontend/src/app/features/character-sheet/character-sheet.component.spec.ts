@@ -11,6 +11,7 @@ describe('CharacterSheetPageComponent', () => {
   let component: CharacterSheetPageComponent;
   let fixture: ComponentFixture<CharacterSheetPageComponent>;
   let mockCharacterService: jasmine.SpyObj<CharacterService>;
+  let routeId: string | null = '1';
 
   const dummyCharacter: Character = {
     id: 1,
@@ -24,6 +25,7 @@ describe('CharacterSheetPageComponent', () => {
   };
 
   beforeEach(async () => {
+    routeId = '1'; // Default
     mockCharacterService = jasmine.createSpyObj('CharacterService', ['getCharacter', 'getCharacters', 'updateCharacter']);
     mockCharacterService.getCharacter.and.returnValue(of(dummyCharacter));
     mockCharacterService.getCharacters.and.returnValue(of([dummyCharacter]));
@@ -37,7 +39,7 @@ describe('CharacterSheetPageComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: { paramMap: { get: () => '1' } }
+            snapshot: { paramMap: { get: () => routeId } }
           }
         }
       ]
@@ -51,6 +53,13 @@ describe('CharacterSheetPageComponent', () => {
   it('should create', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it('should load dummy data when no id is provided', () => {
+    routeId = null;
+    fixture.detectChanges(); // ngOnInit
+    expect(component.currentCharacterId).toBeUndefined();
+    expect(component.characterForm.get('info.name')?.value).toBe('Tonny Ballony');
   });
 
   it('should load character data on init when id is provided', () => {
@@ -109,5 +118,22 @@ describe('CharacterSheetPageComponent', () => {
 
     expect(console.error).toHaveBeenCalledWith('Save failed', jasmine.any(Error));
     expect(window.alert).toHaveBeenCalledWith('Błąd podczas zapisywania postaci.');
+  });
+
+  it('should handle invalid stats JSON', () => {
+    const invalidChar = { ...dummyCharacter, stats: '{invalid' };
+    mockCharacterService.getCharacter.and.returnValue(of(invalidChar));
+    spyOn(console, 'error');
+    
+    fixture.detectChanges();
+
+    expect(console.error).toHaveBeenCalledWith('Failed to parse character stats', jasmine.any(Error));
+  });
+
+  it('should return attribute group', () => {
+    fixture.detectChanges();
+    const group = component.getAttributeGroup('strength');
+    expect(group).toBeTruthy();
+    expect(group.get('value')).toBeTruthy();
   });
 });

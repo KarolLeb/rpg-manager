@@ -1,4 +1,5 @@
 import { routes } from './app.routes';
+import { LoadChildrenCallback } from '@angular/router';
 
 describe('appRoutes', () => {
   it('should have routes defined', () => {
@@ -14,5 +15,14 @@ describe('appRoutes', () => {
   it('should have a dashboard route with authGuard', () => {
     const dashboardRoute = routes.find(r => r.path === 'dashboard');
     expect(dashboardRoute?.canActivate).toBeDefined();
+  });
+
+  it('should load lazy components', async () => {
+    for (const route of routes) {
+      if (route.loadComponent) {
+        const component = await (route.loadComponent as () => Promise<any>)();
+        expect(component).toBeDefined();
+      }
+    }
   });
 });

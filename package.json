@@ -14,16 +14,6 @@
     "sonar:mutation:backend": "node scripts/convert-pitest-to-sonar.js && cd backend && .\mvnw.cmd sonar:sonar",
     "sonar": "npm run sonar:backend && npm run sonar:frontend"
   },
-  "lint-staged": {
-    "backend/src/**/*.java": [
-      "cmd /c \"cd backend && mvnw.cmd -q -B spotless:apply -Dspotless.check.skip=true & rem\"",
-      "cmd /c \"cd backend && mvnw.cmd -q -B test -Dgroups=unit & rem\""
-    ],
-    "frontend/src/**/*.{ts,html}": [
-      "cmd /c \"cd frontend && npm run lint & rem\"",
-      "cmd /c \"cd frontend && npm run test:unit & rem\""
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/KarolLeb/rpg-manager.git"

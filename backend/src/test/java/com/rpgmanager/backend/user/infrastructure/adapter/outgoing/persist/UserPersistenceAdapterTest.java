@@ -81,6 +81,9 @@ class UserPersistenceAdapterTest {
   @Test
   void existsById_shouldReturnBoolean() {
     when(jpaUserRepository.existsById(1L)).thenReturn(true);
+    when(jpaUserRepository.existsById(2L)).thenReturn(false);
+
     assertThat(adapter.existsById(1L)).isTrue();
+    assertThat(adapter.existsById(2L)).isFalse();
   }
 }

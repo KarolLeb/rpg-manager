@@ -79,6 +79,9 @@ class CampaignPersistenceAdapterTest {
   @Test
   void existsById_shouldReturnBoolean() {
     when(jpaCampaignRepository.existsById(1L)).thenReturn(true);
+    when(jpaCampaignRepository.existsById(2L)).thenReturn(false);
+
     assertThat(adapter.existsById(1L)).isTrue();
+    assertThat(adapter.existsById(2L)).isFalse();
   }
 }
