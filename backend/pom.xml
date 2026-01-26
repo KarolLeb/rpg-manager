@@ -333,6 +333,11 @@
 											<value>COVEREDRATIO</value>
 											<minimum>0.95</minimum>
 										</limit>
+										<limit>
+											<counter>BRANCH</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.90</minimum>
+										</limit>
 									</limits>
 								</rule>
 							</rules>
@@ -421,7 +426,7 @@
 						<param>com.rpgmanager.backend.*.application.dto.*</param>
 						<param>com.rpgmanager.backend.RpgManagerBackendApplication</param>
 					</excludedClasses>
-					<mutationThreshold>80</mutationThreshold> <!-- Global baseline; Domain logic target is 90%, Security 100% -->
+					<mutationThreshold>95</mutationThreshold> <!-- Global baseline; Domain logic target is 90%, Security 100% -->
 					<outputFormats>
 						<value>HTML</value>
 						<value>XML</value>

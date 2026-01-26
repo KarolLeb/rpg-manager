@@ -42,9 +42,26 @@ async function convert() {
         }
     }
 
-    const sonarIssues = { issues: mutations };
+    // Deduplicate rules for the "rules" block
+    const usedRules = [...new Set(mutations.map(m => m.ruleId))];
+    const rules = usedRules.map(ruleId => ({
+        id: ruleId,
+        name: `Pitest ${ruleId}`,
+        description: `Pitest mutation: ${ruleId}`,
+        engineId: 'pitest',
+        cleanCodeAttribute: 'TESTED',
+        impacts: [{
+            softwareQuality: 'RELIABILITY',
+            severity: 'MEDIUM'
+        }]
+    }));
+
+    const sonarIssues = { 
+        rules: rules,
+        issues: mutations 
+    };
     fs.writeFileSync(SONAR_REPORT_PATH, JSON.stringify(sonarIssues, null, 2));
-    console.log(`Successfully converted ${mutations.length} mutations to Sonar Generic Issue format at ${SONAR_REPORT_PATH}`);
+    console.log(`Successfully converted ${mutations.length} mutations to Sonar Generic Issue format (with rules) at ${SONAR_REPORT_PATH}`);
 }
 
 convert().catch(console.error);
