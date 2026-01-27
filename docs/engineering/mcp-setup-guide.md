@@ -30,3 +30,32 @@ Automates repository management, issue tracking, and PR creation.
 
 ## 📝 Configuration Location
 These should be added to your local `settings.json` (e.g., in VS Code or the Gemini Desktop app configuration).
+
+### Connecting to Antigravity Agents (Desktop/VS Code)
+If you are using the Antigravity Desktop app or the VS Code extension, you can add the Sonar MCP server to your global `mcp_config.json` or the app's internal settings using one of the following methods:
+
+#### Docker
+
+```json
+{
+  "mcpServers": {
+    "sonarqube": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--name",
+        "mcp-sonarqube",
+        "--network",
+        "rpg-network",
+        "-e",
+        "SONARQUBE_URL=http://sonarqube:9000",
+        "-e",
+        "SONARQUBE_TOKEN=${SONAR_TOKEN}",
+        "mcp/sonarqube"
+      ]
+    }
+  }
+}
+```
