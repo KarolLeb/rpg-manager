@@ -33,6 +33,7 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
       tap(response => {
         const user: User = {
+          id: response.id,
           username: response.username,
           role: response.role
         };

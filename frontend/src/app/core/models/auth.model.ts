@@ -13,9 +13,11 @@ export interface AuthResponse {
   token: string;
   username: string;
   role: string;
+  id: number;
 }
 
 export interface User {
+  id: number;
   username: string;
   role: string;
 }

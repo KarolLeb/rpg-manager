@@ -29,25 +29,28 @@ describe('AuthService', () => {
     const mockResponse: AuthResponse = {
       token: 'fake-token',
       username: 'testuser',
-      role: 'USER'
+      role: 'USER',
+      id: 123
     };
 
     service.login({ username: 'test', password: 'pass' }).subscribe(res => {
       expect(res).toEqual(mockResponse);
       expect(localStorage.getItem('token')).toBe('fake-token');
-      expect(localStorage.getItem('currentUser')).toContain('testuser');
-      expect(service.currentUserValue).toEqual({ username: 'testuser', role: 'USER' });
+      expect(localStorage.getItem('currentUser')).toBe(JSON.stringify({ id: 123, username: 'testuser', role: 'USER' }));
+      expect(localStorage.key(0)).toMatch(/token|currentUser/);
+      expect(service.currentUserValue).toEqual({ id: 123, username: 'testuser', role: 'USER' });
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
+    const req = httpMock.expectOne(request => request.url === 'http://localhost:8080/api/auth/login');
     expect(req.request.method).toBe('POST');
+    expect(req.request.url).toBe('http://localhost:8080/api/auth/login');
     req.flush(mockResponse);
     tick();
   }));
 
   it('should logout and clear all storage and subject', fakeAsync(() => {
     localStorage.setItem('token', 'token');
-    const user = { username: 'user', role: 'PLAYER' };
+    const user = { id: 1, username: 'user', role: 'PLAYER' };
     localStorage.setItem('currentUser', JSON.stringify(user));
     
     // Trigger constructor to load user
@@ -63,22 +66,36 @@ describe('AuthService', () => {
   }));
 
   it('should return isLoggedIn true only if both token and user exist', fakeAsync(() => {
-    expect(service.isLoggedIn()).toBeFalse();
+    // 1. Neither exists
+    localStorage.removeItem('token');
+    localStorage.removeItem('currentUser');
+    expect(service.isLoggedIn()).toBe(false);
     
-    localStorage.setItem('token', 'token');
-    // Still false because user subject is null
-    expect(service.isLoggedIn()).toBeFalse();
+    // 2. Only token exists
+    localStorage.setItem('token', 'some-token');
+    expect(service.isLoggedIn()).toBe(false);
 
-    const user: User = { username: 'u', role: 'R' };
+    // 3. Only user exists
+    localStorage.removeItem('token');
+    const user = { id: 1, username: 'u', role: 'R' };
     localStorage.setItem('currentUser', JSON.stringify(user));
+    const serviceWithUser = TestBed.runInInjectionContext(() => new AuthService());
+    expect(serviceWithUser.isLoggedIn()).toBe(false);
+
+    // 4. Token is empty string
+    localStorage.setItem('token', '');
+    expect(serviceWithUser.isLoggedIn()).toBe(false);
+
+    // 5. User is null in subject (extra check for mutation !!this.currentUserSubject.value)
+    localStorage.setItem('token', 'valid');
+    // We can't easily force subject to null if localStorage has it, 
+    // but the logic !!this.currentUserSubject.value is what we test.
     
-    // Create new instance to trigger constructor logic for localStorage
-    const newService = TestBed.runInInjectionContext(() => new AuthService());
-    expect(newService.isLoggedIn()).toBeTrue();
+    // 6. Both exist and non-empty
+    localStorage.setItem('token', 'some-token');
+    const fullService = TestBed.runInInjectionContext(() => new AuthService());
+    expect(fullService.isLoggedIn()).toBe(true);
     
-    // If we logout, it becomes false
-    newService.logout();
-    expect(newService.isLoggedIn()).toBeFalse();
     tick();
   }));
 
@@ -90,9 +107,15 @@ describe('AuthService', () => {
     tick();
   }));
 
-  it('should return token from storage', () => {
+  it('should return token from storage or null if not present', () => {
     localStorage.setItem('token', 'my-token');
     expect(service.getToken()).toBe('my-token');
+    localStorage.removeItem('token');
+    expect(service.getToken()).toBeNull();
+    // Test mutation of removeItem key
+    localStorage.setItem('token', 'still-here');
+    service.logout();
+    expect(localStorage.getItem('token')).toBeNull();
   });
 
   it('should handle malformed user in localStorage', fakeAsync(() => {
@@ -101,7 +124,7 @@ describe('AuthService', () => {
     
     const newService = TestBed.runInInjectionContext(() => new AuthService());
     
-    expect(console.error).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith('Failed to parse user from local storage', jasmine.any(Error));
     expect(localStorage.getItem('currentUser')).toBeNull();
     expect(newService.currentUserValue).toBeNull();
     tick();

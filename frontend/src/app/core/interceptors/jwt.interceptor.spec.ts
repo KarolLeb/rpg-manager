@@ -21,7 +21,10 @@ describe('jwtInterceptor', () => {
     authServiceSpy.getToken.and.returnValue('fake-token');
     const req = new HttpRequest('GET', '/test');
     const next: HttpHandlerFn = (r) => {
+      expect(r.headers.has('Authorization')).toBe(true);
       expect(r.headers.get('Authorization')).toBe('Bearer fake-token');
+      expect(r.headers.get('Authorization')).not.toBe('fake-token');
+      expect(r.headers.get('Authorization')).not.toBe('');
       return of();
     };
 
@@ -32,7 +35,9 @@ describe('jwtInterceptor', () => {
     authServiceSpy.getToken.and.returnValue(null);
     const req = new HttpRequest('GET', '/test');
     const next: HttpHandlerFn = (r) => {
-      expect(r.headers.has('Authorization')).toBeFalse();
+      expect(r.headers.has('Authorization')).toBe(false);
+      expect(r.headers.has('Authorization')).not.toBe(true);
+      expect(r.headers.get('Authorization')).toBeNull();
       return of();
     };
 
