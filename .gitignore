@@ -24,6 +24,7 @@ docker-compose.override.yml
 # Tooling / Logs
 .aider*
 frontend/e2e-output.log
+stryker_partial.log
 .gemini-clipboard/
 .scannerwork/
 .scannerwork
