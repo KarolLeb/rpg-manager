@@ -61,7 +61,7 @@ describe('CampaignListComponent', () => {
     
     deleteButtons[0].nativeElement.click();
     
-    expect(window.confirm).toHaveBeenCalled();
+    expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to delete this campaign?');
     expect(mockCampaignService.deleteCampaign).toHaveBeenCalledWith(1);
     expect(mockCampaignService.getCampaigns).toHaveBeenCalledTimes(2); // Once on init, once after delete
   });
@@ -72,7 +72,7 @@ describe('CampaignListComponent', () => {
     
     deleteButtons[0].nativeElement.click();
     
-    expect(window.confirm).toHaveBeenCalled();
+    expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to delete this campaign?');
     expect(mockCampaignService.deleteCampaign).not.toHaveBeenCalled();
   });
 
