@@ -17,7 +17,9 @@
       <textarea id="description" formControlName="description" placeholder="Enter campaign description"></textarea>
     </div>
 
-    <button type="submit" [disabled]="campaignForm.invalid">Save</button>
+    <button type="submit" [disabled]="campaignForm.invalid || isLoading">
+      {{ isLoading ? 'Saving...' : 'Save' }}
+    </button>
     <a routerLink="/campaigns" class="cancel-btn button">Cancel</a>
   </form>
 </div>

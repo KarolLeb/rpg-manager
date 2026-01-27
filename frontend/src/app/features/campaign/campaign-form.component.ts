@@ -33,6 +33,7 @@ export class CampaignFormComponent implements OnInit {
   isEditMode = false;
   campaignId: number | null = null;
   error: string | null = null;
+  isLoading = false;
 
   constructor() {
     this.campaignForm = this.fb.group({
@@ -74,6 +75,7 @@ export class CampaignFormComponent implements OnInit {
       return;
     }
 
+    this.isLoading = true;
     const request: CreateCampaignRequest = {
       name: this.campaignForm.value.name,
       description: this.campaignForm.value.description,
@@ -83,9 +85,11 @@ export class CampaignFormComponent implements OnInit {
     if (this.isEditMode && this.campaignId) {
       this.campaignService.updateCampaign(this.campaignId, request).subscribe({
         next: () => {
+          this.isLoading = false;
           this.router.navigate(['/campaigns']);
         },
         error: (err: any) => {
+          this.isLoading = false;
           this.error = 'Wystąpił błąd podczas aktualizacji kampanii.';
           console.error('Error updating campaign', err);
         }
@@ -93,9 +97,11 @@ export class CampaignFormComponent implements OnInit {
     } else {
       this.campaignService.createCampaign(request).subscribe({
         next: () => {
+          this.isLoading = false;
           this.router.navigate(['/campaigns']);
         },
         error: (err: any) => {
+          this.isLoading = false;
           this.error = 'Wystąpił błąd podczas tworzenia kampanii.';
           console.error('Error creating campaign', err);
         }

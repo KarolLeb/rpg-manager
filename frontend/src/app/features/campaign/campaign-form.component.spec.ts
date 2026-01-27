@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { CampaignFormComponent } from './campaign-form.component';
 import { CampaignService } from '../../core/services/campaign.service';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
-import { of, BehaviorSubject, throwError, delay } from 'rxjs';
+import { of, BehaviorSubject, throwError, delay, switchMap } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Campaign } from '../../core/models/campaign.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -77,12 +77,11 @@ describe('CampaignFormComponent', () => {
     
     expect(component.isLoading).toBeFalse();
     component.onSubmit();
-    // In actual component code, it doesn't set isLoading? Let me check code.
-    // wait, I added isLoading check in RegisterComponent but maybe not here.
-    // Component code: no isLoading.
+    expect(component.isLoading).toBeTrue();
     
     expect(mockCampaignService.createCampaign).toHaveBeenCalledTimes(1);
     tick(); // Wait for async response
+    expect(component.isLoading).toBeFalse();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/campaigns']);
   }));
 
@@ -92,10 +91,13 @@ describe('CampaignFormComponent', () => {
     fixture.detectChanges();
     
     component.campaignForm.patchValue({ name: 'Updated Name', description: 'Updated Desc' });
+    expect(component.isLoading).toBeFalse();
     component.onSubmit();
+    expect(component.isLoading).toBeTrue();
     
     expect(mockCampaignService.updateCampaign).toHaveBeenCalledTimes(1);
     tick();
+    expect(component.isLoading).toBeFalse();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/campaigns']);
   }));
 
@@ -112,14 +114,16 @@ describe('CampaignFormComponent', () => {
 
   it('should handle creation error and set custom error message', fakeAsync(() => {
     const error = new Error('Create failed');
-    mockCampaignService.createCampaign.and.returnValue(throwError(() => error).pipe(delay(0)));
+    mockCampaignService.createCampaign.and.returnValue(of(null).pipe(delay(0), switchMap(() => throwError(() => error))));
     spyOn(console, 'error');
     
     component.campaignForm.setValue({ name: 'New', description: 'Desc' });
     component.onSubmit();
+    expect(component.isLoading).toBeTrue();
     tick();
 
     expect(console.error).toHaveBeenCalledWith('Error creating campaign', error);
+    expect(component.isLoading).toBeFalse();
     expect(component.error).toBe('Wystąpił błąd podczas tworzenia kampanii.');
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   }));
@@ -130,13 +134,15 @@ describe('CampaignFormComponent', () => {
     fixture.detectChanges();
 
     const error = new Error('Update failed');
-    mockCampaignService.updateCampaign.and.returnValue(throwError(() => error).pipe(delay(0)));
+    mockCampaignService.updateCampaign.and.returnValue(of(null).pipe(delay(0), switchMap(() => throwError(() => error))));
     spyOn(console, 'error');
     
     component.onSubmit();
+    expect(component.isLoading).toBeTrue();
     tick();
 
     expect(console.error).toHaveBeenCalledWith('Error updating campaign', error);
+    expect(component.isLoading).toBeFalse();
     expect(component.error).toBe('Wystąpił błąd podczas aktualizacji kampanii.');
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   }));
