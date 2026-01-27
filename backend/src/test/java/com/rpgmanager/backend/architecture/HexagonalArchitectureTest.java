@@ -32,11 +32,27 @@ public class HexagonalArchitectureTest {
           .mayNotBeAccessedByAnyLayer();
 
   @ArchTest
-  public static final ArchRule domain_should_not_depend_on_frameworks =
+  public static final ArchRule domain_should_be_completely_isolated =
       classes()
           .that()
           .resideInAPackage("..domain..")
           .should()
           .onlyDependOnClassesThat()
           .resideInAnyPackage("..domain..", "java..", "lombok..", "org.slf4j..");
+
+  @ArchTest
+  public static final ArchRule application_should_not_depend_on_infrastructure =
+      classes()
+          .that()
+          .resideInAPackage("..application..")
+          .should()
+          .onlyDependOnClassesThat()
+          .resideInAnyPackage(
+              "..application..",
+              "..domain..",
+              "java..",
+              "lombok..",
+              "org.slf4j..",
+              "org.springframework..",
+              "org.mapstruct..");
 }
