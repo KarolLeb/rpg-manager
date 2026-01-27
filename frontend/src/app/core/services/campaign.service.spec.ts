@@ -47,8 +47,9 @@ describe('CampaignService', () => {
       expect(campaign).toEqual(dummyCampaign);
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/campaigns/1');
+    const req = httpMock.expectOne(request => request.url === 'http://localhost:8080/api/campaigns/1');
     expect(req.request.method).toBe('GET');
+    expect(req.request.url).toBe('http://localhost:8080/api/campaigns/1');
     req.flush(dummyCampaign);
   });
 

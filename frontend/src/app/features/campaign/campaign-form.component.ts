@@ -53,14 +53,19 @@ export class CampaignFormComponent implements OnInit {
   }
 
   loadCampaign(id: number): void {
+    this.isLoading = true;
     this.campaignService.getCampaign(id).subscribe({
       next: (campaign: Campaign) => {
+        this.isLoading = false;
         this.campaignForm.patchValue({
           name: campaign.name,
           description: campaign.description
         });
       },
-      error: (err: any) => console.error('Error loading campaign', err)
+      error: (err: any) => {
+        this.isLoading = false;
+        console.error('Error loading campaign', err);
+      }
     });
   }
 
@@ -79,7 +84,7 @@ export class CampaignFormComponent implements OnInit {
     const request: CreateCampaignRequest = {
       name: this.campaignForm.value.name,
       description: this.campaignForm.value.description,
-      gameMasterId: 1
+      gameMasterId: user.id
     };
 
     if (this.isEditMode && this.campaignId) {

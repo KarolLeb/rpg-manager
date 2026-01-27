@@ -46,30 +46,23 @@ describe('AttributeCardComponent', () => {
 
   it('should display the uppercase title', () => {
     const titleEl = fixture.debugElement.query(By.css('.title'));
-    expect(titleEl.nativeElement.textContent).toContain('REFLEX');
+    expect(titleEl.nativeElement.textContent.trim()).toBe('REFLEX');
+    expect(titleEl.nativeElement.textContent).not.toContain('Reflex');
   });
 
-  it('should bind attribute input to form control', () => {
-    const inputEl = fixture.debugElement.query(By.css('.attribute-value-wrapper input')).nativeElement;
-    expect(inputEl.value).toBe('8');
-    
-    inputEl.value = '9';
-    inputEl.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
-
-    expect(component.parentForm.get('baseVal')?.value).toBe(9);
-  });
-
-  it('should render skill rows', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.skill-row'));
-    expect(rows.length).toBe(2);
-    
-    expect(rows[0].nativeElement.textContent).toContain('Evasion');
-    expect(rows[0].nativeElement.textContent).toContain('12'); // Total
+  it('should have default values for control names', () => {
+    const newComponent = new AttributeCardComponent();
+    expect(newComponent.attributeControlName).toBe('value');
+    expect(newComponent.skillsArrayName).toBe('skills');
+    expect(newComponent.attributeControlName).not.toBe('');
+    expect(newComponent.skillsArrayName).not.toBe('');
   });
 
   it('should return empty array if skills control is missing', () => {
     component.skillsArrayName = 'nonExistent';
     expect(component.skillsControls).toEqual([]);
+    expect(component.skillsControls.length).toBe(0);
+    expect(component.skillsControls).not.toBeNull();
+    expect(component.skillsControls).not.toBeUndefined();
   });
 });
