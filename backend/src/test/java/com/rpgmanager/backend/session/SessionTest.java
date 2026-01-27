@@ -18,6 +18,16 @@ class SessionTest {
   }
 
   @Test
+  void testOnCreate_shouldNotOverrideExistingDate() throws Exception {
+    OffsetDateTime existingDate = OffsetDateTime.now().minusDays(1);
+    Session session = Session.builder().sessionDate(existingDate).build();
+    Method onCreate = Session.class.getDeclaredMethod("onCreate");
+    onCreate.setAccessible(true);
+    onCreate.invoke(session);
+    assertThat(session.getSessionDate()).isEqualTo(existingDate);
+  }
+
+  @Test
   void testBuilderAndGetters() {
     OffsetDateTime now = OffsetDateTime.now();
     Session session =

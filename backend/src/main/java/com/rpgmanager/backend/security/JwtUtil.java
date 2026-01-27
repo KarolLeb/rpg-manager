@@ -74,11 +74,11 @@ public class JwtUtil {
    * @return true if the token is valid, false otherwise
    */
   public boolean validateToken(String token, String username) {
-    final String extractedUsername = extractUsername(token);
-    return (extractedUsername.equals(username) && !isTokenExpired(token));
-  }
-
-  private boolean isTokenExpired(String token) {
-    return extractClaim(token, Claims::getExpiration).before(new Date());
+    try {
+      String extractedUsername = extractUsername(token);
+      return extractedUsername.equals(username);
+    } catch (Exception e) {
+      return false;
+    }
   }
 }

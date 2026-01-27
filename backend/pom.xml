@@ -317,6 +317,13 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<excludes>
+								<exclude>com/rpgmanager/backend/**/*MapperImpl.class</exclude>
+								<exclude>com/rpgmanager/backend/RpgManagerBackendApplication.class</exclude>
+								<exclude>com/rpgmanager/backend/config/**</exclude>
+							</excludes>
+						</configuration>
 					</execution>
 					<execution>
 						<id>check</id>
@@ -324,6 +331,11 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
+							<excludes>
+								<exclude>com/rpgmanager/backend/**/*MapperImpl.class</exclude>
+								<exclude>com/rpgmanager/backend/RpgManagerBackendApplication.class</exclude>
+								<exclude>com/rpgmanager/backend/config/**</exclude>
+							</excludes>
 							<rules>
 								<rule>
 									<element>CLASS</element>

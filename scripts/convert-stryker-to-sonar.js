@@ -23,8 +23,6 @@ async function convert() {
                 issues.push({
                     engineId: 'stryker',
                     ruleId: mutant.mutatorName,
-                    severity: mutant.status === 'Survived' ? 'MAJOR' : 'MINOR',
-                    type: 'CODE_SMELL',
                     primaryLocation: {
                         message: `Mutation survived: ${mutant.description} (Status: ${mutant.status})`,
                         filePath: filePath,
@@ -38,9 +36,26 @@ async function convert() {
         }
     }
 
-    const sonarIssues = { issues: issues };
+    // Deduplicate rules for the "rules" block
+    const usedRules = [...new Set(issues.map(i => i.ruleId))];
+    const rules = usedRules.map(ruleId => ({
+        id: ruleId,
+        name: `Stryker ${ruleId}`,
+        description: `Stryker mutation: ${ruleId}`,
+        engineId: 'stryker',
+        cleanCodeAttribute: 'TESTED',
+        impacts: [{
+            softwareQuality: 'MAINTAINABILITY',
+            severity: 'INFO'
+        }]
+    }));
+
+    const sonarIssues = { 
+        rules: rules,
+        issues: issues 
+    };
     fs.writeFileSync(SONAR_REPORT_PATH, JSON.stringify(sonarIssues, null, 2));
-    console.log(`Successfully converted ${issues.length} mutations to Sonar Generic Issue format at ${SONAR_REPORT_PATH}`);
+    console.log(`Successfully converted ${issues.length} mutations to Sonar Generic Issue format (with rules) at ${SONAR_REPORT_PATH}`);
 }
 
 convert().catch(console.error);

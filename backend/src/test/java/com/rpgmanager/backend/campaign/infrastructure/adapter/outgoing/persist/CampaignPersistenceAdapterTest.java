@@ -84,4 +84,30 @@ class CampaignPersistenceAdapterTest {
     assertThat(adapter.existsById(1L)).isTrue();
     assertThat(adapter.existsById(2L)).isFalse();
   }
+
+  @Test
+  void enrichWithGameMasterName_shouldSkipWhenGameMasterIdIsNull() {
+    CampaignEntity entity = Instancio.create(CampaignEntity.class);
+    entity.setGameMasterId(null);
+    when(jpaCampaignRepository.findById(1L)).thenReturn(Optional.of(entity));
+
+    Optional<CampaignDomain> result = adapter.findById(1L);
+
+    assertThat(result).isPresent();
+    assertThat(result.get().getGameMasterName()).isNull();
+    verifyNoInteractions(userRepository);
+  }
+
+  @Test
+  void enrichWithGameMasterName_shouldSkipWhenUserNotFound() {
+    CampaignEntity entity = Instancio.create(CampaignEntity.class);
+    when(jpaCampaignRepository.findById(1L)).thenReturn(Optional.of(entity));
+    when(userRepository.findById(entity.getGameMasterId())).thenReturn(Optional.empty());
+
+    Optional<CampaignDomain> result = adapter.findById(1L);
+
+    assertThat(result).isPresent();
+    assertThat(result.get().getGameMasterName()).isNull();
+    verify(userRepository).findById(entity.getGameMasterId());
+  }
 }

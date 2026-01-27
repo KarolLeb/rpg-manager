@@ -29,8 +29,6 @@ async function convert() {
             mutations.push({
                 engineId: 'pitest',
                 ruleId: mutator.split('.').pop(),
-                severity: status === 'SURVIVED' ? 'MAJOR' : 'MINOR',
-                type: 'CODE_SMELL',
                 primaryLocation: {
                     message: `Mutation survived: ${description} (Status: ${status})`,
                     filePath: filePath,

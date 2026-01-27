@@ -3,6 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CampaignService } from '../../core/services/campaign.service';
+import { AuthService } from '../../core/services/auth.service';
 import { CreateCampaignRequest, Campaign } from '../../core/models/campaign.model';
 
 @Component({
@@ -24,12 +25,14 @@ import { CreateCampaignRequest, Campaign } from '../../core/models/campaign.mode
 export class CampaignFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly campaignService = inject(CampaignService);
+  private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   campaignForm: FormGroup;
   isEditMode = false;
   campaignId: number | null = null;
+  error: string | null = null;
 
   constructor() {
     this.campaignForm = this.fb.group({
@@ -61,12 +64,20 @@ export class CampaignFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.campaignForm.invalid) return;
+    if (this.campaignForm.invalid) {
+      return;
+    }
+
+    const user = this.authService.currentUserValue;
+    if (!user) {
+      this.error = 'Musisz być zalogowany, aby stworzyć kampanię.';
+      return;
+    }
 
     const request: CreateCampaignRequest = {
       name: this.campaignForm.value.name,
       description: this.campaignForm.value.description,
-      gameMasterId: 1 // Hardcoded for now per plan
+      gameMasterId: 1
     };
 
     if (this.isEditMode && this.campaignId) {
@@ -74,14 +85,20 @@ export class CampaignFormComponent implements OnInit {
         next: () => {
           this.router.navigate(['/campaigns']);
         },
-        error: (err: any) => console.error('Error updating campaign', err)
+        error: (err: any) => {
+          this.error = 'Wystąpił błąd podczas aktualizacji kampanii.';
+          console.error('Error updating campaign', err);
+        }
       });
     } else {
       this.campaignService.createCampaign(request).subscribe({
         next: () => {
           this.router.navigate(['/campaigns']);
         },
-        error: (err: any) => console.error('Error creating campaign', err)
+        error: (err: any) => {
+          this.error = 'Wystąpił błąd podczas tworzenia kampanii.';
+          console.error('Error creating campaign', err);
+        }
       });
     }
   }

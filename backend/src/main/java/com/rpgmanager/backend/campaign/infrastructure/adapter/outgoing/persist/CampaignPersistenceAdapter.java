@@ -58,7 +58,7 @@ public class CampaignPersistenceAdapter implements CampaignRepository {
   }
 
   private CampaignDomain enrichWithGameMasterName(CampaignDomain campaign) {
-    if (campaign != null && campaign.getGameMasterId() != null) {
+    if (campaign.getGameMasterId() != null) {
       userRepository
           .findById(campaign.getGameMasterId())
           .ifPresent(user -> campaign.setGameMasterName(user.getUsername()));

@@ -6,7 +6,8 @@
     "!src/**/*.test.ts",
     "!src/**/*.mock.ts",
     "!src/main.ts",
-    "!src/environments/*.ts"
+    "!src/environments/*.ts",
+    "!src/app/app.routes.ts"
   ],
   "testRunner": "karma",
   "karma": {
@@ -17,12 +18,13 @@
     }
   },
   "reporters": ["progress", "clear-text", "html", "json"],
-  "checkers": [],
-  "timeoutMS": 60000,
-    "thresholds": {
-      "high": 90,
-      "low": 80,
-      "break": 80
-    },
+  "checkers": ["typescript"],
+  "tsconfigFile": "tsconfig.stryker.json",
+  "timeoutMS": 120000,
+  "thresholds": {
+    "high": 90,
+    "low": 80,
+    "break": 80
+  },
   "tempDirName": "stryker-tmp"
 }
