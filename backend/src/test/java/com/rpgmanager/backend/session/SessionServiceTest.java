@@ -27,6 +27,8 @@ class SessionServiceTest {
 
   private CampaignEntity campaign;
   private Session session;
+  private static final OffsetDateTime OLD_DATE = OffsetDateTime.parse("2026-01-01T10:00:00Z");
+  private static final OffsetDateTime NEW_DATE = OffsetDateTime.parse("2026-01-02T10:00:00Z");
 
   @BeforeEach
   void setUp() {
@@ -37,15 +39,14 @@ class SessionServiceTest {
             .id(100L)
             .campaign(campaign)
             .name("Session 1")
-            .sessionDate(OffsetDateTime.now())
+            .sessionDate(OLD_DATE)
             .status(Session.SessionStatus.ACTIVE)
             .build();
   }
 
   @Test
   void createSession_shouldSaveAndReturnDTO() {
-    CreateSessionRequest request =
-        new CreateSessionRequest(1L, "New Session", "Desc", OffsetDateTime.now());
+    CreateSessionRequest request = new CreateSessionRequest(1L, "New Session", "Desc", NEW_DATE);
 
     when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
     when(sessionRepository.save(any(Session.class)))
@@ -61,6 +62,7 @@ class SessionServiceTest {
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("New Session");
     assertThat(result.getCampaignId()).isEqualTo(1L);
+    assertThat(result.getSessionDate()).isEqualTo(NEW_DATE);
     verify(sessionRepository)
         .save(
             argThat(
@@ -68,13 +70,14 @@ class SessionServiceTest {
                   assertThat(s.getName()).isEqualTo("New Session");
                   assertThat(s.getDescription()).isEqualTo("Desc");
                   assertThat(s.getCampaign()).isEqualTo(campaign);
+                  assertThat(s.getSessionDate()).isEqualTo(NEW_DATE);
                   return true;
                 }));
   }
 
   @Test
   void createSession_shouldThrowIfCampaignNotFound() {
-    CreateSessionRequest request = new CreateSessionRequest(1L, "N", "D", null);
+    CreateSessionRequest request = new CreateSessionRequest(1L, "N", "D", NEW_DATE);
     when(campaignRepository.findById(1L)).thenReturn(Optional.empty());
 
     org.assertj.core.api.Assertions.assertThatThrownBy(() -> sessionService.createSession(request))
@@ -90,6 +93,7 @@ class SessionServiceTest {
 
     assertThat(result).isNotNull();
     assertThat(result.getId()).isEqualTo(100L);
+    assertThat(result.getSessionDate()).isEqualTo(OLD_DATE);
   }
 
   @Test
@@ -105,12 +109,12 @@ class SessionServiceTest {
     when(sessionRepository.findByCampaignId(1L)).thenReturn(List.of(session));
     List<SessionDto> result = sessionService.getSessionsByCampaign(1L);
     assertThat(result).isNotNull().hasSize(1);
+    assertThat(result.get(0).getSessionDate()).isEqualTo(OLD_DATE);
   }
 
   @Test
   void updateSession_shouldUpdateAndReturnDTO() {
-    CreateSessionRequest request =
-        new CreateSessionRequest(1L, "Updated", "New Desc", OffsetDateTime.now());
+    CreateSessionRequest request = new CreateSessionRequest(1L, "Updated", "New Desc", NEW_DATE);
     when(sessionRepository.findById(100L)).thenReturn(Optional.of(session));
     when(sessionRepository.save(any())).thenReturn(session);
 
@@ -118,21 +122,21 @@ class SessionServiceTest {
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("Updated");
+    assertThat(result.getSessionDate()).isEqualTo(NEW_DATE);
     verify(sessionRepository)
         .save(
             argThat(
                 s -> {
                   assertThat(s.getName()).isEqualTo("Updated");
                   assertThat(s.getDescription()).isEqualTo("New Desc");
-                  assertThat(s.getSessionDate()).isEqualTo(request.getSessionDate());
+                  assertThat(s.getSessionDate()).isEqualTo(NEW_DATE);
                   return true;
                 }));
   }
 
   @Test
   void updateSession_shouldThrowIfNotFound() {
-    CreateSessionRequest request =
-        new CreateSessionRequest(1L, "Updated", "New Desc", OffsetDateTime.now());
+    CreateSessionRequest request = new CreateSessionRequest(1L, "Updated", "New Desc", NEW_DATE);
     when(sessionRepository.findById(100L)).thenReturn(Optional.empty());
 
     org.assertj.core.api.Assertions.assertThatThrownBy(
