@@ -59,9 +59,6 @@
 		<sonar.links.scm>https://github.com/KarolLeb/rpg-manager</sonar.links.scm>
 		<sonar.links.issue>https://github.com/KarolLeb/rpg-manager/issues</sonar.links.issue>
 		<sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
-		<sonar.pitest.mode>reuseReport</sonar.pitest.mode>
-		<sonar.pitest.reportsDirectory>target/pit-reports</sonar.pitest.reportsDirectory>
-		<sonar.externalIssuesReportPaths>target/sonar-pitest.json</sonar.externalIssuesReportPaths>
 		<!-- Security Patch Overrides -->
 		<spring-framework.version>6.2.2</spring-framework.version>
 		<tomcat.version>10.1.40</tomcat.version>
@@ -477,6 +474,14 @@
 					<!-- This profile ensures failsafe runs when requested -->
 				</plugins>
 			</build>
+		</profile>
+		<profile>
+			<id>mutation</id>
+			<properties>
+				<sonar.pitest.mode>reuseReport</sonar.pitest.mode>
+				<sonar.pitest.reportsDirectory>target/pit-reports</sonar.pitest.reportsDirectory>
+				<sonar.externalIssuesReportPaths>target/sonar-pitest.json</sonar.externalIssuesReportPaths>
+			</properties>
 		</profile>
 	</profiles>
 </project>
