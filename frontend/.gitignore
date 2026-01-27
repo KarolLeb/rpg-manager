@@ -41,6 +41,7 @@ Thumbs.db
 /test-results
 /blob-report
 /playwright/.cache
+stryker-report.json
 
 .github/
 .env

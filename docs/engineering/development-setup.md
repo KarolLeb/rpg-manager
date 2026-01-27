@@ -70,6 +70,41 @@ act --rm
 | **Grafana** | [http://localhost:3000](http://localhost:3000) | `admin` / `admin` | 
 | Prometheus | [http://localhost:9090](http://localhost:9090) | | 
 
+## 🛡️ SonarQube Workflows
+
+The project provides standardized scripts in the root `package.json` to manage code quality analysis. These commands ensure that analysis data (coverage, linting, mutation) is consistent and up-to-date.
+
+### Command Profiles
+
+| Profile | Action | Use Case |
+| :--- | :--- | :--- |
+| **`scan`** | Uploads existing reports to SonarQube without running tests. | Re-uploading after manual test runs. |
+| **`quick`** | Runs Linting/Spotless + Unit Tests + Coverage + Scan. | Standard pre-push or CI check. |
+| **`full`** | Runs **Quick** + Mutation Testing (PIT/Stryker) + Scan. | Deep quality verification (Nightly/PR). |
+
+### Usage
+
+Run analysis for both stacks:
+```powershell
+npm run sonar:quick
+# or for a deep check:
+npm run sonar:full
+```
+
+Target a specific stack:
+```powershell
+npm run sonar:quick:backend
+npm run sonar:quick:frontend
+```
+
+Just upload existing data:
+```powershell
+npm run sonar:scan
+```
+
+> [!NOTE]
+> **Performance:** `sonar:full` (Mutation Testing) is computationally intensive and can take significant time. It is recommended for CI/CD or occasional local deep-dives.
+
 ## 🧪 Testing
 
 ### Backend

@@ -67,8 +67,12 @@ graph TD
 
 ## 🧪 Testing & Development
 
+The project uses standardized workflows for quality assurance:
+- **Quick Check:** `npm run sonar:quick` (Tests + Coverage + Linting)
+- **Deep Check:** `npm run sonar:full` (Quick + Mutation Testing)
+
 For detailed instructions on running tests (Backend, Frontend, and E2E) and setting up your environment, see:
-- **[Development Setup & Testing Guide](docs/engineering/development-setup.md)**
+- **[Development Setup & Quality Guide](docs/engineering/development-setup.md)**
 
 ## 🗺️ Project Tracking
 

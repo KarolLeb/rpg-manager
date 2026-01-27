@@ -11,6 +11,13 @@ This file provides a high-level map of the project structure and resources for t
 - **Compatibility**: See **[Testcontainers Compatibility](docs/TESTCONTAINERS_COMPATIBILITY.md)** for known issues with Docker Desktop versions.
 - **Action**: If Docker is not running, ask the user to start it before proceeding with tests.
 
+## 🧪 Quality Assurance Workflows
+Use these standardized npm scripts (defined in root `package.json`) to verify code quality. They cover both Backend and Frontend.
+
+- **`npm run sonar:quick`**: **Standard Check**. Runs Linting, Unit Tests, and Coverage before scanning. Use this for pre-push verification.
+- **`npm run sonar:full`**: **Deep Check**. Runs everything in Quick + **Mutation Testing** (PIT/Stryker). Use this for critical logic verification.
+- **`npm run sonar:scan`**: **Upload Only**. Uploads existing reports without re-running tests.
+
 ## 📅 Project Management
 - **[Plans & TODO](plans/TODO.md)**: Current development roadmap and task tracking.
 
@@ -177,6 +184,8 @@ This repo includes a minimal coverage enforcement workflow (`.github/workflows/c
   - Docs authoring rules (SSOT): `.github/instructions/docs.instructions.md`
   - Documentation flow anchor: `.github/instructions/docs.instructions.md#documentation-process-flow`
 - Testing
+  - **QA Workflows (Standard):** `npm run sonar:quick` / `npm run sonar:full` (see **Quality Assurance Workflows** above)
+  - Development Setup & Quality Guide: `docs/engineering/development-setup.md`
   - BDD feature guidance (SSOT): `.github/instructions/bdd-tests.instructions.md`
   - Tester agent (enforces policy): `.github/agents/Tester.agent.md`
 - Backend
