@@ -45,8 +45,8 @@ async function convert() {
         engineId: 'stryker',
         cleanCodeAttribute: 'TESTED',
         impacts: [{
-            softwareQuality: 'MAINTAINABILITY',
-            severity: 'INFO'
+            softwareQuality: 'RELIABILITY',
+            severity: 'MEDIUM'
         }]
     }));
 

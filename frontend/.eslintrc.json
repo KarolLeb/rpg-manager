@@ -35,7 +35,14 @@
             "style": "kebab-case"
           }
         ],
-        "@angular-eslint/prefer-inject": "warn"
+        "@angular-eslint/prefer-inject": "warn",
+        "complexity": ["error", 15],
+        "no-restricted-imports": ["error", {
+          "patterns": [{
+            "group": ["**/features/**"],
+            "message": "Domain services and core modules should not depend on feature components to maintain clean architecture."
+          }]
+        }]
       }
     },
     {
