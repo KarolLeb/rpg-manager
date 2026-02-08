@@ -20,7 +20,8 @@
   },
   "private": true,
   "overrides": {
-    "tar": ">=6.2.2"
+    "tar": ">=7.5.7",
+    "webpack": ">=5.105.0"
   },
   "dependencies": {
     "@angular/common": "^19.2.0",
@@ -36,17 +37,17 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.19",
-    "@angular-eslint/builder": "^21.1.0",
-    "@angular-eslint/eslint-plugin": "^21.1.0",
-    "@angular-eslint/eslint-plugin-template": "^21.1.0",
-    "@angular-eslint/template-parser": "^21.1.0",
+    "@angular-eslint/builder": "^19.8.1",
+    "@angular-eslint/eslint-plugin": "^19.8.1",
+    "@angular-eslint/eslint-plugin-template": "^19.8.1",
+    "@angular-eslint/template-parser": "^19.8.1",
     "@angular/cli": "^19.2.19",
     "@angular/compiler-cli": "^19.2.0",
     "@playwright/test": "^1.57.0",
-    "@stryker-mutator/core": "^9.4.0",
-    "@stryker-mutator/jasmine-runner": "^9.4.0",
-    "@stryker-mutator/karma-runner": "^9.4.0",
-    "@stryker-mutator/typescript-checker": "^9.4.0",
+    "@stryker-mutator/core": "^9.5.1",
+    "@stryker-mutator/jasmine-runner": "^9.5.1",
+    "@stryker-mutator/karma-runner": "^9.5.1",
+    "@stryker-mutator/typescript-checker": "^9.5.1",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^8.53.1",
     "@typescript-eslint/parser": "^8.53.1",
