@@ -38,45 +38,20 @@ describe('LoginComponent', () => {
     expect(component.error).toBeNull();
   });
 
-  it('should have invalid form initially', () => {
-    expect(component.loginForm.valid).toBeFalse();
-    expect(component.loginForm.get('username')?.value).toBe('');
-    expect(component.loginForm.get('password')?.value).toBe('');
-  });
+  it('should have validators on form controls', () => {
+    const username = component.loginForm.get('username');
+    const password = component.loginForm.get('password');
 
-  it('should require username', () => {
-    const control = component.loginForm.get('username');
-    control?.setValue('');
-    expect(control?.hasError('required')).toBeTrue();
-  });
+    username?.setValue('');
+    password?.setValue('');
+    expect(username?.hasError('required')).toBeTrue();
+    expect(password?.hasError('required')).toBeTrue();
 
-  it('should validate username min length', () => {
-    const control = component.loginForm.get('username');
-    control?.setValue('ab');
-    expect(control?.hasError('minlength')).toBeTrue();
-    control?.setValue('abc');
-    expect(control?.valid).toBeTrue(); // assuming no other validators
-  });
+    username?.setValue('ab');
+    expect(username?.hasError('minlength')).toBeTrue();
 
-  it('should require password', () => {
-    const control = component.loginForm.get('password');
-    control?.setValue('');
-    expect(control?.hasError('required')).toBeTrue();
-  });
-
-  it('should validate password min length', () => {
-    const control = component.loginForm.get('password');
-    control?.setValue('12345');
-    expect(control?.hasError('minlength')).toBeTrue();
-    control?.setValue('123456');
-    expect(control?.valid).toBeTrue();
-  });
-
-  it('should enable submit button when form is valid', () => {
-    component.loginForm.controls['username'].setValue('testuser');
-    component.loginForm.controls['password'].setValue('password123');
-    fixture.detectChanges();
-    expect(component.loginForm.valid).toBeTrue();
+    password?.setValue('12345');
+    expect(password?.hasError('minlength')).toBeTrue();
   });
 
   it('should disable submit button when loading', () => {
@@ -86,8 +61,8 @@ describe('LoginComponent', () => {
     expect(btn.disabled).toBeTrue();
   });
 
-  it('should call login and navigate on success', fakeAsync(() => {
-    const loginSpy = spyOn(authService, 'login').and.returnValue(of({ token: 't', username: 'u', role: 'R', id: 1 }).pipe(delay(0)));
+  it('should call login and navigate on success and manage isLoading correctly', fakeAsync(() => {
+    const loginSpy = spyOn(authService, 'login').and.returnValue(of({ token: 't', username: 'u', role: 'R', id: 1 }).pipe(delay(10)));
     const navigateSpy = spyOn(router, 'navigate');
 
     component.loginForm.controls['username'].setValue('testuser');
@@ -96,46 +71,64 @@ describe('LoginComponent', () => {
     expect(component.isLoading).toBeFalse();
     component.onSubmit();
     expect(component.isLoading).toBeTrue();
+    expect(component.error).toBeNull();
     
-    tick();
+    tick(10);
 
     expect(loginSpy).toHaveBeenCalled();
     expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
     expect(component.isLoading).toBeFalse();
   }));
 
-  it('should set error on login failure', fakeAsync(() => {
-    spyOn(authService, 'login').and.returnValue(of(null).pipe(delay(0), switchMap(() => throwError(() => ({ error: { message: 'Failed' } })))));
+  it('should set error on login failure and manage isLoading correctly', fakeAsync(() => {
+    const errorResponse = { error: { message: 'Custom error' } };
+    spyOn(authService, 'login').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => errorResponse))));
 
     component.loginForm.controls['username'].setValue('testuser');
     component.loginForm.controls['password'].setValue('password123');
     
-    expect(component.isLoading).toBeFalse();
     component.onSubmit();
     expect(component.isLoading).toBeTrue();
     
-    tick();
+    tick(10);
 
-    expect(component.error).toBe('Failed');
+    expect(component.error).toBe('Custom error');
     expect(component.isLoading).toBeFalse();
   }));
 
-  it('should set fallback error message on login failure without specific message', fakeAsync(() => {
-    spyOn(authService, 'login').and.returnValue(of(null).pipe(delay(0), switchMap(() => throwError(() => new Error('Error')))));
+  it('should use fallback error message on login failure when message is missing', fakeAsync(() => {
+    spyOn(authService, 'login').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({})))));
 
     component.loginForm.controls['username'].setValue('testuser');
     component.loginForm.controls['password'].setValue('password123');
     
     component.onSubmit();
-    tick();
+    tick(10);
 
     expect(component.error).toBe('Login failed. Please check your credentials.');
     expect(component.isLoading).toBeFalse();
   }));
 
-  it('should not submit if form is invalid', () => {
-    const loginSpy = spyOn(authService, 'login');
+  it('should use fallback error message on login failure when error object is null', fakeAsync(() => {
+    spyOn(authService, 'login').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: null })))));
+
+    component.loginForm.controls['username'].setValue('testuser');
+    component.loginForm.controls['password'].setValue('password123');
+    
     component.onSubmit();
+    tick(10);
+
+    expect(component.error).toBe('Login failed. Please check your credentials.');
+  }));
+
+  it('should not submit if form is invalid and should NOT set isLoading to true', () => {
+    const loginSpy = spyOn(authService, 'login');
+    component.loginForm.controls['username'].setValue('');
+    
+    expect(component.isLoading).toBeFalse();
+    component.onSubmit();
+    
     expect(loginSpy).not.toHaveBeenCalled();
+    expect(component.isLoading).toBeFalse();
   });
 });

@@ -24,7 +24,7 @@ describe('CharacterService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch characters from correct URL', fakeAsync(() => {
+  it('should fetch characters from correct URL and verify base URL', fakeAsync(() => {
     const mockCharacters: Character[] = [
       { id: 1, name: 'Char 1', characterClass: 'Class 1', level: 1, stats: '{}' }
     ];
@@ -35,11 +35,13 @@ describe('CharacterService', () => {
 
     const req = httpMock.expectOne('http://localhost:8080/api/characters');
     expect(req.request.method).toBe('GET');
+    // Mutation test: ensure url is NOT just "" or something else
+    expect(req.request.url).toBe('http://localhost:8080/api/characters');
     req.flush(mockCharacters);
     tick();
   }));
 
-  it('should update character with correct URL and method', fakeAsync(() => {
+  it('should update character with strict URL and method check', fakeAsync(() => {
     const mockCharacter: Character = { id: 1, name: 'Updated Char', characterClass: 'Class 1', level: 1, stats: '{}' };
 
     service.updateCharacter(1, mockCharacter).subscribe(character => {
@@ -48,6 +50,7 @@ describe('CharacterService', () => {
 
     const req = httpMock.expectOne('http://localhost:8080/api/characters/1');
     expect(req.request.method).toBe('PUT');
+    expect(req.request.url).toBe('http://localhost:8080/api/characters/1');
     expect(req.request.body).toEqual(mockCharacter);
     req.flush(mockCharacter);
     tick();
@@ -69,23 +72,23 @@ describe('CharacterService', () => {
 
   it('should use base apiUrl correctly in all methods', fakeAsync(() => {
     const id = 999;
-    
+
     service.getCharacters().subscribe();
     const req1 = httpMock.expectOne('http://localhost:8080/api/characters');
     expect(req1.request.url).toBe('http://localhost:8080/api/characters');
     req1.flush([]);
-    
+
     service.getCharacter(id).subscribe();
     const req2 = httpMock.expectOne(`http://localhost:8080/api/characters/${id}`);
     expect(req2.request.url).toBe(`http://localhost:8080/api/characters/${id}`);
     req2.flush({});
-    
+
     service.updateCharacter(id, {} as any).subscribe();
     const req3 = httpMock.expectOne(`http://localhost:8080/api/characters/${id}`);
     expect(req3.request.url).toBe(`http://localhost:8080/api/characters/${id}`);
     expect(req3.request.method).toBe('PUT');
     req3.flush({});
-    
+
     tick();
   }));
 });

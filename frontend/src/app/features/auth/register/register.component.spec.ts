@@ -24,7 +24,7 @@ describe('RegisterComponent', () => {
       ]
     })
     .compileComponents();
-    
+
     authService = TestBed.inject(AuthService);
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(RegisterComponent);
@@ -36,7 +36,7 @@ describe('RegisterComponent', () => {
     expect(component).toBeTruthy();
     expect(component.isLoading).toBe(false);
     expect(component.error).toBeNull();
-    
+
     // Kill StringLiteral mutants in fb.group
     expect(component.registerForm.get('username')?.value).toBe('');
     expect(component.registerForm.get('email')?.value).toBe('');
@@ -47,10 +47,10 @@ describe('RegisterComponent', () => {
   it('should validate password mismatch', () => {
     const password = component.registerForm.controls['password'];
     const confirmPassword = component.registerForm.controls['confirmPassword'];
-    
+
     password.setValue('password123');
     confirmPassword.setValue('password456');
-    
+
     expect(component.registerForm.hasError('mismatch')).toBe(true);
     expect(component.registerForm.errors?.['mismatch']).toBe(true);
   });
@@ -115,8 +115,8 @@ describe('RegisterComponent', () => {
     expect(password?.errors?.['minlength']).toBeTruthy();
   });
 
-  it('should navigate to login on registration success and manage isLoading', fakeAsync(() => {
-    const registerSpy = spyOn(authService, 'register').and.returnValue(of(void 0).pipe(delay(1)));
+  it('should navigate to login on registration success and manage isLoading correctly', fakeAsync(() => {
+    const registerSpy = spyOn(authService, 'register').and.returnValue(of(void 0).pipe(delay(10)));
     const navigateSpy = spyOn(router, 'navigate');
 
     component.registerForm.patchValue({
@@ -125,25 +125,32 @@ describe('RegisterComponent', () => {
       password: 'password123',
       confirmPassword: 'password123'
     });
-    
+
     expect(component.isLoading).toBe(false);
     component.onSubmit();
     expect(component.isLoading).toBe(true);
-    
-    tick(1);
-    
-    expect(registerSpy).toHaveBeenCalled();
+    expect(component.error).toBeNull();
+
+    tick(10);
+
+    // Verify that confirmPassword is NOT sent to the service
+    expect(registerSpy).toHaveBeenCalledWith({
+      username: 'User',
+      email: 'test@example.com',
+      password: 'password123'
+    });
+
     expect(navigateSpy).toHaveBeenCalledWith(['/login'], { queryParams: { registered: true } });
     const navigateArgs = navigateSpy.calls.mostRecent().args;
     expect(navigateArgs[0]).toEqual(['/login']);
     expect(navigateArgs[1]?.queryParams?.['registered']).toBe(true);
-    
+
     expect(component.isLoading).toBe(false);
   }));
 
-  it('should set error on registration failure and manage isLoading', fakeAsync(() => {
+  it('should set error on registration failure and manage isLoading correctly', fakeAsync(() => {
     const errorResponse = { error: { message: 'Registration failed' } };
-    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(1), switchMap(() => throwError(() => errorResponse))));
+    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => errorResponse))));
 
     component.registerForm.patchValue({
       username: 'User',
@@ -151,19 +158,19 @@ describe('RegisterComponent', () => {
       password: 'password123',
       confirmPassword: 'password123'
     });
-    
+
     expect(component.isLoading).toBe(false);
     component.onSubmit();
     expect(component.isLoading).toBe(true);
 
-    tick(1);
+    tick(10);
 
     expect(component.error).toBe('Registration failed');
     expect(component.isLoading).toBe(false);
   }));
 
   it('should use default error message on registration failure if error object is missing', fakeAsync(() => {
-    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(1), switchMap(() => throwError(() => ({})))));
+    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({})))));
 
     component.registerForm.patchValue({
       username: 'User',
@@ -171,16 +178,16 @@ describe('RegisterComponent', () => {
       password: 'password123',
       confirmPassword: 'password123'
     });
-    
+
     component.onSubmit();
-    tick(1);
+    tick(10);
 
     expect(component.error).toBe('Registration failed. Please try again.');
     expect(component.isLoading).toBe(false);
   }));
 
-  it('should use default error message on registration failure if message is missing in error object', fakeAsync(() => {
-    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(1), switchMap(() => throwError(() => ({ error: {} })))));
+  it('should use default error message on registration failure if error is null', fakeAsync(() => {
+    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: null })))));
 
     component.registerForm.patchValue({
       username: 'User',
@@ -188,18 +195,35 @@ describe('RegisterComponent', () => {
       password: 'password123',
       confirmPassword: 'password123'
     });
-    
+
     component.onSubmit();
-    tick(1);
+    tick(10);
 
     expect(component.error).toBe('Registration failed. Please try again.');
   }));
 
-  it('should return early if form is invalid', () => {
+  it('should use default error message on registration failure if message is missing in error object', fakeAsync(() => {
+    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: {} })))));
+
+    component.registerForm.patchValue({
+      username: 'User',
+      email: 'test@example.com',
+      password: 'password123',
+      confirmPassword: 'password123'
+    });
+
+    component.onSubmit();
+    tick(10);
+
+    expect(component.error).toBe('Registration failed. Please try again.');
+  }));
+
+  it('should return early if form is invalid and NOT set isLoading to true', () => {
     const registerSpy = spyOn(authService, 'register');
     component.registerForm.patchValue({
       username: '', // Invalid
     });
+    expect(component.isLoading).toBeFalse();
     component.onSubmit();
     expect(registerSpy).not.toHaveBeenCalled();
     expect(component.isLoading).toBe(false);
@@ -213,7 +237,7 @@ describe('RegisterComponent', () => {
       if (name === 'password') return originalGet('password');
       return null;
     });
-    
+
     expect(validator(group)).toEqual({ mismatch: true });
   });
 
@@ -225,7 +249,7 @@ describe('RegisterComponent', () => {
       if (name === 'confirmPassword') return originalGet('confirmPassword');
       return null;
     });
-    
+
     expect(validator(group)).toEqual({ mismatch: true });
   });
 });

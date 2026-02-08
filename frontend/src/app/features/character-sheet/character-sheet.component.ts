@@ -119,10 +119,14 @@ export class CharacterSheetPageComponent implements OnInit {
 
     let attributesData: any;
     try {
-      attributesData = JSON.parse(character.stats);
+      attributesData = JSON.parse(character.stats || '{}');
     } catch (e) {
       console.error('Failed to parse character stats', e);
       return;
+    }
+
+    if (!attributesData || typeof attributesData !== 'object') {
+      attributesData = {};
     }
 
     const attrsGroup = this.characterForm.get('attributes') as FormGroup;

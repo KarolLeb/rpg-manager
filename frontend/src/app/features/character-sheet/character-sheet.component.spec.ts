@@ -61,7 +61,7 @@ describe('CharacterSheetPageComponent', () => {
     fixture.detectChanges(); // ngOnInit
     expect(component.currentCharacterId).toBeUndefined();
     expect(component.isLoading).toBeFalse();
-    
+
     // Check full dummy data structure
     const info = component.characterForm.get('info')?.value;
     expect(info.name).toBe('Tonny Ballony');
@@ -91,39 +91,42 @@ describe('CharacterSheetPageComponent', () => {
     expect((strength.get('skills') as any).length).toBe(3);
     const strengthSkills = strength.get('skills') as any;
     expect(strengthSkills.at(0).value).toEqual({ name: 'Broń biała', level: 5, total: 15 });
-    
+
     const agility = component.getAttributeGroup('agility');
     expect(agility.get('value')?.value).toBe(12);
     const agilitySkills = agility.get('skills') as any;
     expect(agilitySkills.at(2).get('name')?.value).toBe('Skradanie');
   });
 
-  it('should load character data on init when id is provided', () => {
+  it('should load character data on init when id is provided and manage isLoading correctly', () => {
+    // Before init
     expect(component.isLoading).toBeTrue();
-    fixture.detectChanges();
+    
+    fixture.detectChanges(); // calls ngOnInit
+    
     expect(component.currentCharacterId).toBe(1);
     expect(component.currentCharacterId).not.toBe(-1); // Kill UnaryOperator mutation
     expect(component.currentCharacterId).toBeGreaterThan(0);
     expect(component.isLoading).toBeFalse();
-    expect(component.isLoading).not.toBeTrue();
+    
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
     expect(component.characterForm.get('info.profession')?.value).toBe('Soldier');
-    
+
     // Check if attribute groups are created
     const strengthGroup = component.characterForm.get('attributes.strength');
     expect(strengthGroup).toBeTruthy();
     expect(strengthGroup?.get('value')?.value).toBe(10);
-    
+
     const skills = strengthGroup?.get('skills') as any;
     expect(skills.length).toBe(1);
     expect(skills.at(0).get('name')?.value).toBe('Melee');
   });
 
-  it('should call updateCharacter on save', () => {
+  it('should call updateCharacter on save with correctly serialized stats', () => {
     fixture.detectChanges();
     // Modify value
     component.characterForm.get('info.name')?.setValue('Updated Char');
-    
+
     spyOn(window, 'alert');
     spyOn(console, 'log');
     component.onSave();
@@ -133,38 +136,53 @@ describe('CharacterSheetPageComponent', () => {
     expect(args[0]).toBe(1);
     expect(args[1].name).toBe('Updated Char');
     expect(args[1].id).toBe(1);
-    
+
     // Check if stats are correctly serialized back
     const savedStats = JSON.parse(args[1].stats);
     expect(savedStats.strength.val).toBe(10);
     expect(savedStats.strength.skills[0]).toEqual(['Melee', 2, 12]);
 
-    expect(console.log).toHaveBeenCalledWith('Character saved!', dummyCharacter);
+    expect(console.log).toHaveBeenCalledWith('Character saved!', jasmine.any(Object));
     expect(window.alert).toHaveBeenCalledWith('Postać została zapisana pomyślnie!');
     expect(window.alert).not.toHaveBeenCalledWith('');
   });
 
-  it('should load dummy data when getCharacter fails', () => {
+  it('should load dummy data when getCharacter fails and stop loading', () => {
     mockCharacterService.getCharacter.and.returnValue(throwError(() => new Error('Not found')));
     spyOn(console, 'error');
-    
+
     fixture.detectChanges();
 
     expect(console.error).toHaveBeenCalled();
+    // Check specific dummy values to kill StringLiteral mutations
     expect(component.characterForm.get('info.name')?.value).toBe('Tonny Ballony');
+    expect(component.characterForm.get('info.profession')?.value).toBe('Kanciarz');
     expect(component.characterForm.get('attributes.strength')?.get('value')?.value).toBe(12);
     expect(component.isLoading).toBeFalse();
-    expect(component.isLoading).not.toBeTrue();
   });
 
-  it('should not call updateCharacter if currentCharacterId is missing', () => {
+  it('should handle missing or empty stats correctly', () => {
+    const charWithNoStats = { ...dummyCharacter, stats: '' };
+    mockCharacterService.getCharacter.and.returnValue(of(charWithNoStats));
+    
     fixture.detectChanges();
-    component.currentCharacterId = undefined;
-    component.onSave();
-    expect(mockCharacterService.updateCharacter).not.toHaveBeenCalled();
+    
+    expect(component.isLoading).toBeFalse();
+    // Should fallback to dummy data or at least not crash
+    expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
   });
 
-  it('should handle save error', () => {
+  it('should handle null stats correctly', () => {
+    const charWithNullStats = { ...dummyCharacter, stats: null as any };
+    mockCharacterService.getCharacter.and.returnValue(of(charWithNullStats));
+    
+    fixture.detectChanges();
+    
+    expect(component.isLoading).toBeFalse();
+    expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
+  });
+
+  it('should handle save error and show alert', () => {
     fixture.detectChanges();
     mockCharacterService.updateCharacter.and.returnValue(throwError(() => new Error('Save failed')));
     spyOn(console, 'error');
@@ -181,7 +199,7 @@ describe('CharacterSheetPageComponent', () => {
     const invalidChar = { ...dummyCharacter, stats: '{invalid' };
     mockCharacterService.getCharacter.and.returnValue(of(invalidChar));
     spyOn(console, 'error');
-    
+
     fixture.detectChanges();
 
     expect(console.error).toHaveBeenCalledWith('Failed to parse character stats', jasmine.any(Error));

@@ -40,20 +40,21 @@ describe('CampaignService', () => {
     req.flush(dummyCampaigns);
   });
 
-  it('should retrieve a campaign by ID', () => {
+  it('should retrieve a campaign by ID with strict URL check', () => {
     const dummyCampaign: Campaign = { id: 1, name: 'Campaign 1', description: 'Desc 1', creationDate: '2023-01-01T00:00:00Z', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' };
 
     service.getCampaign(1).subscribe(campaign => {
       expect(campaign).toEqual(dummyCampaign);
     });
 
-    const req = httpMock.expectOne(request => request.url === 'http://localhost:8080/api/campaigns/1');
+    const req = httpMock.expectOne('http://localhost:8080/api/campaigns/1');
     expect(req.request.method).toBe('GET');
+    // Mutation test: if apiUrl is "", url would be "/1"
     expect(req.request.url).toBe('http://localhost:8080/api/campaigns/1');
     req.flush(dummyCampaign);
   });
 
-  it('should create a campaign', () => {
+  it('should create a campaign with correct data and URL', () => {
     const newCampaignRequest: CreateCampaignRequest = { name: 'New Campaign', description: 'New Desc', gameMasterId: 10 };
     const createdCampaign: Campaign = { id: 1, name: 'New Campaign', description: 'New Desc', creationDate: '2023-01-01T00:00:00Z', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' };
 
@@ -63,6 +64,7 @@ describe('CampaignService', () => {
 
     const req = httpMock.expectOne('http://localhost:8080/api/campaigns');
     expect(req.request.method).toBe('POST');
+    expect(req.request.url).toBe('http://localhost:8080/api/campaigns');
     expect(req.request.body).toEqual(newCampaignRequest);
     req.flush(createdCampaign);
   });

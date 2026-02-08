@@ -15,20 +15,20 @@ describe('AttributeCardComponent', () => {
 
     fixture = TestBed.createComponent(AttributeCardComponent);
     component = fixture.componentInstance;
-    
+
     // Setup inputs with expected form structure
     // Template expects skill to have 'name', 'level', 'total'
     component.title = 'Reflex';
     component.parentForm = new FormGroup({
       baseVal: new FormControl(8), // custom name
       mySkills: new FormArray([
-        new FormGroup({ 
-          name: new FormControl('Evasion'), 
+        new FormGroup({
+          name: new FormControl('Evasion'),
           level: new FormControl(4),
           total: new FormControl(12)
         }),
-        new FormGroup({ 
-          name: new FormControl('Driving'), 
+        new FormGroup({
+          name: new FormControl('Driving'),
           level: new FormControl(2),
           total: new FormControl(10)
         })

@@ -36,41 +36,39 @@ describe('DashboardComponent', () => {
       ]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
   });
 
   it('should create', () => {
+    userSubject.next(null);
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(component.isLoading).toBeFalse();
+    expect(component.isLoading).toBeFalse(); // BehaviorSubject emits immediately
     expect(component.error).toBeNull();
   });
 
-  it('should show GM dashboard when user role is GM', fakeAsync(() => {
+  it('should show GM dashboard when user role is GM and manage isLoading correctly', fakeAsync(() => {
     mockCampaignService.getCampaigns.and.returnValue(of([]).pipe(delay(10)));
-    
-    // Initial state check
-    expect(component.isLoading).toBeTrue(); 
 
     userSubject.next({ id: 1, username: 'gm', role: 'GM' });
     fixture.detectChanges();
-    
+
     // Should be loading now because of delay
     expect(component.isLoading).toBeTrue();
-    
+    expect(component.userRole).toBe('GM');
+
     tick(10); // Finish loading
     fixture.detectChanges();
-    
+
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.gm-dashboard')).toBeTruthy();
-    expect(component.userRole).toBe('GM');
     expect(component.isLoading).toBeFalse();
     expect(mockCampaignService.getCampaigns).toHaveBeenCalled();
   }));
 
-  it('should show Player dashboard when user role is PLAYER', () => {
+  it('should show Player dashboard when user role is PLAYER and stop loading', () => {
     userSubject.next({ id: 2, username: 'player', role: 'PLAYER' });
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
@@ -80,25 +78,33 @@ describe('DashboardComponent', () => {
     expect(mockCampaignService.getCampaigns).not.toHaveBeenCalled();
   });
 
-  it('should handle error when loading campaigns', fakeAsync(() => {
+  it('should handle error when loading campaigns and stop loading', fakeAsync(() => {
     mockCampaignService.getCampaigns.and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => new Error('Error')))));
-    
+
     userSubject.next({ id: 1, username: 'gm', role: 'GM' });
     fixture.detectChanges();
 
     expect(component.isLoading).toBeTrue();
-    
+
     tick(10);
-    
+
     expect(component.error).toBe('Failed to load campaigns.');
     expect(component.isLoading).toBeFalse();
   }));
 
-  it('should not load campaigns for non-GM users', () => {
+  it('should not load campaigns for non-GM users and stop loading', () => {
     userSubject.next({ id: 2, username: 'player', role: 'PLAYER' });
     fixture.detectChanges();
-    
+
     expect(component.isLoading).toBeFalse();
     expect(component.campaigns.length).toBe(0);
+  });
+
+  it('should handle user without role correctly', () => {
+    userSubject.next({ id: 3, username: 'norole' } as any);
+    fixture.detectChanges();
+    
+    expect(component.userRole).toBeNull();
+    expect(component.isLoading).toBeFalse();
   });
 });

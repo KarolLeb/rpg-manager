@@ -16,7 +16,7 @@ describe('CampaignFormComponent', () => {
   let paramsSubject: BehaviorSubject<any>;
 
   const dummyCampaign: Campaign = {
-    id: 1, name: 'Test Campaign', description: 'Test Desc', 
+    id: 1, name: 'Test Campaign', description: 'Test Desc',
     creationDate: '2023-01-01', status: 'ACTIVE', gameMasterId: 1, gameMasterName: 'GM'
   };
 
@@ -68,7 +68,7 @@ describe('CampaignFormComponent', () => {
   it('should switch to Edit Mode and load data when id param provided', fakeAsync(() => {
     // Test initial state before param
     expect(component.isEditMode).toBe(false);
-    
+
     // Setup mock to be async
     mockCampaignService.getCampaign.and.returnValue(of(dummyCampaign).pipe(delay(1)));
 
@@ -79,19 +79,19 @@ describe('CampaignFormComponent', () => {
     expect(component.isEditMode).toBe(true);
     expect(component.campaignId).toBe(1);
     expect(component.isLoading).toBe(true);
-    
+
     tick(1);
     fixture.detectChanges();
 
     expect(component.isLoading).toBe(false);
     expect(mockCampaignService.getCampaign).toHaveBeenCalledWith(1);
-    
+
     // Verify patchValue exactly
     expect(component.campaignForm.value).toEqual({
       name: dummyCampaign.name,
       description: dummyCampaign.description
     });
-    
+
     // Verify it doesn't navigate on load
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   }));
@@ -110,19 +110,20 @@ describe('CampaignFormComponent', () => {
       name: 'New Campaign',
       description: 'New Desc'
     });
-    
+
     mockCampaignService.createCampaign.and.returnValue(of(dummyCampaign).pipe(delay(1)));
 
     expect(component.isLoading).toBe(false);
     component.onSubmit();
     expect(component.isLoading).toBe(true);
-    
+
     expect(mockCampaignService.createCampaign).toHaveBeenCalledWith({
       name: 'New Campaign',
       description: 'New Desc',
       gameMasterId: 1
     });
-    
+    expect(mockCampaignService.updateCampaign).not.toHaveBeenCalled();
+
     tick(1); // Wait for async response
     expect(component.isLoading).toBe(false);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/campaigns']);
@@ -137,19 +138,21 @@ describe('CampaignFormComponent', () => {
     paramsSubject.next({ id: '1' });
     tick(); // this tick is for paramsSubject.next
     fixture.detectChanges();
-    
+
     component.campaignForm.patchValue({ name: 'Updated Name', description: 'Updated Desc' });
     mockCampaignService.updateCampaign.and.returnValue(of(dummyCampaign).pipe(delay(1)));
 
     expect(component.isLoading).toBe(false);
     component.onSubmit();
     expect(component.isLoading).toBe(true);
-    
+
     expect(mockCampaignService.updateCampaign).toHaveBeenCalledWith(1, {
       name: 'Updated Name',
       description: 'Updated Desc',
       gameMasterId: 1
     });
+    expect(mockCampaignService.createCampaign).not.toHaveBeenCalled();
+
     tick(1);
     expect(component.isLoading).toBe(false);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/campaigns']);
@@ -159,14 +162,27 @@ describe('CampaignFormComponent', () => {
   it('should NOT call updateCampaign if campaignId is missing even in edit mode', fakeAsync(() => {
     component.isEditMode = true;
     component.campaignId = null;
-    
+
     component.campaignForm.setValue({ name: 'Test', description: 'Test' });
     component.onSubmit();
-    
+
     expect(mockCampaignService.updateCampaign).not.toHaveBeenCalled();
     expect(mockCampaignService.createCampaign).toHaveBeenCalledWith(jasmine.objectContaining({ name: 'Test' }));
     tick();
     expect(component.isLoading).toBeFalse();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/campaigns']);
+  }));
+
+  it('should call createCampaign if isEditMode is false even if campaignId is set', fakeAsync(() => {
+    component.isEditMode = false;
+    component.campaignId = 1;
+
+    component.campaignForm.setValue({ name: 'New', description: 'Desc' });
+    component.onSubmit();
+
+    expect(mockCampaignService.createCampaign).toHaveBeenCalled();
+    expect(mockCampaignService.updateCampaign).not.toHaveBeenCalled();
+    tick();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/campaigns']);
   }));
 
@@ -175,10 +191,10 @@ describe('CampaignFormComponent', () => {
       get: () => null,
       configurable: true
     });
-    
+
     component.campaignForm.setValue({ name: 'New', description: 'Desc' });
     component.onSubmit();
-    
+
     expect(component.error).toBe('Musisz być zalogowany, aby stworzyć kampanię.');
     // Check mutation error = ""
     expect(component.error).not.toBe('');
@@ -195,9 +211,9 @@ describe('CampaignFormComponent', () => {
 
       spyOn(console, 'error');
 
-  
 
-      component.campaignForm.setValue({ name: 'New', description: 'Desc' });      
+
+      component.campaignForm.setValue({ name: 'New', description: 'Desc' });
 
       component.onSubmit();
 
@@ -207,18 +223,18 @@ describe('CampaignFormComponent', () => {
 
       tick(1);
 
-  
+
 
       expect(console.error).toHaveBeenCalledWith('Error creating campaign', error);
 
-  
+
     // Check mutation console.error("", err)
     expect((console.error as jasmine.Spy).calls.argsFor(0)[0]).not.toBe('');
-    
+
     expect(component.isLoading).toBeFalse();
     // Check mutation isLoading = true in error block
     expect(component.isLoading).not.toBeTrue();
-    
+
     expect(component.error).toBe('Wystąpił błąd podczas tworzenia kampanii.');
     expect(component.error).not.toBe('');
     expect(mockRouter.navigate).not.toHaveBeenCalled();
@@ -232,7 +248,7 @@ describe('CampaignFormComponent', () => {
 
       fixture.detectChanges();
 
-  
+
 
       const error = new Error('Update failed');
 
@@ -240,7 +256,7 @@ describe('CampaignFormComponent', () => {
 
       spyOn(console, 'error');
 
-  
+
 
       component.onSubmit();
 
@@ -248,16 +264,16 @@ describe('CampaignFormComponent', () => {
 
       tick(1);
 
-  
+
 
       expect(console.error).toHaveBeenCalledWith('Error updating campaign', error);
 
-  
+
     expect((console.error as jasmine.Spy).calls.argsFor(0)[0]).not.toBe('');
-    
+
     expect(component.isLoading).toBeFalse();
     expect(component.isLoading).not.toBeTrue();
-    
+
     expect(component.error).toBe('Wystąpił błąd podczas aktualizacji kampanii.');
     expect(component.error).not.toBe('');
     expect(mockRouter.navigate).not.toHaveBeenCalled();
@@ -274,11 +290,11 @@ describe('CampaignFormComponent', () => {
   it('should NOT update form if getCampaign fails', fakeAsync(() => {
     mockCampaignService.getCampaign.and.returnValue(of(null).pipe(delay(1), switchMap(() => throwError(() => new Error('fail')))));
     spyOn(console, 'error');
-    
+
     component.loadCampaign(123);
     expect(component.isLoading).toBe(true);
     tick(1);
-    
+
     expect(component.isLoading).toBe(false);
     expect(console.error).toHaveBeenCalledWith('Error loading campaign', jasmine.any(Error));
     expect((console.error as jasmine.Spy).calls.argsFor(0)[0]).not.toBe('');
