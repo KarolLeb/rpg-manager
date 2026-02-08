@@ -119,19 +119,24 @@ export class CharacterSheetPageComponent implements OnInit {
 
     let attributesData: any;
     try {
-      attributesData = JSON.parse(character.stats || '{}');
+      const parsed = JSON.parse(character.stats || '{}');
+      if (parsed && typeof parsed === 'object') {
+        attributesData = parsed;
+      } else {
+        if (character.stats && parsed !== null) {
+          console.error('Character stats is not an object', parsed);
+        }
+        attributesData = {};
+      }
     } catch (e) {
       console.error('Failed to parse character stats', e);
-      return;
-    }
-
-    if (!attributesData || typeof attributesData !== 'object') {
       attributesData = {};
     }
 
     const attrsGroup = this.characterForm.get('attributes') as FormGroup;
-
-    Object.keys(attributesData).forEach(key => {
+    const dataKeys = Object.keys(attributesData);
+    
+    dataKeys.forEach(key => {
       const data = attributesData[key];
       if (typeof data === 'object' && data.skills) {
         const skillsArray = this.fb.array(

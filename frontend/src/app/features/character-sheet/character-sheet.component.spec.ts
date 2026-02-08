@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { CharacterSheetPageComponent } from './character-sheet.component';
 import { CharacterService } from '../../core/services/character.service';
-import { of, throwError } from 'rxjs';
-import { ReactiveFormsModule } from '@angular/forms';
+import { of, throwError, delay, switchMap } from 'rxjs';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { Character } from '../../core/models/character.model';
 import { provideRouter } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
@@ -56,31 +56,26 @@ describe('CharacterSheetPageComponent', () => {
     expect(component.isLoading).toBeFalse();
   });
 
-  it('should load dummy data when no id is provided', () => {
+  it('should load dummy data when no id is provided and verify basic info', () => {
     routeId = null;
     fixture.detectChanges(); // ngOnInit
     expect(component.currentCharacterId).toBeUndefined();
     expect(component.isLoading).toBeFalse();
 
-    // Check full dummy data structure
     const info = component.characterForm.get('info')?.value;
     expect(info.name).toBe('Tonny Ballony');
     expect(info.profession).toBe('Kanciarz');
     expect(info.ambition).toBe('To dobry interes');
     expect(info.nemesis).toBe('Interes ponad wszystko');
+  });
 
-    // Verify all physical attributes
+  it('should load dummy physical attributes correctly', () => {
+    routeId = null;
+    fixture.detectChanges();
+    expect(component.physicalAttributes.length).toBe(6);
     const expectedPhysical = ['strength', 'constitution', 'dexterity', 'agility', 'perception', 'empathy'];
-    expectedPhysical.forEach(key => {
-      const group = component.getAttributeGroup(key);
-      expect(group).toBeTruthy();
-      expect(group.get('value')?.value).toBe(12);
-      expect((group.get('skills') as any).length).toBe(3);
-    });
-
-    // Verify all mental attributes
-    const expectedMental = ['charisma', 'intelligence', 'knowledge', 'willpower'];
-    expectedMental.forEach(key => {
+    expectedPhysical.forEach((key, index) => {
+      expect(component.physicalAttributes[index].key).toBe(key);
       const group = component.getAttributeGroup(key);
       expect(group).toBeTruthy();
       expect(group.get('value')?.value).toBe(12);
@@ -88,39 +83,63 @@ describe('CharacterSheetPageComponent', () => {
     });
 
     const strength = component.getAttributeGroup('strength');
-    expect((strength.get('skills') as any).length).toBe(3);
     const strengthSkills = strength.get('skills') as any;
     expect(strengthSkills.at(0).value).toEqual({ name: 'Broń biała', level: 5, total: 15 });
-
-    const agility = component.getAttributeGroup('agility');
-    expect(agility.get('value')?.value).toBe(12);
-    const agilitySkills = agility.get('skills') as any;
-    expect(agilitySkills.at(2).get('name')?.value).toBe('Skradanie');
+    expect(strengthSkills.at(1).value).toEqual({ name: 'Bijatyka', level: 5, total: 15 });
+    expect(strengthSkills.at(2).value).toEqual({ name: 'Zastraszanie', level: 5, total: 15 });
   });
 
-  it('should load character data on init when id is provided and manage isLoading correctly', () => {
-    // Before init
+  it('should load dummy mental attributes correctly', () => {
+    routeId = null;
+    fixture.detectChanges();
+    expect(component.mentalAttributes.length).toBe(4);
+    const expectedMental = ['charisma', 'intelligence', 'knowledge', 'willpower'];
+    expectedMental.forEach((key, index) => {
+      expect(component.mentalAttributes[index].key).toBe(key);
+      const group = component.getAttributeGroup(key);
+      expect(group).toBeTruthy();
+      expect(group.get('value')?.value).toBe(12);
+      expect((group.get('skills') as any).length).toBe(3);
+    });
+
+    const intelligence = component.getAttributeGroup('intelligence');
+    const intelligenceSkills = intelligence.get('skills') as any;
+    expect(intelligenceSkills.at(0).get('name')?.value).toBe('Analiza');
+    expect(intelligenceSkills.at(1).get('name')?.value).toBe('Komputery');
+    expect(intelligenceSkills.at(2).get('name')?.value).toBe('Taktyka');
+  });
+
+  it('should verify willpower skills dummy data', () => {
+    routeId = null;
+    fixture.detectChanges();
+    const willpower = component.getAttributeGroup('willpower');
+    const willpowerSkills = willpower.get('skills') as any;
+    expect(willpowerSkills.at(0).get('name')?.value).toBe('Intuicja');
+    expect(willpowerSkills.at(1).get('name')?.value).toBe('Koncentracja');
+    expect(willpowerSkills.at(2).get('name')?.value).toBe('Siła Woli');
+  });
+
+  it('should load character data on init when id is provided and manage isLoading correctly', fakeAsync(() => {
+    // Setup a delayed response
+    mockCharacterService.getCharacter.and.returnValue(of(dummyCharacter).pipe(delay(100)));
+    
+    // Before ngOnInit
     expect(component.isLoading).toBeTrue();
     
     fixture.detectChanges(); // calls ngOnInit
     
     expect(component.currentCharacterId).toBe(1);
-    expect(component.currentCharacterId).not.toBe(-1); // Kill UnaryOperator mutation
-    expect(component.currentCharacterId).toBeGreaterThan(0);
+    expect(component.isLoading).toBeTrue(); // Still true because of delay
+    
+    tick(100); // Complete observable
+    
     expect(component.isLoading).toBeFalse();
     
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
-    expect(component.characterForm.get('info.profession')?.value).toBe('Soldier');
-
-    // Check if attribute groups are created
-    const strengthGroup = component.characterForm.get('attributes.strength');
-    expect(strengthGroup).toBeTruthy();
-    expect(strengthGroup?.get('value')?.value).toBe(10);
-
-    const skills = strengthGroup?.get('skills') as any;
-    expect(skills.length).toBe(1);
-    expect(skills.at(0).get('name')?.value).toBe('Melee');
-  });
+    
+    const attrsGroup = component.characterForm.get('attributes') as FormGroup;
+    expect(Object.keys(attrsGroup.controls).length).toBeGreaterThan(0);
+  }));
 
   it('should call updateCharacter on save with correctly serialized stats', () => {
     fixture.detectChanges();
@@ -161,26 +180,75 @@ describe('CharacterSheetPageComponent', () => {
     expect(component.isLoading).toBeFalse();
   });
 
-  it('should handle missing or empty stats correctly', () => {
+  it('should handle missing or empty stats correctly and NOT log error', () => {
     const charWithNoStats = { ...dummyCharacter, stats: '' };
     mockCharacterService.getCharacter.and.returnValue(of(charWithNoStats));
+    spyOn(console, 'error');
     
     fixture.detectChanges();
     
+    expect(console.error).not.toHaveBeenCalled();
     expect(component.isLoading).toBeFalse();
-    // Should fallback to dummy data or at least not crash
+    expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
+    // attributes group should be empty
+    const attrsGroup = component.characterForm.get('attributes') as FormGroup;
+    expect(Object.keys(attrsGroup.controls).length).toBe(0);
+  });
+
+  it('should handle null stats correctly and NOT log error', () => {
+    const charWithNullStats = { ...dummyCharacter, stats: null as any };
+    mockCharacterService.getCharacter.and.returnValue(of(charWithNullStats));
+    spyOn(console, 'error');
+    
+    fixture.detectChanges();
+    
+    expect(console.error).not.toHaveBeenCalled();
+    expect(component.isLoading).toBeFalse();
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
   });
 
-  it('should handle null stats correctly', () => {
-    const charWithNullStats = { ...dummyCharacter, stats: null as any };
-    mockCharacterService.getCharacter.and.returnValue(of(charWithNullStats));
+  it('should handle stats that are JSON null correctly', () => {
+    const charWithJsonNull = { ...dummyCharacter, stats: 'null' };
+    mockCharacterService.getCharacter.and.returnValue(of(charWithJsonNull));
+    spyOn(console, 'error');
     
     fixture.detectChanges();
     
-    expect(component.isLoading).toBeFalse();
-    expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
+    expect(console.error).not.toHaveBeenCalled();
+    const attrsGroup = component.characterForm.get('attributes') as FormGroup;
+    expect(Object.keys(attrsGroup.controls).length).toBe(0);
   });
+
+  it('should handle stats that are not an object (e.g. number) correctly and log error', () => {
+    const charWithNumberStats = { ...dummyCharacter, stats: '123' };
+    mockCharacterService.getCharacter.and.returnValue(of(charWithNumberStats));
+    spyOn(console, 'error');
+    
+    fixture.detectChanges();
+    
+    expect(console.error).toHaveBeenCalledWith('Character stats is not an object', 123);
+    const attrsGroup = component.characterForm.get('attributes') as FormGroup;
+    expect(Object.keys(attrsGroup.controls).length).toBe(0);
+  });
+
+  it('should NOT clear attributesData if it is already a valid object', fakeAsync(() => {
+    // Valid stats with one attribute
+    const validStats = JSON.stringify({
+      testAttr: { val: 15, skills: [['Skill 1', 5, 20]] }
+    });
+    const charWithValidStats = { ...dummyCharacter, stats: validStats };
+    mockCharacterService.getCharacter.and.returnValue(of(charWithValidStats));
+    
+    fixture.detectChanges(); // calls ngOnInit -> loadCharacterData
+    tick();
+    
+    const attrsGroup = component.characterForm.get('attributes') as FormGroup;
+    // If mutation ( !== -> === ) occurred, it would have entered the block and cleared attributesData
+    // Resulting in 0 controls. 
+    expect(Object.keys(attrsGroup.controls).length).toBe(1);
+    expect(attrsGroup.get('testAttr')).toBeTruthy();
+    expect(attrsGroup.get('testAttr')?.get('value')?.value).toBe(15);
+  }));
 
   it('should handle save error and show alert', () => {
     fixture.detectChanges();

@@ -56,14 +56,14 @@ describe('CharacterService', () => {
     tick();
   }));
 
-  it('should fetch single character with correct URL', fakeAsync(() => {
+  it('should fetch single character with correct URL and verify base URL usage', fakeAsync(() => {
     const mockCharacter: Character = { id: 1, name: 'Char 1', characterClass: 'Class 1', level: 1, stats: '{}' };
 
     service.getCharacter(1).subscribe(character => {
       expect(character).toEqual(mockCharacter);
     });
 
-    const req = httpMock.expectOne(request => request.url === 'http://localhost:8080/api/characters/1');
+    const req = httpMock.expectOne(request => request.url.startsWith('http://localhost:8080/api/characters'));
     expect(req.request.method).toBe('GET');
     expect(req.request.url).toBe('http://localhost:8080/api/characters/1');
     req.flush(mockCharacter);

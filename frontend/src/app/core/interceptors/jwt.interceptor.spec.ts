@@ -17,30 +17,33 @@ describe('jwtInterceptor', () => {
     });
   });
 
-  it('should add Authorization header if token exists', () => {
+  it('should add Authorization header if token exists and ensure it is correct Bearer format', () => {
     authServiceSpy.getToken.and.returnValue('fake-token');
     const req = new HttpRequest('GET', '/test');
     const next: HttpHandlerFn = (r) => {
-      expect(r.headers.has('Authorization')).toBe(true);
+      expect(r.headers.has('Authorization')).toBeTrue();
       expect(r.headers.get('Authorization')).toBe('Bearer fake-token');
+      expect(r.headers.get('Authorization')).not.toBe('Bearer ');
       expect(r.headers.get('Authorization')).not.toBe('fake-token');
-      expect(r.headers.get('Authorization')).not.toBe('');
       return of();
     };
 
     TestBed.runInInjectionContext(() => jwtInterceptor(req, next));
   });
 
-  it('should NOT add Authorization header if token does not exist', () => {
-    authServiceSpy.getToken.and.returnValue(null);
-    const req = new HttpRequest('GET', '/test');
-    const next: HttpHandlerFn = (r) => {
-      expect(r.headers.has('Authorization')).toBe(false);
-      expect(r.headers.has('Authorization')).not.toBe(true);
-      expect(r.headers.get('Authorization')).toBeNull();
-      return of();
-    };
+  it('should NOT add Authorization header if token is null or empty and ensure no Bearer null is present', () => {
+    [null, '', undefined].forEach(token => {
+      authServiceSpy.getToken.and.returnValue(token as any);
+      const req = new HttpRequest('GET', '/test');
+      const next: HttpHandlerFn = (r) => {
+        expect(r.headers.has('Authorization')).toBeFalse();
+        expect(r.headers.get('Authorization')).toBeNull();
+        const authHeader = r.headers.get('Authorization');
+        expect(authHeader).not.toContain('Bearer');
+        return of();
+      };
 
-    TestBed.runInInjectionContext(() => jwtInterceptor(req, next));
+      TestBed.runInInjectionContext(() => jwtInterceptor(req, next));
+    });
   });
 });

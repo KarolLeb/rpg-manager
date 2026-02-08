@@ -55,7 +55,9 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token') && !!this.currentUserSubject.value;
+    const hasToken = !!localStorage.getItem('token');
+    const hasUser = !!this.currentUserSubject.value;
+    return hasToken && hasUser;
   }
 
   getToken(): string | null {

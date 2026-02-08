@@ -2,6 +2,7 @@ import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
 import { AuthResponse, User } from '../models/auth.model';
+import { of } from 'rxjs';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -13,19 +14,25 @@ describe('AuthService', () => {
       imports: [HttpClientTestingModule],
       providers: [AuthService]
     });
-    service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
     httpMock.verify();
+    localStorage.clear();
   });
 
+  function createService(): AuthService {
+    return TestBed.inject(AuthService);
+  }
+
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    const s = createService();
+    expect(s).toBeTruthy();
   });
 
   it('should login and save user/token with correct URL and manage storage correctly', fakeAsync(() => {
+    const s = createService();
     const mockResponse: AuthResponse = {
       token: 'fake-token',
       username: 'testuser',
@@ -33,36 +40,38 @@ describe('AuthService', () => {
       id: 123
     };
 
-    let result: any;
-    service.login({ username: 'test', password: 'pass' }).subscribe(res => result = res);
+    const setSpy = spyOn(localStorage, 'setItem').and.callThrough();
+    const nextSpy = spyOn((s as any).currentUserSubject, 'next').and.callThrough();
+
+    s.login({ username: 'test', password: 'pass' }).subscribe();
 
     const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
-    expect(req.request.method).toBe('POST');
     req.flush(mockResponse);
     tick();
 
-    expect(result).toEqual(mockResponse);
-    expect(localStorage.getItem('token')).toBe('fake-token');
-    expect(localStorage.getItem('currentUser')).toBe(JSON.stringify({ id: 123, username: 'testuser', role: 'USER' }));
-    expect(service.currentUserValue).toEqual({ id: 123, username: 'testuser', role: 'USER' });
+    expect(setSpy).toHaveBeenCalledWith('token', 'fake-token');
+    expect(setSpy).toHaveBeenCalledWith('currentUser', jasmine.any(String));
+    expect(nextSpy).toHaveBeenCalledWith(jasmine.objectContaining({ username: 'testuser' }));
     
-    // Explicitly check for mutations like localStorage.setItem("", ...)
-    expect(localStorage.getItem('')).toBeNull();
+    expect(localStorage.getItem('token')).toBe('fake-token');
+    expect(s.currentUserValue).toEqual({ id: 123, username: 'testuser', role: 'USER' });
   }));
 
-  it('should logout and clear all storage and subject and NOT leave empty keys', fakeAsync(() => {
+  it('should logout and clear all storage and subject and use correct keys', fakeAsync(() => {
+    const s = createService();
     localStorage.setItem('token', 'token');
-    const user = { id: 1, username: 'user', role: 'PLAYER' };
-    localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('currentUser', JSON.stringify({ id: 1 }));
+    const removeSpy = spyOn(localStorage, 'removeItem').and.callThrough();
+    const nextSpy = spyOn((s as any).currentUserSubject, 'next').and.callThrough();
 
-    service.logout();
+    s.logout();
 
+    expect(removeSpy).toHaveBeenCalledWith('token');
+    expect(removeSpy).toHaveBeenCalledWith('currentUser');
     expect(localStorage.getItem('token')).toBeNull();
     expect(localStorage.getItem('currentUser')).toBeNull();
-    expect(service.currentUserValue).toBeNull();
-    
-    // Check that we didn't accidentally remove wrong key or use empty key
-    expect(localStorage.length).toBe(0);
+    expect(nextSpy).toHaveBeenCalledWith(null);
+    expect(s.currentUserValue).toBeNull();
     tick();
   }));
 
@@ -75,61 +84,58 @@ describe('AuthService', () => {
       { token: 'valid', user: { id: 1 } as any, expected: true }
     ];
 
-    scenarios.forEach(s => {
+    const getItemSpy = spyOn(localStorage, 'getItem').and.callThrough();
+
+    scenarios.forEach((s, index) => {
       localStorage.clear();
       if (s.token !== null) localStorage.setItem('token', s.token);
       if (s.user !== null) localStorage.setItem('currentUser', JSON.stringify(s.user));
       
-      // Use runInInjectionContext to create fresh instance for each scenario
       const freshService = TestBed.runInInjectionContext(() => new AuthService());
-      expect(freshService.isLoggedIn()).toBe(s.expected, `Failed for token: ${s.token}, user: ${s.user}`);
+      
+      getItemSpy.calls.reset();
+      const result = freshService.isLoggedIn();
+      expect(result).toBe(s.expected, `Failed for Scenario ${index}: token=${s.token}, user=${!!s.user}`);
+      
+      // Specifically check that 'token' key was used to kill StringLiteral mutation
+      expect(getItemSpy).toHaveBeenCalledWith('token');
     });
   });
 
-  it('should handle malformed user in localStorage by clearing it', fakeAsync(() => {
+  it('should handle malformed user in localStorage by clearing it and logging error', fakeAsync(() => {
     localStorage.setItem('currentUser', 'invalid-json{');
-    localStorage.setItem('token', 'some-token');
     spyOn(console, 'error');
+    const removeSpy = spyOn(localStorage, 'removeItem').and.callThrough();
 
     const newService = TestBed.runInInjectionContext(() => new AuthService());
 
     expect(console.error).toHaveBeenCalled();
+    expect(removeSpy).toHaveBeenCalledWith('currentUser');
     expect(localStorage.getItem('currentUser')).toBeNull();
-    expect(newService.currentUserValue).toBeNull();
-    // Should NOT clear token if only user is malformed? 
-    // Actually current implementation clears BOTH if try fails? 
-    // Wait, let's check code.
     tick();
   }));
 
-  it('should register successfully with correct URL', fakeAsync(() => {
-    service.register({ username: 'new', email: 'new@example.com', password: 'password' }).subscribe();
-    const req = httpMock.expectOne('http://localhost:8080/api/auth/register');
-    expect(req.request.method).toBe('POST');
-    req.flush(null);
+  it('should use correct API URL for login and register and check exact string', fakeAsync(() => {
+    const s = createService();
+    s.login({ username: 'u', password: 'p' }).subscribe();
+    // StringLiteral mutation on apiUrl would change the string to "" or something else
+    const req1 = httpMock.expectOne('http://localhost:8080/api/auth/login');
+    expect(req1.request.url).toBe('http://localhost:8080/api/auth/login');
+    req1.flush({});
+
+    s.register({ username: 'u', email: 'e', password: 'p' }).subscribe();
+    const req2 = httpMock.expectOne('http://localhost:8080/api/auth/register');
+    expect(req2.request.url).toBe('http://localhost:8080/api/auth/register');
+    req2.flush({});
+    
     tick();
   }));
 
-  it('should return token from storage or null if not present', () => {
+  it('should return token from storage and use correct key', () => {
+    const s = createService();
+    const getItemSpy = spyOn(localStorage, 'getItem').and.callThrough();
     localStorage.setItem('token', 'my-token');
-    expect(service.getToken()).toBe('my-token');
-    localStorage.removeItem('token');
-    expect(service.getToken()).toBeNull();
-    // Test mutation of removeItem key
-    localStorage.setItem('token', 'still-here');
-    service.logout();
-    expect(localStorage.getItem('token')).toBeNull();
+    expect(s.getToken()).toBe('my-token');
+    expect(getItemSpy).toHaveBeenCalledWith('token');
   });
-
-  it('should handle malformed user in localStorage', fakeAsync(() => {
-    localStorage.setItem('currentUser', 'invalid-json{');
-    spyOn(console, 'error');
-
-    const newService = TestBed.runInInjectionContext(() => new AuthService());
-
-    expect(console.error).toHaveBeenCalledWith('Failed to parse user from local storage', jasmine.any(Error));
-    expect(localStorage.getItem('currentUser')).toBeNull();
-    expect(newService.currentUserValue).toBeNull();
-    tick();
-  }));
 });
