@@ -65,6 +65,18 @@ describe('CampaignFormComponent', () => {
     expect(component.campaignForm.valid).toBe(false); // name is required
   });
 
+  it('should have required validator on name control and check exact default value', () => {
+    const nameControl = component.campaignForm.get('name');
+    expect(nameControl?.value).toBe(''); // Check StringLiteral mutation
+    
+    nameControl?.setValue('');
+    expect(nameControl?.valid).toBeFalse();
+    expect(nameControl?.errors?.['required']).toBeTruthy(); // Check ArrayDeclaration/Validators mutation
+    
+    nameControl?.setValue('Some Name');
+    expect(nameControl?.valid).toBeTrue();
+  });
+
   it('should switch to Edit Mode and load data when id param provided', fakeAsync(() => {
     // Test initial state before param
     expect(component.isEditMode).toBe(false);

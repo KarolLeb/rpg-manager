@@ -88,8 +88,12 @@ describe('AuthService', () => {
 
     scenarios.forEach((s, index) => {
       localStorage.clear();
-      if (s.token !== null) localStorage.setItem('token', s.token);
-      if (s.user !== null) localStorage.setItem('currentUser', JSON.stringify(s.user));
+      if (s.token !== null) {
+        localStorage.setItem('token', s.token);
+      }
+      if (s.user !== null) {
+        localStorage.setItem('currentUser', JSON.stringify(s.user));
+      }
       
       const freshService = TestBed.runInInjectionContext(() => new AuthService());
       
@@ -100,6 +104,20 @@ describe('AuthService', () => {
       // Specifically check that 'token' key was used to kill StringLiteral mutation
       expect(getItemSpy).toHaveBeenCalledWith('token');
     });
+  });
+
+  it('should return false if token is missing but user is present (explicit check for mutation)', () => {
+    localStorage.clear();
+    localStorage.setItem('currentUser', JSON.stringify({ id: 1, username: 'test' }));
+    const s = TestBed.runInInjectionContext(() => new AuthService());
+    expect(s.isLoggedIn()).toBeFalse();
+  });
+
+  it('should return false if token is present but user is missing (explicit check for mutation)', () => {
+    localStorage.clear();
+    localStorage.setItem('token', 'fake-token');
+    const s = TestBed.runInInjectionContext(() => new AuthService());
+    expect(s.isLoggedIn()).toBeFalse();
   });
 
   it('should handle malformed user in localStorage by clearing it and logging error', fakeAsync(() => {
