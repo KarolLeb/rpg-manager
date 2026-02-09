@@ -5,8 +5,8 @@ services:
     restart: always
     environment:
       POSTGRES_DB: rpg
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - "5432:5432"
     volumes:
@@ -36,7 +36,7 @@ services:
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
     ports:
       - "5050:80"
     volumes:
@@ -57,8 +57,8 @@ services:
     environment:
       - SPRING_DOCKER_COMPOSE_ENABLED=false
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rpg
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_CACHE_TYPE=redis
     depends_on:

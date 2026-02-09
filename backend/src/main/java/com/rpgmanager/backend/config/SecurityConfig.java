@@ -52,8 +52,10 @@ public class SecurityConfig {
                         "/api/characters/**",
                         "/api/campaigns/**")
                     .permitAll()
-                    .requestMatchers("/actuator/**", "/error")
+                    .requestMatchers("/actuator/health/**", "/actuator/info/**", "/error")
                     .permitAll()
+                    .requestMatchers("/actuator/**")
+                    .hasRole("ADMIN")
                     .anyRequest()
                     .authenticated())
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
