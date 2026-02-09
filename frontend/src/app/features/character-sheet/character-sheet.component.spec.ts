@@ -73,10 +73,18 @@ describe('CharacterSheetPageComponent', () => {
     routeId = null;
     fixture.detectChanges();
     expect(component.physicalAttributes.length).toBe(6);
-    const expectedPhysical = ['strength', 'constitution', 'dexterity', 'agility', 'perception', 'empathy'];
-    expectedPhysical.forEach((key, index) => {
-      expect(component.physicalAttributes[index].key).toBe(key);
-      const group = component.getAttributeGroup(key);
+    const expectedPhysical = [
+      { key: 'strength', label: 'Siła' },
+      { key: 'constitution', label: 'Wytrzymałość' },
+      { key: 'dexterity', label: 'Zręczność' },
+      { key: 'agility', label: 'Zwinność' },
+      { key: 'perception', label: 'Percepcja' },
+      { key: 'empathy', label: 'Empatia' }
+    ];
+    expectedPhysical.forEach((expected, index) => {
+      expect(component.physicalAttributes[index].key).toBe(expected.key);
+      expect(component.physicalAttributes[index].label).toBe(expected.label);
+      const group = component.getAttributeGroup(expected.key);
       expect(group).toBeTruthy();
       expect(group.get('value')?.value).toBe(12);
       expect((group.get('skills') as any).length).toBe(3);
@@ -93,10 +101,16 @@ describe('CharacterSheetPageComponent', () => {
     routeId = null;
     fixture.detectChanges();
     expect(component.mentalAttributes.length).toBe(4);
-    const expectedMental = ['charisma', 'intelligence', 'knowledge', 'willpower'];
-    expectedMental.forEach((key, index) => {
-      expect(component.mentalAttributes[index].key).toBe(key);
-      const group = component.getAttributeGroup(key);
+    const expectedMental = [
+      { key: 'charisma', label: 'Charyzma' },
+      { key: 'intelligence', label: 'Inteligencja' },
+      { key: 'knowledge', label: 'Wiedza' },
+      { key: 'willpower', label: 'Siła Woli' }
+    ];
+    expectedMental.forEach((expected, index) => {
+      expect(component.mentalAttributes[index].key).toBe(expected.key);
+      expect(component.mentalAttributes[index].label).toBe(expected.label);
+      const group = component.getAttributeGroup(expected.key);
       expect(group).toBeTruthy();
       expect(group.get('value')?.value).toBe(12);
       expect((group.get('skills') as any).length).toBe(3);
