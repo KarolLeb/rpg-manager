@@ -67,7 +67,8 @@ jobs:
       run: |
         cd backend
         chmod +x mvnw
-        ./mvnw pitest:mutationCoverage -B
+        sed -i 's/\r$//' mvnw
+        ./mvnw test-compile pitest:mutationCoverage -B
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:

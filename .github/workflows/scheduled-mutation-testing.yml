@@ -20,7 +20,8 @@ jobs:
       run: |
         cd backend
         chmod +x mvnw
-        ./mvnw pitest:mutationCoverage -B
+        sed -i 's/\r$//' mvnw
+        ./mvnw test-compile pitest:mutationCoverage -B
     - name: Upload Pitest Report
       if: always()
       uses: actions/upload-artifact@v4
