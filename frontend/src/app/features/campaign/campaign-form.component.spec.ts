@@ -63,6 +63,13 @@ describe('CampaignFormComponent', () => {
     // Verify default form values
     expect(component.campaignForm.value).toEqual({ name: '', description: '' });
     expect(component.campaignForm.valid).toBe(false); // name is required
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h2')?.textContent).toContain('Create New Campaign');
+    expect(compiled.querySelector('button[type="submit"]')?.textContent).toContain('Save');
+    
+    const cancelBtn = compiled.querySelector('.cancel-btn');
+    expect(cancelBtn?.getAttribute('routerLink')).toBe('/campaigns');
   });
 
   it('should have required validator on name control and check exact default value', () => {
@@ -70,11 +77,18 @@ describe('CampaignFormComponent', () => {
     expect(nameControl?.value).toBe(''); // Check StringLiteral mutation
     
     nameControl?.setValue('');
+    nameControl?.markAsTouched();
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
     expect(nameControl?.valid).toBeFalse();
     expect(nameControl?.errors?.['required']).toBeTruthy(); // Check ArrayDeclaration/Validators mutation
+    expect(compiled.querySelector('.form-group div')?.textContent).toContain('Name is required.');
     
     nameControl?.setValue('Some Name');
+    fixture.detectChanges();
     expect(nameControl?.valid).toBeTrue();
+    expect(compiled.querySelector('.form-group div')).toBeNull();
   });
 
   it('should switch to Edit Mode and load data when id param provided', fakeAsync(() => {
@@ -92,11 +106,16 @@ describe('CampaignFormComponent', () => {
     expect(component.campaignId).toBe(1);
     expect(component.isLoading).toBe(true);
 
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h2')?.textContent).toContain('Edit Campaign');
+    expect(compiled.querySelector('button[type="submit"]')?.textContent).toContain('Saving...');
+
     tick(1);
     fixture.detectChanges();
 
     expect(component.isLoading).toBe(false);
     expect(mockCampaignService.getCampaign).toHaveBeenCalledWith(1);
+    expect(compiled.querySelector('button[type="submit"]')?.textContent).toContain('Save');
 
     // Verify patchValue exactly
     expect(component.campaignForm.value).toEqual({
@@ -106,6 +125,32 @@ describe('CampaignFormComponent', () => {
 
     // Verify it doesn't navigate on load
     expect(mockRouter.navigate).not.toHaveBeenCalled();
+  }));
+
+  it('should handle invalid id param gracefully', fakeAsync(() => {
+    paramsSubject.next({ id: 'abc' });
+    tick();
+    fixture.detectChanges();
+
+    expect(component.isEditMode).toBe(true);
+    expect(component.campaignId).toBeNaN();
+    expect(mockCampaignService.getCampaign).toHaveBeenCalledWith(NaN);
+  }));
+
+  it('should treat id "0" as falsy and fall back to createCampaign in edit mode', fakeAsync(() => {
+    paramsSubject.next({ id: '0' });
+    tick();
+    fixture.detectChanges();
+
+    expect(component.isEditMode).toBe(true);
+    expect(component.campaignId).toBe(0);
+
+    component.campaignForm.setValue({ name: 'Zero', description: 'Zero' });
+    component.onSubmit();
+
+    expect(mockCampaignService.createCampaign).toHaveBeenCalled();
+    expect(mockCampaignService.updateCampaign).not.toHaveBeenCalled();
+    tick();
   }));
 
   it('should NOT load campaign if id is missing', fakeAsync(() => {
@@ -291,12 +336,35 @@ describe('CampaignFormComponent', () => {
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   }));
 
+  it('should reset error at the start of onSubmit', fakeAsync(() => {
+    component.error = 'Old Error';
+    component.campaignForm.setValue({ name: 'Valid', description: 'Valid' });
+    
+    mockCampaignService.createCampaign.and.returnValue(of(dummyCampaign).pipe(delay(1)));
+    
+    component.onSubmit();
+    expect(component.error).toBeNull();
+    tick(1);
+    expect(component.error).toBeNull(); // Should still be null after success
+  }));
+
   it('should return immediately if form is invalid', fakeAsync(() => {
     component.campaignForm.patchValue({ name: '' }); // Invalid
     component.onSubmit();
     expect(component.isLoading).toBeFalse();
     expect(mockCampaignService.createCampaign).not.toHaveBeenCalled();
     expect(mockCampaignService.updateCampaign).not.toHaveBeenCalled();
+  }));
+
+  it('should NOT update form if getCampaign returns null', fakeAsync(() => {
+    mockCampaignService.getCampaign.and.returnValue(of(null as any).pipe(delay(1)));
+    
+    component.loadCampaign(123);
+    expect(component.isLoading).toBe(true);
+    tick(1);
+
+    expect(component.isLoading).toBe(false);
+    expect(component.campaignForm.value.name).toBe('');
   }));
 
   it('should NOT update form if getCampaign fails', fakeAsync(() => {

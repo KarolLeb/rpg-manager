@@ -57,10 +57,12 @@ export class CampaignFormComponent implements OnInit {
     this.campaignService.getCampaign(id).subscribe({
       next: (campaign: Campaign) => {
         this.isLoading = false;
-        this.campaignForm.patchValue({
-          name: campaign.name,
-          description: campaign.description
-        });
+        if (campaign) {
+          this.campaignForm.patchValue({
+            name: campaign.name,
+            description: campaign.description
+          });
+        }
       },
       error: (err: any) => {
         this.isLoading = false;
@@ -74,6 +76,7 @@ export class CampaignFormComponent implements OnInit {
       return;
     }
 
+    this.error = null;
     const user = this.authService.currentUserValue;
     if (!user) {
       this.error = 'Musisz być zalogowany, aby stworzyć kampanię.';
