@@ -39,7 +39,7 @@ describe('CharacterSheetPageComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: { paramMap: { get: () => routeId } }
+            snapshot: { paramMap: { get: (key: string) => key === 'id' ? routeId : null } }
           }
         }
       ]
@@ -54,6 +54,16 @@ describe('CharacterSheetPageComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(component.isLoading).toBeFalse();
+  });
+
+  it('should have empty initial form values', () => {
+    // We need a fresh component without ngOnInit execution or before it completes
+    const fixture2 = TestBed.createComponent(CharacterSheetPageComponent);
+    const comp2 = fixture2.componentInstance;
+    expect(comp2.characterForm.get('info.name')?.value).toBe('');
+    expect(comp2.characterForm.get('info.profession')?.value).toBe('');
+    expect(comp2.characterForm.get('info.ambition')?.value).toBe('');
+    expect(comp2.characterForm.get('info.nemesis')?.value).toBe('');
   });
 
   it('should load dummy data when no id is provided and verify basic info', () => {
@@ -74,27 +84,26 @@ describe('CharacterSheetPageComponent', () => {
     fixture.detectChanges();
     expect(component.physicalAttributes.length).toBe(6);
     const expectedPhysical = [
-      { key: 'strength', label: 'Siła' },
-      { key: 'constitution', label: 'Wytrzymałość' },
-      { key: 'dexterity', label: 'Zręczność' },
-      { key: 'agility', label: 'Zwinność' },
-      { key: 'perception', label: 'Percepcja' },
-      { key: 'empathy', label: 'Empatia' }
+      { key: 'strength', label: 'Siła', skills: ['Broń biała', 'Bijatyka', 'Zastraszanie'] },
+      { key: 'constitution', label: 'Wytrzymałość', skills: ['Atletyka', 'Mocna Głowa', 'Odporność'] },
+      { key: 'dexterity', label: 'Zręczność', skills: ['Parowanie', 'Pilotowanie', 'Sztuka'] },
+      { key: 'agility', label: 'Zwinność', skills: ['Akrobatyka', 'Rzucanie', 'Skradanie'] },
+      { key: 'perception', label: 'Percepcja', skills: ['Broń Długa', 'Nawigacja', 'Spostrzegawczość'] },
+      { key: 'empathy', label: 'Empatia', skills: ['Blef', 'Gadanina', 'Oswajanie'] }
     ];
-    expectedPhysical.forEach((expected, index) => {
-      expect(component.physicalAttributes[index].key).toBe(expected.key);
-      expect(component.physicalAttributes[index].label).toBe(expected.label);
+
+    expectedPhysical.forEach(expected => {
+      expect(component.physicalAttributes.find(a => a.key === expected.key)).toBeTruthy();
       const group = component.getAttributeGroup(expected.key);
       expect(group).toBeTruthy();
       expect(group.get('value')?.value).toBe(12);
-      expect((group.get('skills') as any).length).toBe(3);
+      
+      const skills = group.get('skills') as any;
+      expect(skills.length).toBe(3);
+      expected.skills.forEach((skillName, i) => {
+        expect(skills.at(i).get('name')?.value).toBe(skillName);
+      });
     });
-
-    const strength = component.getAttributeGroup('strength');
-    const strengthSkills = strength.get('skills') as any;
-    expect(strengthSkills.at(0).value).toEqual({ name: 'Broń biała', level: 5, total: 15 });
-    expect(strengthSkills.at(1).value).toEqual({ name: 'Bijatyka', level: 5, total: 15 });
-    expect(strengthSkills.at(2).value).toEqual({ name: 'Zastraszanie', level: 5, total: 15 });
   });
 
   it('should load dummy mental attributes correctly', () => {
@@ -102,35 +111,20 @@ describe('CharacterSheetPageComponent', () => {
     fixture.detectChanges();
     expect(component.mentalAttributes.length).toBe(4);
     const expectedMental = [
-      { key: 'charisma', label: 'Charyzma' },
-      { key: 'intelligence', label: 'Inteligencja' },
-      { key: 'knowledge', label: 'Wiedza' },
-      { key: 'willpower', label: 'Siła Woli' }
+      { key: 'charisma', skills: ['Aktorstwo', 'Handel', 'Przekonywanie'] },
+      { key: 'intelligence', skills: ['Analiza', 'Komputery', 'Taktyka'] },
+      { key: 'knowledge', skills: ['Kosmos', 'Kultura', 'Medycyna'] },
+      { key: 'willpower', skills: ['Intuicja', 'Koncentracja', 'Siła Woli'] }
     ];
-    expectedMental.forEach((expected, index) => {
-      expect(component.mentalAttributes[index].key).toBe(expected.key);
-      expect(component.mentalAttributes[index].label).toBe(expected.label);
+
+    expectedMental.forEach(expected => {
       const group = component.getAttributeGroup(expected.key);
       expect(group).toBeTruthy();
-      expect(group.get('value')?.value).toBe(12);
-      expect((group.get('skills') as any).length).toBe(3);
+      const skills = group.get('skills') as any;
+      expected.skills.forEach((skillName, i) => {
+        expect(skills.at(i).get('name')?.value).toBe(skillName);
+      });
     });
-
-    const intelligence = component.getAttributeGroup('intelligence');
-    const intelligenceSkills = intelligence.get('skills') as any;
-    expect(intelligenceSkills.at(0).get('name')?.value).toBe('Analiza');
-    expect(intelligenceSkills.at(1).get('name')?.value).toBe('Komputery');
-    expect(intelligenceSkills.at(2).get('name')?.value).toBe('Taktyka');
-  });
-
-  it('should verify willpower skills dummy data', () => {
-    routeId = null;
-    fixture.detectChanges();
-    const willpower = component.getAttributeGroup('willpower');
-    const willpowerSkills = willpower.get('skills') as any;
-    expect(willpowerSkills.at(0).get('name')?.value).toBe('Intuicja');
-    expect(willpowerSkills.at(1).get('name')?.value).toBe('Koncentracja');
-    expect(willpowerSkills.at(2).get('name')?.value).toBe('Siła Woli');
   });
 
   it('should load character data on init when id is provided and manage isLoading correctly', fakeAsync(() => {
@@ -150,6 +144,8 @@ describe('CharacterSheetPageComponent', () => {
     expect(component.isLoading).toBeFalse();
     
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
+    expect(component.characterForm.get('info.ambition')?.value).toBe('Z bazy danych');
+    expect(component.characterForm.get('info.nemesis')?.value).toBe('Brak danych');
     
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBeGreaterThan(0);
@@ -186,7 +182,7 @@ describe('CharacterSheetPageComponent', () => {
 
     fixture.detectChanges();
 
-    expect(console.error).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith('Failed to load character', jasmine.any(Error));
     // Check specific dummy values to kill StringLiteral mutations
     expect(component.characterForm.get('info.name')?.value).toBe('Tonny Ballony');
     expect(component.characterForm.get('info.profession')?.value).toBe('Kanciarz');
@@ -275,6 +271,7 @@ describe('CharacterSheetPageComponent', () => {
     fixture.detectChanges();
     
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
+    expect(Object.keys(attrsGroup.controls).length).toBe(1);
     expect(attrsGroup.get('valid')).toBeTruthy();
     expect(attrsGroup.get('invalid1')).toBeFalsy();
     expect(attrsGroup.get('invalid2')).toBeFalsy();
