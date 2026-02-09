@@ -21,6 +21,7 @@
   "reporters": ["progress", "clear-text", "html", "json"],
   "checkers": ["typescript"],
   "tsconfigFile": "tsconfig.stryker.json",
+  "concurrency": 1,
   "timeoutMS": 120000,
   "thresholds": {
     "high": 90,

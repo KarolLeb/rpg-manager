@@ -117,16 +117,20 @@ export class CharacterSheetPageComponent implements OnInit {
       nemesis: 'Brak danych'
     });
 
-    let attributesData: any;
+    let attributesData: any = {};
     try {
-      const parsed = JSON.parse(character.stats || '{}');
-      if (parsed && typeof parsed === 'object') {
-        attributesData = parsed;
-      } else {
-        if (character.stats && parsed !== null) {
-          console.error('Character stats is not an object', parsed);
-        }
+      if (!character.stats) {
         attributesData = {};
+      } else {
+        const parsed = JSON.parse(character.stats);
+        if (parsed && typeof parsed === 'object') {
+          attributesData = parsed;
+        } else {
+          if (parsed !== null) {
+            console.error('Character stats is not an object', parsed);
+          }
+          attributesData = {};
+        }
       }
     } catch (e) {
       console.error('Failed to parse character stats', e);

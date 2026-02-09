@@ -7,9 +7,15 @@ import { of } from 'rxjs';
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
+  let store: { [key: string]: string } = {};
 
   beforeEach(() => {
-    localStorage.clear();
+    store = {};
+    spyOn(localStorage, 'getItem').and.callFake(key => store[key] || null);
+    spyOn(localStorage, 'setItem').and.callFake((key, value) => store[key] = value);
+    spyOn(localStorage, 'removeItem').and.callFake(key => delete store[key]);
+    spyOn(localStorage, 'clear').and.callFake(() => store = {});
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [AuthService]
@@ -19,7 +25,6 @@ describe('AuthService', () => {
 
   afterEach(() => {
     httpMock.verify();
-    localStorage.clear();
   });
 
   function createService(): AuthService {
@@ -40,7 +45,6 @@ describe('AuthService', () => {
       id: 123
     };
 
-    const setSpy = spyOn(localStorage, 'setItem').and.callThrough();
     const nextSpy = spyOn((s as any).currentUserSubject, 'next').and.callThrough();
 
     s.login({ username: 'test', password: 'pass' }).subscribe();
@@ -49,55 +53,52 @@ describe('AuthService', () => {
     req.flush(mockResponse);
     tick();
 
-    expect(setSpy).toHaveBeenCalledWith('token', 'fake-token');
-    expect(setSpy).toHaveBeenCalledWith('currentUser', jasmine.any(String));
+    expect(localStorage.setItem).toHaveBeenCalledWith('token', 'fake-token');
+    expect(localStorage.setItem).toHaveBeenCalledWith('currentUser', jasmine.any(String));
     expect(nextSpy).toHaveBeenCalledWith(jasmine.objectContaining({ username: 'testuser' }));
     
     expect(localStorage.getItem('token')).toBe('fake-token');
     expect(s.currentUserValue).toEqual({ id: 123, username: 'testuser', role: 'USER' });
   }));
 
-  it('login side effects: should set storage and update subject (strict check)', fakeAsync(() => {
-    const s = createService();
-    const mockResponse: AuthResponse = {
-      token: 'tok',
-      username: 'u',
-      role: 'USER',
-      id: 1
-    };
-
-    const setSpy = spyOn(localStorage, 'setItem').and.callThrough();
-    const nextSpy = spyOn((s as any).currentUserSubject, 'next').and.callThrough();
-
-    s.login({ username: 'u', password: 'p' }).subscribe();
-    const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
-    req.flush(mockResponse);
-    tick();
-
-    expect(setSpy).toHaveBeenCalledWith('token', 'tok');
-    expect(setSpy).toHaveBeenCalledWith('currentUser', jasmine.any(String));
-    expect(nextSpy).toHaveBeenCalledWith(jasmine.objectContaining({ username: 'u' }));
-    expect(localStorage.getItem('token')).toBe('tok');
-  }));
-
-  it('logout: should clear all storage AND call subject with null (strict check)', () => {
-    const s = createService();
-    localStorage.setItem('token', 'token');
-    localStorage.setItem('currentUser', JSON.stringify({ id: 1 }));
-    
-    const removeSpy = spyOn(localStorage, 'removeItem').and.callThrough();
-    const nextSpy = spyOn((s as any).currentUserSubject, 'next').and.callThrough();
-
-    s.logout();
-
-    expect(removeSpy).toHaveBeenCalledTimes(2);
-    expect(removeSpy).toHaveBeenCalledWith('token');
-    expect(removeSpy).toHaveBeenCalledWith('currentUser');
-    expect(localStorage.getItem('token')).toBeNull();
-    expect(nextSpy).toHaveBeenCalledWith(null);
-    expect(s.currentUserValue).toBeNull();
-  });
-
+    it('login side effects: should set storage and update subject (strict check)', fakeAsync(() => {
+      const s = createService();
+      const mockResponse: AuthResponse = {
+        token: 'tok',
+        username: 'u',
+        role: 'USER',
+        id: 1
+      };
+  
+      const nextSpy = spyOn((s as any).currentUserSubject, 'next').and.callThrough();
+  
+      s.login({ username: 'u', password: 'p' }).subscribe();
+      const req = httpMock.expectOne('http://localhost:8080/api/auth/login');     
+      req.flush(mockResponse);
+      tick();
+  
+      expect(localStorage.setItem).toHaveBeenCalledWith('token', 'tok');
+      expect(localStorage.setItem).toHaveBeenCalledWith('currentUser', jasmine.any(String));
+      expect(nextSpy).toHaveBeenCalledWith(jasmine.objectContaining({ username: 'u' }));
+      expect(localStorage.getItem('token')).toBe('tok');
+    }));
+  
+    it('logout: should clear all storage AND call subject with null (strict check)', () => {
+      const s = createService();
+      localStorage.setItem('token', 'token');
+      localStorage.setItem('currentUser', JSON.stringify({ id: 1 }));
+      
+      const nextSpy = spyOn((s as any).currentUserSubject, 'next').and.callThrough();
+  
+      s.logout();
+  
+      expect(localStorage.removeItem).toHaveBeenCalledTimes(2);
+      expect(localStorage.removeItem).toHaveBeenCalledWith('token');
+      expect(localStorage.removeItem).toHaveBeenCalledWith('currentUser');
+      expect(localStorage.getItem('token')).toBeNull();
+      expect(nextSpy).toHaveBeenCalledWith(null);
+      expect(s.currentUserValue).toBeNull();
+    });
   it('should return isLoggedIn true only if both token and user exist and are valid', () => {
     const scenarios = [
       { token: null, user: null, expected: false },
@@ -107,8 +108,6 @@ describe('AuthService', () => {
       { token: '', user: { id: 1 } as any, expected: false },
       { token: 'valid', user: { id: 1 } as any, expected: true }
     ];
-
-    const getItemSpy = spyOn(localStorage, 'getItem').and.callThrough();
 
     scenarios.forEach((s, index) => {
       localStorage.clear();
@@ -121,12 +120,12 @@ describe('AuthService', () => {
       
       const freshService = TestBed.runInInjectionContext(() => new AuthService());
       
-      getItemSpy.calls.reset();
+      (localStorage.getItem as jasmine.Spy).calls.reset();
       const result = freshService.isLoggedIn();
       expect(result).toBe(s.expected, `Failed for Scenario ${index}: token=${s.token}, user=${!!s.user}`);
       
       // Specifically check that 'token' key was used to kill StringLiteral mutation
-      expect(getItemSpy).toHaveBeenCalledWith('token');
+      expect(localStorage.getItem).toHaveBeenCalledWith('token');
     });
   });
 
@@ -161,12 +160,11 @@ describe('AuthService', () => {
   it('should handle malformed user in localStorage by clearing it and logging error', fakeAsync(() => {
     localStorage.setItem('currentUser', 'invalid-json{');
     spyOn(console, 'error');
-    const removeSpy = spyOn(localStorage, 'removeItem').and.callThrough();
 
     const newService = TestBed.runInInjectionContext(() => new AuthService());
 
     expect(console.error).toHaveBeenCalledWith('Failed to parse user from local storage', jasmine.any(Error));
-    expect(removeSpy).toHaveBeenCalledWith('currentUser');
+    expect(localStorage.removeItem).toHaveBeenCalledWith('currentUser');
     expect(localStorage.getItem('currentUser')).toBeNull();
     tick();
   }));
@@ -189,9 +187,8 @@ describe('AuthService', () => {
 
   it('should return token from storage and use correct key', () => {
     const s = createService();
-    const getItemSpy = spyOn(localStorage, 'getItem').and.callThrough();
     localStorage.setItem('token', 'my-token');
     expect(s.getToken()).toBe('my-token');
-    expect(getItemSpy).toHaveBeenCalledWith('token');
+    expect(localStorage.getItem).toHaveBeenCalledWith('token');
   });
 });
