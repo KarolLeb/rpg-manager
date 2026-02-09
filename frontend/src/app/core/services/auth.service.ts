@@ -55,9 +55,11 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    const hasToken = !!localStorage.getItem('token');
-    const hasUser = !!this.currentUserSubject.value;
-    return hasToken && hasUser;
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return false;
+    }
+    return this.currentUserSubject.value !== null;
   }
 
   getToken(): string | null {

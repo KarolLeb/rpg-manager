@@ -57,28 +57,52 @@ describe('AuthService', () => {
     expect(s.currentUserValue).toEqual({ id: 123, username: 'testuser', role: 'USER' });
   }));
 
-  it('should logout and clear all storage and subject and use correct keys', fakeAsync(() => {
+  it('login side effects: should set storage and update subject (strict check)', fakeAsync(() => {
+    const s = createService();
+    const mockResponse: AuthResponse = {
+      token: 'tok',
+      username: 'u',
+      role: 'USER',
+      id: 1
+    };
+
+    const setSpy = spyOn(localStorage, 'setItem').and.callThrough();
+    const nextSpy = spyOn((s as any).currentUserSubject, 'next').and.callThrough();
+
+    s.login({ username: 'u', password: 'p' }).subscribe();
+    const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
+    req.flush(mockResponse);
+    tick();
+
+    expect(setSpy).toHaveBeenCalledWith('token', 'tok');
+    expect(setSpy).toHaveBeenCalledWith('currentUser', jasmine.any(String));
+    expect(nextSpy).toHaveBeenCalledWith(jasmine.objectContaining({ username: 'u' }));
+    expect(localStorage.getItem('token')).toBe('tok');
+  }));
+
+  it('logout: should clear all storage AND call subject with null (strict check)', () => {
     const s = createService();
     localStorage.setItem('token', 'token');
     localStorage.setItem('currentUser', JSON.stringify({ id: 1 }));
+    
     const removeSpy = spyOn(localStorage, 'removeItem').and.callThrough();
     const nextSpy = spyOn((s as any).currentUserSubject, 'next').and.callThrough();
 
     s.logout();
 
+    expect(removeSpy).toHaveBeenCalledTimes(2);
     expect(removeSpy).toHaveBeenCalledWith('token');
     expect(removeSpy).toHaveBeenCalledWith('currentUser');
     expect(localStorage.getItem('token')).toBeNull();
-    expect(localStorage.getItem('currentUser')).toBeNull();
     expect(nextSpy).toHaveBeenCalledWith(null);
     expect(s.currentUserValue).toBeNull();
-    tick();
-  }));
+  });
 
   it('should return isLoggedIn true only if both token and user exist and are valid', () => {
     const scenarios = [
       { token: null, user: null, expected: false },
       { token: 'valid', user: null, expected: false },
+      { token: 'valid', user: undefined as any, expected: false },
       { token: null, user: { id: 1 } as any, expected: false },
       { token: '', user: { id: 1 } as any, expected: false },
       { token: 'valid', user: { id: 1 } as any, expected: true }
@@ -120,6 +144,20 @@ describe('AuthService', () => {
     expect(s.isLoggedIn()).toBeFalse();
   });
 
+  it('should return false if token is valid but currentUserSubject is manually set to null', () => {
+    const s = createService();
+    localStorage.setItem('token', 'valid-token');
+    (s as any).currentUserSubject.next(null);
+    expect(s.isLoggedIn()).toBeFalse();
+  });
+
+  it('should return false if token is empty string', () => {
+    const s = createService();
+    localStorage.setItem('token', '');
+    (s as any).currentUserSubject.next({ id: 1 } as any);
+    expect(s.isLoggedIn()).toBeFalse();
+  });
+
   it('should handle malformed user in localStorage by clearing it and logging error', fakeAsync(() => {
     localStorage.setItem('currentUser', 'invalid-json{');
     spyOn(console, 'error');
@@ -127,7 +165,7 @@ describe('AuthService', () => {
 
     const newService = TestBed.runInInjectionContext(() => new AuthService());
 
-    expect(console.error).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith('Failed to parse user from local storage', jasmine.any(Error));
     expect(removeSpy).toHaveBeenCalledWith('currentUser');
     expect(localStorage.getItem('currentUser')).toBeNull();
     tick();
@@ -136,13 +174,13 @@ describe('AuthService', () => {
   it('should use correct API URL for login and register and check exact string', fakeAsync(() => {
     const s = createService();
     s.login({ username: 'u', password: 'p' }).subscribe();
-    // StringLiteral mutation on apiUrl would change the string to "" or something else
-    const req1 = httpMock.expectOne('http://localhost:8080/api/auth/login');
+    // This MUST be exactly the full URL to kill mutations on apiUrl
+    const req1 = httpMock.expectOne(req => req.url === 'http://localhost:8080/api/auth/login');
     expect(req1.request.url).toBe('http://localhost:8080/api/auth/login');
     req1.flush({});
 
     s.register({ username: 'u', email: 'e', password: 'p' }).subscribe();
-    const req2 = httpMock.expectOne('http://localhost:8080/api/auth/register');
+    const req2 = httpMock.expectOne(req => req.url === 'http://localhost:8080/api/auth/register');
     expect(req2.request.url).toBe('http://localhost:8080/api/auth/register');
     req2.flush({});
     
