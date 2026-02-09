@@ -118,23 +118,17 @@ export class CharacterSheetPageComponent implements OnInit {
     });
 
     let attributesData: any = {};
-    try {
-      if (!character.stats) {
-        attributesData = {};
-      } else {
+    if (character.stats) {
+      try {
         const parsed = JSON.parse(character.stats);
         if (parsed && typeof parsed === 'object') {
           attributesData = parsed;
-        } else {
-          if (parsed !== null) {
-            console.error('Character stats is not an object', parsed);
-          }
-          attributesData = {};
+        } else if (parsed !== null) {
+          console.error('Character stats is not an object', parsed);
         }
+      } catch (e) {
+        console.error('Failed to parse character stats', e);
       }
-    } catch (e) {
-      console.error('Failed to parse character stats', e);
-      attributesData = {};
     }
 
     const attrsGroup = this.characterForm.get('attributes') as FormGroup;
@@ -142,7 +136,7 @@ export class CharacterSheetPageComponent implements OnInit {
     
     dataKeys.forEach(key => {
       const data = attributesData[key];
-      if (typeof data === 'object' && data.skills) {
+      if (data && typeof data === 'object' && Array.isArray(data.skills)) {
         const skillsArray = this.fb.array(
           data.skills.map((s: any[]) => this.fb.group({
             name: [s[0]],

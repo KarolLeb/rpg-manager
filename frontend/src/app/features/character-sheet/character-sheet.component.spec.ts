@@ -243,12 +243,29 @@ describe('CharacterSheetPageComponent', () => {
     tick();
     
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
-    // If mutation ( !== -> === ) occurred, it would have entered the block and cleared attributesData
-    // Resulting in 0 controls. 
     expect(Object.keys(attrsGroup.controls).length).toBe(1);
     expect(attrsGroup.get('testAttr')).toBeTruthy();
     expect(attrsGroup.get('testAttr')?.get('value')?.value).toBe(15);
   }));
+
+  it('should skip attribute if it is not an object or lacks skills (kills mutations at line 145)', () => {
+    const weirdStats = JSON.stringify({
+      valid: { val: 10, skills: [['Skill', 1, 11]] },
+      invalid1: 'not-an-object',
+      invalid2: { val: 10 }, // no skills
+      invalid3: null
+    });
+    const charWithWeirdStats = { ...dummyCharacter, stats: weirdStats };
+    mockCharacterService.getCharacter.and.returnValue(of(charWithWeirdStats));
+    
+    fixture.detectChanges();
+    
+    const attrsGroup = component.characterForm.get('attributes') as FormGroup;
+    expect(attrsGroup.get('valid')).toBeTruthy();
+    expect(attrsGroup.get('invalid1')).toBeFalsy();
+    expect(attrsGroup.get('invalid2')).toBeFalsy();
+    expect(attrsGroup.get('invalid3')).toBeFalsy();
+  });
 
   it('should handle save error and show alert', () => {
     fixture.detectChanges();
