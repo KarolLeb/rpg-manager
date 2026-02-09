@@ -6,8 +6,8 @@ const SONAR_REPORT_PATH = path.join(__dirname, '../backend/target/sonar-pitest.j
 
 async function convert() {
     if (!fs.existsSync(PIT_REPORT_PATH)) {
-        console.error('PIT report not found at ' + PIT_REPORT_PATH);
-        process.exit(1);
+        console.warn('PIT report not found at ' + PIT_REPORT_PATH + '. Skipping conversion.');
+        return;
     }
 
     const xmlData = fs.readFileSync(PIT_REPORT_PATH, 'utf-8');

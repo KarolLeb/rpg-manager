@@ -11,7 +11,7 @@
     "test:unit": "ng test --watch=false --browsers=ChromeHeadlessCI --code-coverage",
     "lint": "ng lint",
     "lint:report": "ng lint --format json --output-file eslint-report.json",
-    "sonar": "sonar-scanner",
+    "sonar": "node ../scripts/convert-stryker-to-sonar.js && sonar-scanner",
     "test:e2e": "playwright test",
     "e2e": "npm run test:e2e",
     "e2e:ui": "playwright test --ui",

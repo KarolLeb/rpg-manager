@@ -6,8 +6,8 @@ const SONAR_REPORT_PATH = path.join(__dirname, '../frontend/stryker-report.json'
 
 async function convert() {
     if (!fs.existsSync(STRYKER_REPORT_PATH)) {
-        console.error('Stryker report not found at ' + STRYKER_REPORT_PATH);
-        process.exit(1);
+        console.warn('Stryker report not found at ' + STRYKER_REPORT_PATH + '. Skipping conversion.');
+        return;
     }
 
     const reportData = JSON.parse(fs.readFileSync(STRYKER_REPORT_PATH, 'utf-8'));

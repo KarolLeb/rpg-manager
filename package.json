@@ -15,8 +15,8 @@
     "sonar:quick:backend": "cd backend && .\\mvnw.cmd clean spotless:check checkstyle:check verify sonar:sonar",
     "sonar:quick:frontend": "cd frontend && npm run lint:report && npm run test:unit && npm run sonar",
     "sonar:quick": "npm run sonar:quick:backend && npm run sonar:quick:frontend",
-    "sonar:full:backend": "cd backend && .\\mvnw.cmd clean spotless:check checkstyle:check verify && .\\mvnw.cmd org.pitest:pitest-maven:mutationCoverage & cd .. && node scripts/convert-pitest-to-sonar.js && cd backend && .\\mvnw.cmd sonar:sonar -Pmutation",
-    "sonar:full:frontend": "cd frontend && npm run lint:report && npm run test:unit && npm run stryker & cd .. && node scripts/convert-stryker-to-sonar.js && cd frontend && npm run sonar",
+    "sonar:full:backend": "cd backend && .\\mvnw.cmd clean spotless:check checkstyle:check verify && .\\mvnw.cmd org.pitest:pitest-maven:mutationCoverage && node ../scripts/convert-pitest-to-sonar.js && .\\mvnw.cmd sonar:sonar -Pmutation",
+    "sonar:full:frontend": "cd frontend && npm run lint:report && npm run test:unit && npm run stryker && npm run sonar",
     "sonar:full": "npm run sonar:full:backend && npm run sonar:full:frontend",
     "sonar": "npm run sonar:full"
   },
