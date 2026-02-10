@@ -8,7 +8,7 @@ RUN npm install --legacy-peer-deps
 FROM base AS development
 RUN npm install -g @angular/cli
 COPY . .
-CMD ["ng", "serve", "--host", "0.0.0.0", "--poll", "2000", "--disable-host-check"]
+CMD ["ng", "serve", "--host", "0.0.0.0", "--poll", "2000", "--disable-host-check", "--proxy-config", "proxy.conf.json"]
 
 # Stage 3: Build
 FROM base AS build

@@ -3,6 +3,7 @@ package com.rpgmanager.backend.config;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import com.rpgmanager.backend.security.BrowserNavigationFilter;
 import com.rpgmanager.backend.security.JwtFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -11,7 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 class SecurityConfigTest {
 
   private final JwtFilter jwtFilter = mock(JwtFilter.class);
-  private final SecurityConfig securityConfig = new SecurityConfig(jwtFilter);
+  private final SecurityProperties securityProperties = mock(SecurityProperties.class);
+  private final BrowserNavigationFilter browserNavigationFilter =
+      new BrowserNavigationFilter(securityProperties);
+  private final SecurityConfig securityConfig =
+      new SecurityConfig(jwtFilter, browserNavigationFilter);
 
   @Test
   void passwordEncoder_shouldBeBCrypt() {

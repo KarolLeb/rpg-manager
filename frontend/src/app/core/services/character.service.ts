@@ -9,7 +9,7 @@ import { Character } from '../models/character.model';
 export class CharacterService {
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:8080/api/characters';
+  private readonly apiUrl = '/api/characters';
 
   getCharacters(): Observable<Character[]> {
     return this.http.get<Character[]>(this.apiUrl);
