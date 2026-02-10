@@ -33,6 +33,8 @@ Strategic milestones and high-level project evolution.
     *   API Gateway implementation.
 
 ## 🏁 Recently Completed Milestones
+- **Feb 2026:** Enforced 95% minimum code coverage policy across all modules.
+- **Feb 2026:** Implemented Frontend Mutation Testing with Stryker.
 - **Jan 2026:** Validated local CI/CD pipelines with `act`.
 - **Jan 2026:** Achieved 100% Hexagonal Architecture compliance across all modules.
 - **Jan 2026:** Integrated Redis for campaign list caching and verified eviction logic.
@@ -40,4 +42,4 @@ Strategic milestones and high-level project evolution.
 - **Jan 2026:** Completed Logical Decoupling of Auth/User module from Core domains.
 
 ---
-*Last Updated: 2026-01-25*
+*Last Updated: 2026-02-10*
