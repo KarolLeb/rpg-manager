@@ -2,6 +2,7 @@ package com.rpgmanager.backend.campaign;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -17,13 +18,11 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import static org.mockito.BDDMockito.given;
 
 class CampaignIntegrationTest extends BaseIntegrationTest {
 
@@ -44,11 +43,8 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
     objectMapper.registerModule(new JavaTimeModule());
     this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 
-    UserDomain gameMaster = UserDomain.builder()
-        .id(gameMasterId)
-        .username("gamemaster")
-        .role("GM")
-        .build();
+    UserDomain gameMaster =
+        UserDomain.builder().id(gameMasterId).username("gamemaster").role("GM").build();
     given(userRepository.findById(gameMasterId)).willReturn(Optional.of(gameMaster));
   }
 

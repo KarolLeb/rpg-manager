@@ -19,14 +19,16 @@ public class UserController {
 
   @GetMapping("/{id}")
   public ResponseEntity<UserDomain> getUserById(@PathVariable Long id) {
-    return userRepository.findById(id)
+    return userRepository
+        .findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
 
   @GetMapping
   public ResponseEntity<UserDomain> getUserByUsername(@RequestParam String username) {
-    return userRepository.findByUsername(username)
+    return userRepository
+        .findByUsername(username)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }

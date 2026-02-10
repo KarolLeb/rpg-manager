@@ -44,12 +44,12 @@ public class JwtFilter extends OncePerRequestFilter {
       role = jwtUtil.extractRole(jwt);
 
       if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-        UserContext userContext = new UserContext(
-            username,
-            "", // No password needed for stateless JWT
-            Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)),
-            userId
-        );
+        UserContext userContext =
+            new UserContext(
+                username,
+                "", // No password needed for stateless JWT
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)),
+                userId);
 
         UsernamePasswordAuthenticationToken authToken =
             new UsernamePasswordAuthenticationToken(

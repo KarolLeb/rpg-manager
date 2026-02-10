@@ -39,34 +39,39 @@ class JwtUtilTest {
 
   @Test
   void shouldExtractUsername() {
-    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
+    String token =
+        createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
     String extractedUsername = jwtUtil.extractUsername(token);
     assertEquals(username, extractedUsername);
   }
 
   @Test
   void shouldExtractUserId() {
-    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
+    String token =
+        createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
     Long extractedUserId = jwtUtil.extractUserId(token);
     assertEquals(userId, extractedUserId);
   }
 
   @Test
   void shouldExtractRole() {
-    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
+    String token =
+        createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
     String extractedRole = jwtUtil.extractRole(token);
     assertEquals(role, extractedRole);
   }
 
   @Test
   void shouldValidateToken() {
-    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
+    String token =
+        createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
     assertTrue(jwtUtil.validateToken(token, username));
   }
 
   @Test
   void shouldNotValidateTokenForDifferentUser() {
-    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
+    String token =
+        createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
     assertFalse(jwtUtil.validateToken(token, "otheruser"));
   }
 

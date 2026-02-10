@@ -8,9 +8,7 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-/**
- * Filter to prevent manual access to API endpoints from a browser tab.
- */
+/** Filter to prevent manual access to API endpoints from a browser tab. */
 @Component
 public class BrowserNavigationFilter extends OncePerRequestFilter {
 

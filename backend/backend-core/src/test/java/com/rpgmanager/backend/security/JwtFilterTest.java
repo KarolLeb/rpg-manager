@@ -1,7 +1,6 @@
 package com.rpgmanager.backend.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -84,7 +83,7 @@ class JwtFilterTest {
     given(request.getHeader("Authorization")).willReturn("Bearer " + token);
     given(jwtUtil.extractUsername(token)).willReturn(username);
 
-    org.springframework.security.core.Authentication existingAuth = 
+    org.springframework.security.core.Authentication existingAuth =
         mock(org.springframework.security.core.Authentication.class);
     SecurityContextHolder.getContext().setAuthentication(existingAuth);
 

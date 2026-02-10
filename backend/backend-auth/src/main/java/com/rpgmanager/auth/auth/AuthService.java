@@ -35,17 +35,19 @@ public class AuthService {
       authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
     } catch (Exception e) {
-      log.error("Authentication failed for user: {}. Error: {}", request.getUsername(), e.getMessage());
+      log.error(
+          "Authentication failed for user: {}. Error: {}", request.getUsername(), e.getMessage());
       throw e;
     }
 
     UserDomain user =
         userRepository
             .findByUsername(request.getUsername())
-            .orElseThrow(() -> {
-              log.error("User not found after authentication: {}", request.getUsername());
-              return new UsernameNotFoundException("User not found");
-            });
+            .orElseThrow(
+                () -> {
+                  log.error("User not found after authentication: {}", request.getUsername());
+                  return new UsernameNotFoundException("User not found");
+                });
 
     String token = jwtUtil.generateToken(user.getUsername(), user.getId(), user.getRole().name());
     log.info("Login successful for user: {}", request.getUsername());

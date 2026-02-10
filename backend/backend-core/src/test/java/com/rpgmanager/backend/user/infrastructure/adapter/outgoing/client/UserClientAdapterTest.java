@@ -2,7 +2,6 @@ package com.rpgmanager.backend.user.infrastructure.adapter.outgoing.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 import com.rpgmanager.backend.user.domain.model.UserDomain;
 import java.util.List;
