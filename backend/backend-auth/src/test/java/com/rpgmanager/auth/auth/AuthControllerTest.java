@@ -44,7 +44,7 @@ class AuthControllerTest {
   @Test
   void shouldLogin() throws Exception {
     LoginRequest request = new LoginRequest("testuser", "password");
-    AuthResponse response = new AuthResponse("token", "testuser", "USER");
+    AuthResponse response = new AuthResponse("token", "testuser", "USER", 1L);
     given(authService.login(any(LoginRequest.class))).willReturn(response);
 
     mockMvc

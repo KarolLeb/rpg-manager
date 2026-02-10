@@ -6,10 +6,20 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'rpg-backend'
+  - job_name: 'rpg-backend-core'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['rpg-backend:8080']
+      - targets: ['backend-core:8080']
+
+  - job_name: 'rpg-backend-auth'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['backend-auth:8081']
+
+  - job_name: 'rpg-backend-admin'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['backend-admin:8082']
 
   - job_name: 'postgres'
     static_configs:

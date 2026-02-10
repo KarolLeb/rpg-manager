@@ -51,6 +51,28 @@ services:
     networks:
       - rpg-network
 
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: rpg-postgres-exporter
+    restart: always
+    environment:
+      - DATA_SOURCE_NAME=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/postgres?sslmode=disable
+    depends_on:
+      - prometheus
+    networks:
+      - rpg-network
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: rpg-redis-exporter
+    restart: always
+    environment:
+      - REDIS_ADDR=redis:6379
+    depends_on:
+      - prometheus
+    networks:
+      - rpg-network
+
 volumes:
   rpg-prometheus-data:
     external: true

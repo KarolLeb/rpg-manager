@@ -44,8 +44,8 @@ export class AuthService {
     );
   }
 
-  register(request: RegisterRequest): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/register`, request);
+  register(request: RegisterRequest): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, request, { responseType: 'text' });
   }
 
   logout(): void {

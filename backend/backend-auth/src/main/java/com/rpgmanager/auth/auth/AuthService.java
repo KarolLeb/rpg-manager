@@ -4,6 +4,7 @@ import com.rpgmanager.auth.security.JwtUtil;
 import com.rpgmanager.auth.user.domain.model.UserDomain;
 import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 /** Service for handling authentication and user registration. */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
   private final AuthenticationManager authenticationManager;
@@ -28,17 +30,27 @@ public class AuthService {
    * @return the authentication response containing the JWT token
    */
   public AuthResponse login(LoginRequest request) {
-    authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+    log.info("Attempting login for user: {}", request.getUsername());
+    try {
+      authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+    } catch (Exception e) {
+      log.error("Authentication failed for user: {}. Error: {}", request.getUsername(), e.getMessage());
+      throw e;
+    }
 
     UserDomain user =
         userRepository
             .findByUsername(request.getUsername())
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            .orElseThrow(() -> {
+              log.error("User not found after authentication: {}", request.getUsername());
+              return new UsernameNotFoundException("User not found");
+            });
 
     String token = jwtUtil.generateToken(user.getUsername(), user.getId(), user.getRole().name());
+    log.info("Login successful for user: {}", request.getUsername());
 
-    return new AuthResponse(token, user.getUsername(), user.getRole().name());
+    return new AuthResponse(token, user.getUsername(), user.getRole().name(), user.getId());
   }
 
   /**
@@ -48,7 +60,9 @@ public class AuthService {
    */
   @Transactional
   public void register(RegisterRequest request) {
+    log.info("Registering user: {}", request.getUsername());
     if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+      log.warn("Registration failed: Username already exists: {}", request.getUsername());
       throw new IllegalArgumentException("Username already exists");
     }
 
@@ -59,5 +73,6 @@ public class AuthService {
     user.setRole(UserDomain.Role.PLAYER);
 
     userRepository.save(user);
+    log.info("User registered successfully: {}", request.getUsername());
   }
 }
