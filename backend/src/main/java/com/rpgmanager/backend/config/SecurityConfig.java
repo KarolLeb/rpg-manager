@@ -52,7 +52,11 @@ public class SecurityConfig {
                         "/api/characters/**",
                         "/api/campaigns/**")
                     .permitAll()
-                    .requestMatchers("/actuator/health/**", "/actuator/info/**", "/error")
+                    .requestMatchers(
+                        "/actuator/health/**",
+                        "/actuator/info/**",
+                        "/actuator/prometheus",
+                        "/error")
                     .permitAll()
                     .requestMatchers("/actuator/**")
                     .hasRole("ADMIN")
