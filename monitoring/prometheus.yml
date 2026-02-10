@@ -10,3 +10,15 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['rpg-backend:8080']
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['rpg-postgres-exporter:9187']
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['rpg-redis-exporter:9121']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['rpg-cadvisor:8080']

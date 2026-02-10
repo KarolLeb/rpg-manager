@@ -1,0 +1,36 @@
+{
+  "annotations": { "list": [] },
+  "description": "Redis metrics from redis_exporter",
+  "editable": true,
+  "gnetId": 11835,
+  "id": null,
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "targets": [
+        { "expr": "redis_memory_used_bytes", "legendFormat": "Used Memory", "refId": "A" }
+      ],
+      "title": "Memory Usage",
+      "type": "graph"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "targets": [
+        { "expr": "redis_connected_clients", "legendFormat": "Clients", "refId": "A" }
+      ],
+      "title": "Connected Clients",
+      "type": "stat"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": ["redis", "rpg-manager"],
+  "title": "Redis Overview",
+  "uid": "rpg-redis",
+  "version": 1
+}

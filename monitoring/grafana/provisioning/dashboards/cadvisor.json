@@ -1,0 +1,36 @@
+{
+  "annotations": { "list": [] },
+  "description": "Container metrics from cAdvisor",
+  "editable": true,
+  "gnetId": 14282,
+  "id": null,
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "targets": [
+        { "expr": "sum(container_cpu_usage_seconds_total{name=~"rpg-.*"}) by (name)", "legendFormat": "{{name}}", "refId": "A" }
+      ],
+      "title": "Container CPU Usage",
+      "type": "graph"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "id": 2,
+      "targets": [
+        { "expr": "container_memory_usage_bytes{name=~"rpg-.*"}", "legendFormat": "{{name}}", "refId": "A" }
+      ],
+      "title": "Container Memory Usage",
+      "type": "graph"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": ["docker", "rpg-manager"],
+  "title": "Container Resource Usage",
+  "uid": "rpg-cadvisor",
+  "version": 1
+}

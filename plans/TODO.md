@@ -8,9 +8,9 @@ Operational task list and active execution plans.
     *   **Status:** In Progress - Logical Decoupling complete.
 
 ## 📋 Backlog (Short Tasks)
-- [ ] **Frontend:** Implement visual indicators for cache hits (debug mode).
 
 ## ✅ Recently Finished (Pending Archive)
+- [x] **Frontend:** Visual indicators for cache hits (addressed via Grafana Redis Dashboard)
 
 
 ---
