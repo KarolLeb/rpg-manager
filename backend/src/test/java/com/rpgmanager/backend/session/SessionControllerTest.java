@@ -10,6 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rpgmanager.backend.config.SecurityConfig;
+import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.security.BrowserNavigationFilter;
+import com.rpgmanager.backend.security.JwtFilter;
 import com.rpgmanager.backend.security.JwtUtil;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -17,12 +21,20 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(SessionController.class)
+@Import({
+  SecurityConfig.class,
+  SecurityProperties.class,
+  JwtFilter.class,
+  BrowserNavigationFilter.class
+})
 class SessionControllerTest {
 
   @Autowired private MockMvc mockMvc;
@@ -30,6 +42,7 @@ class SessionControllerTest {
 
   @MockitoBean private SessionService sessionService;
   @MockitoBean private JwtUtil jwtUtil;
+  @MockitoBean private UserDetailsService userDetailsService;
 
   @Test
   @WithMockUser

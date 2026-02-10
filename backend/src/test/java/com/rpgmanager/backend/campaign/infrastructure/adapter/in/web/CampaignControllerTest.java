@@ -18,18 +18,29 @@ import com.rpgmanager.backend.campaign.application.port.in.DeleteCampaignUseCase
 import com.rpgmanager.backend.campaign.application.port.in.GetCampaignUseCase;
 import com.rpgmanager.backend.campaign.application.port.in.UpdateCampaignUseCase;
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
+import com.rpgmanager.backend.config.SecurityConfig;
+import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.security.BrowserNavigationFilter;
+import com.rpgmanager.backend.security.JwtFilter;
 import com.rpgmanager.backend.security.JwtUtil;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(CampaignController.class)
+@Import({
+  SecurityConfig.class,
+  SecurityProperties.class,
+  JwtFilter.class,
+  BrowserNavigationFilter.class
+})
 class CampaignControllerTest {
 
   @Autowired private MockMvc mockMvc;

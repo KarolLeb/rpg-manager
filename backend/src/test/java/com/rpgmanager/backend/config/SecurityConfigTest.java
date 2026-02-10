@@ -12,9 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 class SecurityConfigTest {
 
   private final JwtFilter jwtFilter = mock(JwtFilter.class);
-  private final SecurityProperties securityProperties = mock(SecurityProperties.class);
-  private final BrowserNavigationFilter browserNavigationFilter =
-      new BrowserNavigationFilter(securityProperties);
+  private final BrowserNavigationFilter browserNavigationFilter = new BrowserNavigationFilter();
   private final SecurityConfig securityConfig =
       new SecurityConfig(jwtFilter, browserNavigationFilter);
 

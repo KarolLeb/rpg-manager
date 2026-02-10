@@ -5,6 +5,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.rpgmanager.backend.config.SecurityConfig;
+import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.security.BrowserNavigationFilter;
+import com.rpgmanager.backend.security.JwtFilter;
 import com.rpgmanager.backend.security.JwtUtil;
 import com.rpgmanager.backend.user.domain.model.UserDomain;
 import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
@@ -19,7 +22,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(AdminController.class)
-@Import(SecurityConfig.class)
+@Import({
+  SecurityConfig.class,
+  SecurityProperties.class,
+  JwtFilter.class,
+  BrowserNavigationFilter.class
+})
 class AdminControllerTest {
 
   @Autowired private MockMvc mockMvc;

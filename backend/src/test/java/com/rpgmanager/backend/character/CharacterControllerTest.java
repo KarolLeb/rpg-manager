@@ -18,17 +18,28 @@ import com.rpgmanager.backend.character.application.port.in.JoinCampaignUseCase;
 import com.rpgmanager.backend.character.application.port.in.UpdateCharacterUseCase;
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import com.rpgmanager.backend.character.infrastructure.adapter.in.web.CharacterController;
+import com.rpgmanager.backend.config.SecurityConfig;
+import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.security.BrowserNavigationFilter;
+import com.rpgmanager.backend.security.JwtFilter;
 import com.rpgmanager.backend.security.JwtUtil;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(CharacterController.class)
+@Import({
+  SecurityConfig.class,
+  SecurityProperties.class,
+  JwtFilter.class,
+  BrowserNavigationFilter.class
+})
 class CharacterControllerTest {
 
   @Autowired private MockMvc mockMvc;

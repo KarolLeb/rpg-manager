@@ -49,7 +49,7 @@ describe('AuthService', () => {
 
     s.login({ username: 'test', password: 'pass' }).subscribe();
 
-    const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
+    const req = httpMock.expectOne('/api/auth/login');
     req.flush(mockResponse);
     tick();
 
@@ -73,7 +73,7 @@ describe('AuthService', () => {
       const nextSpy = spyOn((s as any).currentUserSubject, 'next').and.callThrough();
   
       s.login({ username: 'u', password: 'p' }).subscribe();
-      const req = httpMock.expectOne('http://localhost:8080/api/auth/login');     
+      const req = httpMock.expectOne('/api/auth/login');     
       req.flush(mockResponse);
       tick();
   
@@ -173,13 +173,13 @@ describe('AuthService', () => {
     const s = createService();
     s.login({ username: 'u', password: 'p' }).subscribe();
     // This MUST be exactly the full URL to kill mutations on apiUrl
-    const req1 = httpMock.expectOne(req => req.url === 'http://localhost:8080/api/auth/login');
-    expect(req1.request.url).toBe('http://localhost:8080/api/auth/login');
+    const req1 = httpMock.expectOne(req => req.url === '/api/auth/login');
+    expect(req1.request.url).toBe('/api/auth/login');
     req1.flush({});
 
     s.register({ username: 'u', email: 'e', password: 'p' }).subscribe();
-    const req2 = httpMock.expectOne(req => req.url === 'http://localhost:8080/api/auth/register');
-    expect(req2.request.url).toBe('http://localhost:8080/api/auth/register');
+    const req2 = httpMock.expectOne(req => req.url === '/api/auth/register');
+    expect(req2.request.url).toBe('/api/auth/register');
     req2.flush({});
     
     tick();

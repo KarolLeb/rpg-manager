@@ -35,7 +35,7 @@ describe('CampaignService', () => {
       expect(campaigns).toEqual(dummyCampaigns);
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/campaigns');
+    const req = httpMock.expectOne('/api/campaigns');
     expect(req.request.method).toBe('GET');
     req.flush(dummyCampaigns);
   });
@@ -47,10 +47,10 @@ describe('CampaignService', () => {
       expect(campaign).toEqual(dummyCampaign);
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/campaigns/1');
+    const req = httpMock.expectOne('/api/campaigns/1');
     expect(req.request.method).toBe('GET');
     // Mutation test: if apiUrl is "", url would be "/1"
-    expect(req.request.url).toBe('http://localhost:8080/api/campaigns/1');
+    expect(req.request.url).toBe('/api/campaigns/1');
     req.flush(dummyCampaign);
   });
 
@@ -62,9 +62,9 @@ describe('CampaignService', () => {
       expect(campaign).toEqual(createdCampaign);
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/campaigns');
+    const req = httpMock.expectOne('/api/campaigns');
     expect(req.request.method).toBe('POST');
-    expect(req.request.url).toBe('http://localhost:8080/api/campaigns');
+    expect(req.request.url).toBe('/api/campaigns');
     expect(req.request.body).toEqual(newCampaignRequest);
     req.flush(createdCampaign);
   });
@@ -77,7 +77,7 @@ describe('CampaignService', () => {
       expect(campaign).toEqual(updatedCampaign);
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/campaigns/1');
+    const req = httpMock.expectOne('/api/campaigns/1');
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(updateRequest);
     req.flush(updatedCampaign);
@@ -88,7 +88,7 @@ describe('CampaignService', () => {
       expect(response).toBeNull();
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/campaigns/1');
+    const req = httpMock.expectOne('/api/campaigns/1');
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
   });

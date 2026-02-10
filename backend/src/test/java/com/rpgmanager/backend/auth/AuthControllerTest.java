@@ -9,6 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rpgmanager.backend.config.SecurityConfig;
+import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.security.BrowserNavigationFilter;
+import com.rpgmanager.backend.security.JwtFilter;
 import com.rpgmanager.backend.security.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(AuthController.class)
-@Import(SecurityConfig.class)
+@Import({
+  SecurityConfig.class,
+  SecurityProperties.class,
+  JwtFilter.class,
+  BrowserNavigationFilter.class
+})
 class AuthControllerTest {
 
   @Autowired private MockMvc mockMvc;
