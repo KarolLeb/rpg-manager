@@ -13,7 +13,7 @@
   "testRunner": "karma",
   "karma": {
     "projectType": "angular-cli",
-    "configFile": "karma.conf.js",
+    "configFile": "config/karma.conf.js",
     "config": {
       "browsers": ["ChromeHeadlessCI"]
     }

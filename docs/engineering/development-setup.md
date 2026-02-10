@@ -6,9 +6,9 @@ This document describes how to set up the development environment using Docker.
 
 The project uses two separate Docker Compose setups to balance resource usage and convenience.
 
-### 1. Project Infrastructure (`/app-infra`)
+### 1. Project Infrastructure (`/infra/app`)
 Core dependencies required to run the application components.
-- **Path:** `C:\rpg-manager\app-infra`
+- **Path:** `C:\rpg-manager\infra\app`
 - **Services:** 
   - `postgres`: Main database
   - `redis`: Caching and messaging
@@ -17,30 +17,30 @@ Core dependencies required to run the application components.
   - `frontend`: Angular application
 - **Usage:**
   ```powershell
-  cd docker
+  cd infra/app
   docker-compose up -d
   ```
 
-### 2. Quality Analysis Tools (`/dev-tools`)
+### 2. Quality Analysis Tools (`/infra/dev`)
 Tools for static code analysis.
-- **Path:** `C:\rpg-manager\dev-tools`
+- **Path:** `C:\rpg-manager\infra\dev`
 - **Services:**
   - `sonarqube`: Static code analysis
 - **Usage:**
   ```powershell
-  cd dev-tools
+  cd infra/dev
   docker-compose up -d
   ```
 
-### 3. Monitoring & Observability (`/monitoring`)
+### 3. Monitoring & Observability (`/infra/monitoring`)
 Production-like monitoring stack.
-- **Path:** `C:\rpg-manager\monitoring`
+- **Path:** `C:\rpg-manager\infra\monitoring`
 - **Services:**
   - `prometheus`: Metrics collection
   - `grafana`: Metrics visualization
 - **Usage:**
   ```powershell
-  cd monitoring
+  cd infra/monitoring
   docker-compose up -d
   ```
 
@@ -145,7 +145,7 @@ Run E2E tests using Playwright.
 > **Port 4200:** Playwright is configured with `reuseExistingServer: true`. If the application is already running (e.g., via Docker or `ng serve`), Playwright will use that instance. If not, it will attempt to start a new one automatically.
 ```powershell
 # 1. Stop main app
-cd docker
+cd infra/app
 docker compose down
 
 # 2. Run E2E tests

@@ -8,15 +8,15 @@
     "watch": "ng build --watch --configuration development",
     "test": "npm run test:unit",
     "test:ci": "npm run test:unit",
-    "test:unit": "ng test --watch=false --browsers=ChromeHeadlessCI --code-coverage",
+    "test:unit": "ng test --watch=false --browsers=ChromeHeadlessCI --code-coverage --karma-config config/karma.conf.js",
     "lint": "ng lint",
     "lint:report": "ng lint --format json --output-file eslint-report.json",
-    "sonar": "node ../scripts/convert-stryker-to-sonar.js && sonar-scanner",
+    "sonar": "node ../.github/scripts/convert-stryker-to-sonar.js && sonar-scanner",
     "test:e2e": "playwright test",
     "e2e": "npm run test:e2e",
     "e2e:ui": "playwright test --ui",
     "e2e:cli": "playwright test --reporter=list",
-    "stryker": "stryker run"
+    "stryker": "stryker run config/stryker.config.json"
   },
   "private": true,
   "overrides": {

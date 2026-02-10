@@ -171,7 +171,7 @@ Authoritative single sources of truth (SSOT) for key policies and templates. Pre
 
 ### CI Coverage Enforcement
 
-This repo includes a minimal coverage enforcement workflow (`.github/workflows/coverage.yml`) and script (`scripts/enforce-coverage.js`) aligned with the Quality & Coverage Policy:
+This repo includes a minimal coverage enforcement workflow (`.github/workflows/coverage.yml`) and script (`.github/scripts/enforce-coverage.js`) aligned with the Quality & Coverage Policy:
 
 - All code ≥ 95%; critical/hot/error/security paths 100%.
 - Branching & Workflow: see "Project Methodologies" in the same file

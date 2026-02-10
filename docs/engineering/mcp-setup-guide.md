@@ -8,7 +8,7 @@ This document outlines the Model Context Protocol (MCP) servers recommended for 
 Used for static code analysis, quality gate monitoring, and issue tracking.
 - **Capabilities:** Check system health, list projects, search issues, get quality gate status.
 - **Setup:**
-  - Ensure SonarQube is running via `dev-tools/docker-compose.yml`.
+  - Ensure SonarQube is running via `infra/dev/docker-compose.yml`.
   - Configured to connect to `http://localhost:9000`.
   - Requires `SONAR_TOKEN` from `.env` for authenticated operations.
 
