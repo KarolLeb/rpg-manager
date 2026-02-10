@@ -74,7 +74,7 @@ services:
 
   backend:
     build:
-      context: .././backend
+      context: ../../backend
       target: development
     container_name: rpg-backend
     ports:
@@ -92,16 +92,16 @@ services:
     develop:
       watch:
         - action: sync
-          path: .././backend/src
+          path: ../../backend/src
           target: /app/src
         - action: rebuild
-          path: .././backend/pom.xml
+          path: ../../backend/pom.xml
     networks:
       - rpg-network
 
   frontend:
     build:
-      context: .././frontend
+      context: ../../frontend
       target: development
     container_name: rpg-frontend
     ports:
@@ -111,7 +111,7 @@ services:
     develop:
       watch:
         - action: sync
-          path: .././frontend/src
+          path: ../../frontend/src
           target: /app/src
     networks:
       - rpg-network

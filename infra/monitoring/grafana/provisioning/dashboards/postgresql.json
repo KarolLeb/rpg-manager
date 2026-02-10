@@ -15,7 +15,7 @@
   "description": "PostgreSQL Database metrics from postgres_exporter",
   "editable": true,
   "gnetId": 9628,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "id": null,
   "links": [],
   "panels": [

@@ -3,6 +3,7 @@
   "description": "Redis metrics from redis_exporter",
   "editable": true,
   "gnetId": 11835,
+  "graphTooltip": 1,
   "id": null,
   "panels": [
     {
@@ -30,6 +31,7 @@
   "schemaVersion": 27,
   "style": "dark",
   "tags": ["redis", "rpg-manager"],
+  "time": { "from": "now-1h", "to": "now" },
   "title": "Redis Overview",
   "uid": "rpg-redis",
   "version": 1
