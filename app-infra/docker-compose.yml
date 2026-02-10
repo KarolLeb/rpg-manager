@@ -1,3 +1,5 @@
+name: rpg-app
+
 services:
   postgres:
     image: postgres:15-alpine
@@ -93,15 +95,19 @@ services:
 
 networks:
   rpg-network:
+    external: true
     name: rpg-network
-    driver: bridge
 
 volumes:
   rpg-frontend-node-modules:
+    external: true
     name: rpg-frontend-node-modules
   rpg-postgres-data:
+    external: true
     name: rpg-postgres-data
   rpg-redis-data:
+    external: true
     name: rpg-redis-data
   rpg-pgadmin-data:
+    external: true
     name: rpg-pgadmin-data

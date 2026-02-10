@@ -94,7 +94,7 @@ For detailed instructions on running tests (Backend, Frontend, and E2E) and sett
     ```
 2.  **Launch the infrastructure:**
     ```bash
-    cd docker
+    cd app-infra
     docker compose up -d
     ```
 3.  **Access the Application:**

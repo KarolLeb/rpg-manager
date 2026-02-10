@@ -6,9 +6,9 @@ This document describes how to set up the development environment using Docker.
 
 The project uses two separate Docker Compose setups to balance resource usage and convenience.
 
-### 1. Project Infrastructure (`/docker`)
+### 1. Project Infrastructure (`/app-infra`)
 Core dependencies required to run the application components.
-- **Path:** `E:\rpg-manager\docker`
+- **Path:** `C:\rpg-manager\app-infra`
 - **Services:** 
   - `postgres`: Main database
   - `redis`: Caching and messaging
