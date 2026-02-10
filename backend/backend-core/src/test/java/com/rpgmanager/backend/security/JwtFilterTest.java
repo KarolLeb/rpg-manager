@@ -15,8 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 class JwtFilterTest {
 
@@ -24,20 +22,16 @@ class JwtFilterTest {
 
   @Mock private JwtUtil jwtUtil;
 
-  @Mock private UserDetailsService userDetailsService;
-
   @Mock private HttpServletRequest request;
 
   @Mock private HttpServletResponse response;
 
   @Mock private FilterChain filterChain;
 
-  @Mock private UserDetails userDetails;
-
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    jwtFilter = new JwtFilter(jwtUtil, userDetailsService);
+    jwtFilter = new JwtFilter(jwtUtil);
     SecurityContextHolder.clearContext();
   }
 
@@ -66,11 +60,12 @@ class JwtFilterTest {
   void shouldAuthenticateIfTokenIsValid() throws ServletException, IOException {
     String token = "valid-token";
     String username = "testuser";
+    Long userId = 1L;
+    String role = "PLAYER";
     given(request.getHeader("Authorization")).willReturn("Bearer " + token);
     given(jwtUtil.extractUsername(token)).willReturn(username);
-    given(userDetailsService.loadUserByUsername(username)).willReturn(userDetails);
-    given(userDetails.getUsername()).willReturn(username);
-    given(jwtUtil.validateToken(token, username)).willReturn(true);
+    given(jwtUtil.extractUserId(token)).willReturn(userId);
+    given(jwtUtil.extractRole(token)).willReturn(role);
 
     jwtFilter.doFilterInternal(request, response, filterChain);
 
@@ -78,23 +73,8 @@ class JwtFilterTest {
     org.springframework.security.core.Authentication auth =
         SecurityContextHolder.getContext().getAuthentication();
     assertThat(auth).isNotNull();
-    assertThat(auth.getDetails()).isNotNull();
-  }
-
-  @Test
-  void shouldNotAuthenticateIfTokenIsInvalid() throws ServletException, IOException {
-    String token = "invalid-token";
-    String username = "testuser";
-    given(request.getHeader("Authorization")).willReturn("Bearer " + token);
-    given(jwtUtil.extractUsername(token)).willReturn(username);
-    given(userDetailsService.loadUserByUsername(username)).willReturn(userDetails);
-    given(userDetails.getUsername()).willReturn(username);
-    given(jwtUtil.validateToken(token, username)).willReturn(false);
-
-    jwtFilter.doFilterInternal(request, response, filterChain);
-
-    verify(filterChain).doFilter(request, response);
-    assert SecurityContextHolder.getContext().getAuthentication() == null;
+    assertThat(((UserContext) auth.getPrincipal()).getUsername()).isEqualTo(username);
+    assertThat(((UserContext) auth.getPrincipal()).getUserId()).isEqualTo(userId);
   }
 
   @Test
@@ -104,13 +84,14 @@ class JwtFilterTest {
     given(request.getHeader("Authorization")).willReturn("Bearer " + token);
     given(jwtUtil.extractUsername(token)).willReturn(username);
 
-    SecurityContextHolder.getContext()
-        .setAuthentication(mock(org.springframework.security.core.Authentication.class));
+    org.springframework.security.core.Authentication existingAuth = 
+        mock(org.springframework.security.core.Authentication.class);
+    SecurityContextHolder.getContext().setAuthentication(existingAuth);
 
     jwtFilter.doFilterInternal(request, response, filterChain);
 
     verify(filterChain).doFilter(request, response);
-    verify(userDetailsService, never()).loadUserByUsername(anyString());
+    assertThat(SecurityContextHolder.getContext().getAuthentication()).isSameAs(existingAuth);
   }
 
   @Test
@@ -122,7 +103,6 @@ class JwtFilterTest {
     jwtFilter.doFilterInternal(request, response, filterChain);
 
     verify(filterChain).doFilter(request, response);
-    verify(userDetailsService, never()).loadUserByUsername(anyString());
   }
 
   @Test

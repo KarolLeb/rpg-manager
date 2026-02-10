@@ -74,23 +74,23 @@ test.describe('Character Sheet Feature', () => {
     const saveButton = page.locator('.save-btn', { hasText: 'ZAPISZ' });
     await expect(saveButton).toBeVisible();
 
-    await page.waitForLoadState('networkidle');
-    
     // Set up promises before the action that triggers them
     const responsePromise = page.waitForResponse(response => 
-        response.url().includes('/api/characters/1') && response.request().method() === 'PUT'
+        response.url().includes('/api/characters/1') && response.request().method() === 'PUT',
+        { timeout: 10000 }
     );
-    const dialogPromise = page.waitForEvent('dialog');
+    const dialogPromise = page.waitForEvent('dialog', { timeout: 10000 });
 
     await saveButton.click();
 
-    // Wait for the dialog and accept it
-    const dialog = await dialogPromise;
+    // Wait for both to happen
+    const [response, dialog] = await Promise.all([
+        responsePromise,
+        dialogPromise
+    ]);
+
     expect(dialog.message()).toContain('Postać została zapisana pomyślnie');
     await dialog.accept();
-
-    // Wait for the response
-    await responsePromise;
 
     expect(savedData.name).toBe('Updated Name');
   });

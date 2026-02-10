@@ -11,15 +11,19 @@ import com.rpgmanager.backend.BaseIntegrationTest;
 import com.rpgmanager.backend.campaign.application.dto.CreateCampaignRequest;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.CampaignEntity;
 import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.JpaCampaignRepository;
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.JpaUserRepository;
-import com.rpgmanager.backend.user.infrastructure.adapter.outgoing.persist.UserEntity;
+import com.rpgmanager.backend.user.domain.model.UserDomain;
+import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import static org.mockito.BDDMockito.given;
 
 class CampaignIntegrationTest extends BaseIntegrationTest {
 
@@ -27,38 +31,31 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
 
   @Autowired private WebApplicationContext webApplicationContext;
 
-  @Autowired private JpaUserRepository userRepository;
+  @MockitoBean private UserRepositoryPort userRepository;
 
   @Autowired private JpaCampaignRepository campaignRepository;
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
-  private UserEntity gameMaster;
+  private Long gameMasterId = 1L;
 
   @BeforeEach
   void setUp() {
     objectMapper.registerModule(new JavaTimeModule());
     this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 
-    // Ensure we have a user to be the GM
-    gameMaster =
-        userRepository
-            .findByUsername("gamemaster")
-            .orElseGet(
-                () ->
-                    userRepository.save(
-                        UserEntity.builder()
-                            .username("gamemaster")
-                            .password("password")
-                            .email("gm@test.com")
-                            .role(UserEntity.Role.GM)
-                            .build()));
+    UserDomain gameMaster = UserDomain.builder()
+        .id(gameMasterId)
+        .username("gamemaster")
+        .role("GM")
+        .build();
+    given(userRepository.findById(gameMasterId)).willReturn(Optional.of(gameMaster));
   }
 
   @Test
   void shouldCreateCampaign() throws Exception {
     CreateCampaignRequest request =
-        new CreateCampaignRequest("New Test Campaign", "A description", gameMaster.getId());
+        new CreateCampaignRequest("New Test Campaign", "A description", gameMasterId);
 
     mockMvc
         .perform(
@@ -69,7 +66,7 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.name", is("New Test Campaign")))
         .andExpect(jsonPath("$.description", is("A description")))
-        .andExpect(jsonPath("$.gameMasterId", is(gameMaster.getId().intValue())));
+        .andExpect(jsonPath("$.gameMasterId", is(gameMasterId.intValue())));
   }
 
   @Test
@@ -79,7 +76,7 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
         CampaignEntity.builder()
             .name("List Test Campaign")
             .description("Desc")
-            .gameMasterId(gameMaster.getId())
+            .gameMasterId(gameMasterId)
             .status(CampaignEntity.CampaignStatus.ACTIVE)
             .build();
     campaignRepository.save(campaign);
@@ -97,7 +94,7 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
         CampaignEntity.builder()
             .name("Get By Id Campaign")
             .description("Desc")
-            .gameMasterId(gameMaster.getId())
+            .gameMasterId(gameMasterId)
             .status(CampaignEntity.CampaignStatus.ACTIVE)
             .build();
     campaign = campaignRepository.save(campaign);
@@ -115,13 +112,13 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
         CampaignEntity.builder()
             .name("Original Name")
             .description("Original Desc")
-            .gameMasterId(gameMaster.getId())
+            .gameMasterId(gameMasterId)
             .status(CampaignEntity.CampaignStatus.ACTIVE)
             .build();
     campaign = campaignRepository.save(campaign);
 
     CreateCampaignRequest updateRequest =
-        new CreateCampaignRequest("Updated Name", "Updated Desc", gameMaster.getId());
+        new CreateCampaignRequest("Updated Name", "Updated Desc", gameMasterId);
 
     mockMvc
         .perform(
@@ -139,7 +136,7 @@ class CampaignIntegrationTest extends BaseIntegrationTest {
         CampaignEntity.builder()
             .name("To Be Deleted")
             .description("Desc")
-            .gameMasterId(gameMaster.getId())
+            .gameMasterId(gameMasterId)
             .status(CampaignEntity.CampaignStatus.ACTIVE)
             .build();
     campaign = campaignRepository.save(campaign);

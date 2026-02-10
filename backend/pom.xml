@@ -31,6 +31,8 @@
         <mapstruct.version>1.6.3</mapstruct.version>
         
         <!-- Shared Sonar properties (can be overridden in modules) -->
+        <sonar.projectName>RPG Manager - Backend (Services)</sonar.projectName>
+        <sonar.projectKey>RPG-manager-backend-services</sonar.projectKey>
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
         

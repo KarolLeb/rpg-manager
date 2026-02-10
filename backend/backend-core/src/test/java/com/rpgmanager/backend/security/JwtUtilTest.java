@@ -14,6 +14,8 @@ class JwtUtilTest {
 
   private JwtUtil jwtUtil;
   private final String username = "testuser";
+  private final Long userId = 123L;
+  private final String role = "PLAYER";
   private final String secret =
       "bardzo_dlugi_i_bezpieczny_klucz_do_podpisywania_tokenow_jwt_1234567890";
 
@@ -24,40 +26,53 @@ class JwtUtilTest {
     ReflectionTestUtils.setField(jwtUtil, "expiration", 86400000L);
   }
 
-  @Test
-  void shouldGenerateToken() {
-    String token = jwtUtil.generateToken(username);
-    assertNotNull(token);
+  private String createToken(String sub, Long id, String r, Date exp) {
+    return Jwts.builder()
+        .subject(sub)
+        .claim("userId", id)
+        .claim("role", r)
+        .issuedAt(new Date())
+        .expiration(exp)
+        .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
+        .compact();
   }
 
   @Test
   void shouldExtractUsername() {
-    String token = jwtUtil.generateToken(username);
+    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
     String extractedUsername = jwtUtil.extractUsername(token);
     assertEquals(username, extractedUsername);
   }
 
   @Test
+  void shouldExtractUserId() {
+    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
+    Long extractedUserId = jwtUtil.extractUserId(token);
+    assertEquals(userId, extractedUserId);
+  }
+
+  @Test
+  void shouldExtractRole() {
+    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
+    String extractedRole = jwtUtil.extractRole(token);
+    assertEquals(role, extractedRole);
+  }
+
+  @Test
   void shouldValidateToken() {
-    String token = jwtUtil.generateToken(username);
+    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
     assertTrue(jwtUtil.validateToken(token, username));
   }
 
   @Test
   void shouldNotValidateTokenForDifferentUser() {
-    String token = jwtUtil.generateToken(username);
+    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() + 10000));
     assertFalse(jwtUtil.validateToken(token, "otheruser"));
   }
 
   @Test
   void shouldNotValidateExpiredToken() {
-    String token =
-        Jwts.builder()
-            .subject(username)
-            .issuedAt(new Date(System.currentTimeMillis() - 10000))
-            .expiration(new Date(System.currentTimeMillis() - 1000)) // Expired
-            .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
-            .compact();
+    String token = createToken(username, userId, role, new Date(System.currentTimeMillis() - 1000));
 
     assertFalse(jwtUtil.validateToken(token, username));
   }

@@ -4,7 +4,7 @@ test.describe('Authentication & Dashboard Flow', () => {
   
   test.beforeEach(async ({ page }) => {
     // Mock the Login API
-    await page.route('http://localhost:8080/api/auth/login', async route => {
+    await page.route('**/api/auth/login', async route => {
       const json = {
         token: 'fake-jwt-token',
         username: 'TestGM',
@@ -14,7 +14,7 @@ test.describe('Authentication & Dashboard Flow', () => {
     });
 
     // Mock Campaign API (for GM Dashboard)
-    await page.route('http://localhost:8080/api/campaigns', async route => {
+    await page.route('**/api/campaigns', async route => {
       const json = [
         { id: 1, name: 'Curse of Strahd', description: 'Gothic Horror' }
       ];
