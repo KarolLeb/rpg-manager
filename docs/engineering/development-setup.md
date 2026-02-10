@@ -21,16 +21,26 @@ Core dependencies required to run the application components.
   docker-compose up -d
   ```
 
-### 2. Persistent Dev Tools (`/dev-tools`)
-Tools that are typically started once and kept running across multiple development sessions.
-- **Path:** `E:\rpg-manager\dev-tools`
+### 2. Quality Analysis Tools (`/dev-tools`)
+Tools for static code analysis.
+- **Path:** `C:\rpg-manager\dev-tools`
 - **Services:**
   - `sonarqube`: Static code analysis
+- **Usage:**
+  ```powershell
+  cd dev-tools
+  docker-compose up -d
+  ```
+
+### 3. Monitoring & Observability (`/monitoring`)
+Production-like monitoring stack.
+- **Path:** `C:\rpg-manager\monitoring`
+- **Services:**
   - `prometheus`: Metrics collection
   - `grafana`: Metrics visualization
 - **Usage:**
   ```powershell
-  cd dev-tools
+  cd monitoring
   docker-compose up -d
   ```
 

@@ -1,0 +1,48 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: rpg-prometheus
+    restart: always
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - rpg-prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - rpg-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: rpg-grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+      - GF_USERS_DEFAULT_THEME=dark
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/jvm-micrometer.json
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - rpg-grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - rpg-network
+
+volumes:
+  rpg-prometheus-data:
+    external: true
+    name: rpg-prometheus-data
+  rpg-grafana-data:
+    external: true
+    name: rpg-grafana-data
+
+networks:
+  rpg-network:
+    external: true
+    name: rpg-network
