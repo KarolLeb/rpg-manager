@@ -13,6 +13,7 @@ services:
       - "5432:5432"
     volumes:
       - rpg-postgres-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -49,34 +50,53 @@ services:
     networks:
       - rpg-network
 
-  postgres-exporter:
-    image: prometheuscommunity/postgres-exporter
-    container_name: rpg-postgres-exporter
-    restart: always
+  backend-auth:
+    build:
+      context: ../../backend
+      dockerfile: backend-auth/Dockerfile
+      target: development
+    container_name: rpg-backend-auth
+    ports:
+      - "8081:8081"
     environment:
-      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/rpg?sslmode=disable"
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rpg_auth
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - JWT_SECRET=${JWT_SECRET:-7a4b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b}
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - rpg-network
 
-  redis-exporter:
-    image: oliver006/redis_exporter
-    container_name: rpg-redis-exporter
-    restart: always
+  backend-admin:
+    build:
+      context: ../../backend
+      dockerfile: backend-admin/Dockerfile
+      target: development
+    container_name: rpg-backend-admin
+    ports:
+      - "8082:8082"
     environment:
-      - REDIS_ADDR=redis:6379
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rpg_admin
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - JWT_SECRET=${JWT_SECRET:-7a4b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b}
+      - APP_AUTH_SERVICE_URL=http://backend-auth:8081
     depends_on:
-      - redis
+      postgres:
+        condition: service_healthy
+      backend-auth:
+        condition: service_started
     networks:
       - rpg-network
 
-  backend:
+  backend-core:
     build:
       context: ../../backend
+      dockerfile: backend-core/Dockerfile
       target: development
-    container_name: rpg-backend
+    container_name: rpg-backend-core
     ports:
       - "8080:8080"
     environment:
@@ -84,18 +104,17 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rpg
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_HOST=rpg-redis
       - SPRING_CACHE_TYPE=redis
+      - JWT_SECRET=${JWT_SECRET:-7a4b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b}
+      - APP_AUTH_SERVICE_URL=http://backend-auth:8081
     depends_on:
       postgres:
         condition: service_healthy
-    develop:
-      watch:
-        - action: sync
-          path: ../../backend/src
-          target: /app/src
-        - action: rebuild
-          path: ../../backend/pom.xml
+      redis:
+        condition: service_started
+      backend-auth:
+        condition: service_started
     networks:
       - rpg-network
 
@@ -109,6 +128,10 @@ services:
     volumes:
       - ../../frontend:/app
       - rpg-frontend-node-modules:/app/node_modules
+    environment:
+      - AUTH_SERVICE_URL=http://localhost:8081
+      - ADMIN_SERVICE_URL=http://localhost:8082
+      - CORE_SERVICE_URL=http://localhost:8080
     develop:
       watch:
         - action: sync

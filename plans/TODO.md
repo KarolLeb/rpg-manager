@@ -3,13 +3,12 @@
 Operational task list and active execution plans.
 
 ## 🚀 Active Plans
-1.  **Microservices Extraction (Admin & Auth)**
-    *   **Plan:** [`plans/microservices-extraction.md`](./microservices-extraction.md)
-    *   **Status:** In Progress - Logical Decoupling complete.
+*(No active plans at the moment)*
 
 ## 📋 Backlog (Short Tasks)
 
 ## ✅ Recently Finished (Pending Archive)
+- [x] **Microservices Extraction (Admin & Auth):** Extracted Auth and Admin services, decoupled Core service using Feign clients and JWT enrichment.
 - [x] **Frontend:** Visual indicators for cache hits (addressed via Grafana Redis Dashboard)
 
 

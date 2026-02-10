@@ -1,0 +1,2 @@
+CREATE DATABASE rpg_auth;
+CREATE DATABASE rpg_admin;
