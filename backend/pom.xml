@@ -35,6 +35,15 @@
         <sonar.projectKey>RPG-manager-backend-services</sonar.projectKey>
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.exclusions>
+            **/config/**,
+            **/model/**,
+            **/entity/**,
+            **/dto/**,
+            **/*Application.java,
+            **/*MapperImpl.java
+        </sonar.coverage.exclusions>
         
         <!-- Security Patch Overrides -->
         <spring-framework.version>6.2.2</spring-framework.version>
@@ -81,6 +90,68 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.12</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/*MapperImpl.class</exclude>
+                                    <exclude>**/*Application.class</exclude>
+                                    <exclude>**/config/**</exclude>
+                                    <exclude>**/dto/**</exclude>
+                                    <exclude>**/entity/**</exclude>
+                                    <exclude>**/model/**</exclude>
+                                </excludes>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>check</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/*MapperImpl.class</exclude>
+                                    <exclude>**/*Application.class</exclude>
+                                    <exclude>**/config/**</exclude>
+                                    <exclude>**/dto/**</exclude>
+                                    <exclude>**/entity/**</exclude>
+                                    <exclude>**/model/**</exclude>
+                                </excludes>
+                                <rules>
+                                    <rule>
+                                        <element>BUNDLE</element>
+                                        <limits>
+                                            <limit>
+                                                <counter>LINE</counter>
+                                                <value>COVEREDRATIO</value>
+                                                <minimum>0.95</minimum>
+                                            </limit>
+                                            <limit>
+                                                <counter>BRANCH</counter>
+                                                <value>COVEREDRATIO</value>
+                                                <minimum>0.90</minimum>
+                                            </limit>
+                                        </limits>
+                                    </rule>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
@@ -114,6 +185,10 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
