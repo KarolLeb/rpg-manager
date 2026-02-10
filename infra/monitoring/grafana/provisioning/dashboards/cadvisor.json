@@ -11,7 +11,7 @@
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
       "id": 1,
       "targets": [
-        { "expr": "sum(container_cpu_usage_seconds_total{name=~'rpg-.*'}) by (name)", "legendFormat": "{{name}}", "refId": "A" }
+        { "expr": "sum(irate(container_cpu_usage_seconds_total{name=~'.*rpg-.*'}[5m])) by (name)", "legendFormat": "{{name}}", "refId": "A" }
       ],
       "title": "Container CPU Usage",
       "type": "graph"
@@ -21,7 +21,7 @@
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
       "id": 2,
       "targets": [
-        { "expr": "container_memory_usage_bytes{name=~'rpg-.*'}", "legendFormat": "{{name}}", "refId": "A" }
+        { "expr": "container_memory_usage_bytes{name=~'.*rpg-.*'}", "legendFormat": "{{name}}", "refId": "A" }
       ],
       "title": "Container Memory Usage",
       "type": "graph"
