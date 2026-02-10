@@ -2825,7 +2825,10 @@
   ],
   "schemaVersion": 14,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "jvm",
+    "rpg-manager"
+  ],
   "templating": {
     "list": [
       {
@@ -2939,7 +2942,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
