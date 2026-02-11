@@ -60,7 +60,8 @@ class UserClientAdapterTest {
 
   @Test
   void save_shouldThrowException() {
-    assertThatThrownBy(() -> userClientAdapter.save(new UserDomain()))
+    UserDomain user = new UserDomain();
+    assertThatThrownBy(() -> userClientAdapter.save(user))
         .isInstanceOf(UnsupportedOperationException.class);
   }
 }

@@ -14,8 +14,6 @@
     <description>RPG Manager Core Service</description>
 
     <properties>
-        <sonar.projectKey>RPG-manager-backend-core</sonar.projectKey>
-        <sonar.projectName>RPG Manager Backend Core</sonar.projectName>
         <sonar.java.binaries>target/classes</sonar.java.binaries>
     </properties>
 

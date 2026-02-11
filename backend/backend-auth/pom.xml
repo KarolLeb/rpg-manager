@@ -13,11 +13,6 @@
     <name>backend-auth</name>
     <description>RPG Manager Auth Service</description>
 
-    <properties>
-        <sonar.projectKey>RPG-manager-backend-auth</sonar.projectKey>
-        <sonar.projectName>RPG Manager Backend Auth</sonar.projectName>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

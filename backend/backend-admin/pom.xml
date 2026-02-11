@@ -13,11 +13,6 @@
     <name>backend-admin</name>
     <description>RPG Manager Admin Service</description>
 
-    <properties>
-        <sonar.projectKey>RPG-manager-backend-admin</sonar.projectKey>
-        <sonar.projectName>RPG Manager Backend Admin</sonar.projectName>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

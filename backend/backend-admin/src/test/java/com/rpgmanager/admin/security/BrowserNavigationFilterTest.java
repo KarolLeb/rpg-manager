@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -62,35 +64,29 @@ class BrowserNavigationFilterTest {
     verify(filterChain).doFilter(request, response);
   }
 
-  @Test
-  void shouldBlockIfAcceptHtml() throws ServletException, IOException {
+  @ParameterizedTest
+  @CsvSource({
+    "'text/html,application/xhtml+xml', true",
+    "'application/json', false",
+    "'text/html,application/json', false"
+  })
+  void shouldHandleAcceptHeader(String acceptHeader, boolean shouldBlock)
+      throws ServletException, IOException {
     given(request.getRequestURI()).willReturn("/api/admin/users");
-    given(request.getHeader("Accept")).willReturn("text/html,application/xhtml+xml");
-    StringWriter out = new StringWriter();
-    given(response.getWriter()).willReturn(new PrintWriter(out));
+    given(request.getHeader("Accept")).willReturn(acceptHeader);
+
+    if (shouldBlock) {
+      StringWriter out = new StringWriter();
+      given(response.getWriter()).willReturn(new PrintWriter(out));
+    }
 
     filter.doFilterInternal(request, response, filterChain);
 
-    verify(response).setStatus(HttpServletResponse.SC_FORBIDDEN);
-  }
-
-  @Test
-  void shouldAllowIfAcceptJson() throws ServletException, IOException {
-    given(request.getRequestURI()).willReturn("/api/admin/users");
-    given(request.getHeader("Accept")).willReturn("application/json");
-
-    filter.doFilterInternal(request, response, filterChain);
-
-    verify(filterChain).doFilter(request, response);
-  }
-
-  @Test
-  void shouldAllowIfAcceptHtmlAndJson() throws ServletException, IOException {
-    given(request.getRequestURI()).willReturn("/api/admin/users");
-    given(request.getHeader("Accept")).willReturn("text/html,application/json");
-
-    filter.doFilterInternal(request, response, filterChain);
-
-    verify(filterChain).doFilter(request, response);
+    if (shouldBlock) {
+      verify(response).setStatus(HttpServletResponse.SC_FORBIDDEN);
+      verifyNoInteractions(filterChain);
+    } else {
+      verify(filterChain).doFilter(request, response);
+    }
   }
 }
