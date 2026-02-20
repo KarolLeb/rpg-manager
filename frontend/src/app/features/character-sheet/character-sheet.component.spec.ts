@@ -279,6 +279,18 @@ describe('CharacterSheetPageComponent', () => {
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
   });
 
+  it('should handle undefined stats correctly', () => {
+    const charWithUndefinedStats = { ...dummyCharacter, stats: undefined as any };
+    mockCharacterService.getCharacter.and.returnValue(of(charWithUndefinedStats));
+    spyOn(console, 'error');
+    
+    fixture.detectChanges();
+    
+    expect(console.error).not.toHaveBeenCalled();
+    expect(component.isLoading).toBeFalse();
+    expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
+  });
+
   it('should handle stats that are JSON null correctly', () => {
     const charWithJsonNull = { ...dummyCharacter, stats: 'null' };
     mockCharacterService.getCharacter.and.returnValue(of(charWithJsonNull));

@@ -268,6 +268,18 @@ describe('CampaignFormComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/campaigns']);
   }));
 
+  it('should call createCampaign if isEditMode is true but campaignId is undefined', fakeAsync(() => {
+    component.isEditMode = true;
+    component.campaignId = undefined as any;
+
+    component.campaignForm.setValue({ name: 'Test Undefined', description: 'Test' });
+    component.onSubmit();
+
+    expect(mockCampaignService.createCampaign).toHaveBeenCalled();
+    expect(mockCampaignService.updateCampaign).not.toHaveBeenCalled();
+    tick();
+  }));
+
   it('should call createCampaign if isEditMode is false even if campaignId is set', fakeAsync(() => {
     component.isEditMode = false;
     component.campaignId = 1;

@@ -130,6 +130,19 @@ describe('LoginComponent', () => {
     expect(toastServiceSpy.error).toHaveBeenCalledWith('Login failed. Please check your credentials.');
   }));
 
+  it('should use fallback message if err.error.message is empty string', fakeAsync(() => {
+    spyOn(authService, 'login').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: { message: '' } })))));
+
+    component.loginForm.controls['username'].setValue('testuser');
+    component.loginForm.controls['password'].setValue('password123');
+    
+    component.onSubmit();
+    tick(10);
+
+    expect(component.error).toBe('Login failed. Please check your credentials.');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Login failed. Please check your credentials.');
+  }));
+
   it('should not submit if form is invalid and should NOT set isLoading to true', () => {
     const loginSpy = spyOn(authService, 'login');
     component.loginForm.controls['username'].setValue('');

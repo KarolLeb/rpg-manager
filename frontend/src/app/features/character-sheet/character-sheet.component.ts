@@ -130,7 +130,7 @@ export class CharacterSheetPageComponent implements OnInit {
         const parsed = JSON.parse(character.stats);
         if (parsed && typeof parsed === 'object') {
           attributesData = parsed;
-        } else {
+        } else if (parsed !== null) {
           console.error('Character stats is not an object', parsed);
         }
       } catch (e) {

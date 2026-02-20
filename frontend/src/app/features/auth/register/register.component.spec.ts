@@ -228,6 +228,23 @@ describe('RegisterComponent', () => {
     expect(toastServiceSpy.error).toHaveBeenCalledWith('Registration failed. Please try again.');
   }));
 
+  it('should use default error message if err.error.message is empty string', fakeAsync(() => {
+    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: { message: '' } })))));
+
+    component.registerForm.patchValue({
+      username: 'User',
+      email: 'test@example.com',
+      password: 'password123',
+      confirmPassword: 'password123'
+    });
+
+    component.onSubmit();
+    tick(10);
+
+    expect(component.error).toBe('Registration failed. Please try again.');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Registration failed. Please try again.');
+  }));
+
   it('should return early if form is invalid and NOT set isLoading to true', () => {
     const registerSpy = spyOn(authService, 'register');
     component.registerForm.patchValue({

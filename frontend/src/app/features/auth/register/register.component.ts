@@ -60,8 +60,9 @@ export class RegisterComponent {
       error: (err) => {
         this.isLoading = false;
         console.error('Registration error:', err);
-        this.error = err.error?.message || 'Registration failed. Please try again.';
-        this.toastService.error(this.error);
+        const errorMessage = err.error?.message || 'Registration failed. Please try again.';
+        this.error = errorMessage;
+        this.toastService.error(errorMessage);
       }
     });
   }

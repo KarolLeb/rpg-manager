@@ -31,6 +31,25 @@ describe('ToastService', () => {
     expect(service.toasts().length).toBe(0);
   }));
 
+  it('should NOT auto-remove toasts if duration is 0', fakeAsync(() => {
+    service.show('Permanent', 'info', 0);
+    expect(service.toasts().length).toBe(1);
+    
+    tick(10000);
+    expect(service.toasts().length).toBe(1);
+  }));
+
+  it('should use default type and duration when not provided to show', fakeAsync(() => {
+    service.show('Default');
+    expect(service.toasts()[0].type).toBe('info');
+    expect(service.toasts()[0].duration).toBe(3000);
+    
+    tick(2999);
+    expect(service.toasts().length).toBe(1);
+    tick(2);
+    expect(service.toasts().length).toBe(0);
+  }));
+
   it('should support different toast types', () => {
     service.error('Error');
     service.warning('Warning');
