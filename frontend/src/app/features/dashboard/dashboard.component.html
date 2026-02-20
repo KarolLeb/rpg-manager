@@ -41,6 +41,12 @@
     </div>
   }
 
+  @if (userRole === 'ADMIN') {
+    <div class="admin-dashboard">
+      <app-admin-dashboard></app-admin-dashboard>
+    </div>
+  }
+
   @if (!userRole) {
     <div class="error">
       Unauthorized access. Please <a routerLink="/login">login</a>.
