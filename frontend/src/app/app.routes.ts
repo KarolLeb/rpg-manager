@@ -32,18 +32,21 @@ export const routes: Routes = [
   {
     path: 'campaigns',
     canActivate: [authGuard],
+    data: { roles: ['GM', 'ADMIN'] },
     loadComponent: () => import('./features/campaign/campaign-list.component')
       .then(m => m.CampaignListComponent)
   },
   {
     path: 'campaigns/new',
     canActivate: [authGuard],
+    data: { roles: ['GM', 'ADMIN'] },
     loadComponent: () => import('./features/campaign/campaign-form.component')
       .then(m => m.CampaignFormComponent)
   },
   {
     path: 'campaigns/:id/edit',
     canActivate: [authGuard],
+    data: { roles: ['GM', 'ADMIN'] },
     loadComponent: () => import('./features/campaign/campaign-form.component')
       .then(m => m.CampaignFormComponent)
   },

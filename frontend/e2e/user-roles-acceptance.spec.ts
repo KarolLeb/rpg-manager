@@ -43,16 +43,18 @@ test.describe('Akceptacja: Gracz (PLAYER)', () => {
   });
 
   test('Nie powinien mieć dostępu do formularza tworzenia kampanii', async ({ page }) => {
-    // 1. Mockowanie zalogowanego Gracza
-    await page.route('**/api/auth/login', async route => {
-      await route.fulfill({ json: { token: 'jwt', username: 'TestPlayer', role: 'PLAYER' } });
+    // 1. Mockowanie zalogowanego Gracza i USTAWIENIE sesji (localStorage)
+    await page.addInitScript(() => {
+      window.localStorage.setItem('token', 'fake-jwt-token');
+      window.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestPlayer', role: 'PLAYER' }));
     });
     
     // 2. Próba bezpośredniego wejścia na URL dla GM
     await page.goto('/campaigns/new');
     
-    // 3. Powinien zostać przekierowany na stronę logowania (ponieważ nie ma uprawnień do tego zasobu)
-    await expect(page).toHaveURL(/\/login\?returnUrl=.*/);
+    // 3. Powinien zostać przekierowany na dashboard (bo jest zalogowany, ale ma złą rolę)
+    await expect(page).toHaveURL(/\/dashboard/);
+    await expect(page).not.toHaveURL(/\/login/);
   });
 });
 
