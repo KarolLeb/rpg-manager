@@ -54,7 +54,11 @@ test.describe('Akceptacja: Gracz (PLAYER)', () => {
     
     // 3. Powinien zostać przekierowany na dashboard (bo jest zalogowany, ale ma złą rolę)
     await expect(page).toHaveURL(/\/dashboard/);
-    await expect(page).not.toHaveURL(/\/login/);
+    
+    // 4. Powinien zobaczyć Toast z błędem
+    const toast = page.locator('app-toast .toast-item.error');
+    await expect(toast).toBeVisible();
+    await expect(toast).toContainText('Access Denied');
   });
 });
 

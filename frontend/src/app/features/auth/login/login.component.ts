@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
 
   loginForm: FormGroup;
   isLoading = false;
@@ -36,13 +38,15 @@ export class LoginComponent {
     this.error = null;
 
     this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
+      next: (user) => {
         this.isLoading = false;
+        this.toastService.success(`Welcome back, ${user.username}!`);
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading = false;
         this.error = err.error?.message || 'Login failed. Please check your credentials.';
+        this.toastService.error(this.error || 'Login failed');
       }
     });
   }

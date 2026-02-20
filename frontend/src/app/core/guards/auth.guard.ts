@@ -1,10 +1,12 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { ToastService } from '../services/toast.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  const toastService = inject(ToastService);
   const user = authService.currentUserValue;
 
   // 1. Sprawdź czy użytkownik jest zalogowany
@@ -18,6 +20,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   if (requiredRoles && user && !requiredRoles.includes(user.role)) {
     // Użytkownik jest zalogowany, ale nie ma wymaganej roli
     console.warn(`Access denied for role: ${user.role}. Required: ${requiredRoles.join(',')}`);
+    toastService.error(`Access Denied. Required roles: ${requiredRoles.join(', ')}`);
     router.navigate(['/dashboard']);
     return false;
   }
