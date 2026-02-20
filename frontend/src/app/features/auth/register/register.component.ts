@@ -61,7 +61,7 @@ export class RegisterComponent {
         this.isLoading = false;
         console.error('Registration error:', err);
         this.error = err.error?.message || 'Registration failed. Please try again.';
-        this.toastService.error(this.error || 'Registration failed');
+        this.toastService.error(this.error);
       }
     });
   }

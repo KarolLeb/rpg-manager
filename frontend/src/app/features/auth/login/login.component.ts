@@ -46,7 +46,7 @@ export class LoginComponent {
       error: (err) => {
         this.isLoading = false;
         this.error = err.error?.message || 'Login failed. Please check your credentials.';
-        this.toastService.error(this.error || 'Login failed');
+        this.toastService.error(this.error);
       }
     });
   }

@@ -48,6 +48,7 @@ describe('authGuard', () => {
     expect(result).toBeFalse();
     expect(toastServiceSpy.error).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/dashboard']);
+    expect((routerSpy.navigate as jasmine.Spy).calls.argsFor(0)[0]).toEqual(['/dashboard']);
   });
 
   it('should navigate to login if user is not logged in', () => {
@@ -56,5 +57,10 @@ describe('authGuard', () => {
     const result = TestBed.runInInjectionContext(() => authGuard(mockRoute, { url: '/test' } as RouterStateSnapshot));
     expect(result).toBeFalse();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { returnUrl: '/test' } });
+    
+    const args = (routerSpy.navigate as jasmine.Spy).calls.argsFor(0);
+    expect(args[0]).toEqual(['/login']);
+    expect(args[1].queryParams).toEqual({ returnUrl: '/test' });
+    expect(args[1].queryParams.returnUrl).toBe('/test');
   });
 });

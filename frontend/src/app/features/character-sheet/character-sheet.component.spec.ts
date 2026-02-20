@@ -127,6 +127,39 @@ describe('CharacterSheetPageComponent', () => {
       const skills = group.get('skills') as any;
       expected.skills.forEach((skillName, i) => {
         expect(skills.at(i).get('name')?.value).toBe(skillName);
+        expect(skills.at(i).get('level')?.value).toBe(5);
+        expect(skills.at(i).get('total')?.value).toBe(15);
+      });
+    });
+  });
+
+  it('should verify all dummy data values to kill survivors in loadDummyData', () => {
+    routeId = null;
+    fixture.detectChanges();
+
+    const expectedAttributes = [
+      { key: 'strength', val: 12, skills: [['Broń biała', 5, 15], ['Bijatyka', 5, 15], ['Zastraszanie', 5, 15]] },
+      { key: 'constitution', val: 12, skills: [['Atletyka', 5, 15], ['Mocna Głowa', 5, 15], ['Odporność', 5, 15]] },
+      { key: 'dexterity', val: 12, skills: [['Parowanie', 5, 15], ['Pilotowanie', 5, 15], ['Sztuka', 5, 15]] },
+      { key: 'agility', val: 12, skills: [['Akrobatyka', 5, 15], ['Rzucanie', 5, 15], ['Skradanie', 5, 15]] },
+      { key: 'perception', val: 12, skills: [['Broń Długa', 5, 15], ['Nawigacja', 5, 15], ['Spostrzegawczość', 5, 15]] },
+      { key: 'empathy', val: 12, skills: [['Blef', 5, 15], ['Gadanina', 5, 15], ['Oswajanie', 5, 15]] },
+      { key: 'charisma', val: 12, skills: [['Aktorstwo', 5, 15], ['Handel', 5, 15], ['Przekonywanie', 5, 15]] },
+      { key: 'intelligence', val: 12, skills: [['Analiza', 5, 15], ['Komputery', 5, 15], ['Taktyka', 5, 15]] },
+      { key: 'knowledge', val: 12, skills: [['Kosmos', 5, 15], ['Kultura', 5, 15], ['Medycyna', 5, 15]] },
+      { key: 'willpower', val: 12, skills: [['Intuicja', 5, 15], ['Koncentracja', 5, 15], ['Siła Woli', 5, 15]] }
+    ];
+
+    expectedAttributes.forEach(attr => {
+      const group = component.getAttributeGroup(attr.key);
+      expect(group).toBeTruthy();
+      expect(group.get('value')?.value).toBe(attr.val);
+      const skills = group.get('skills') as any;
+      expect(skills.length).toBe(3);
+      attr.skills.forEach((s, i) => {
+        expect(skills.at(i).get('name').value).toBe(s[0]);
+        expect(skills.at(i).get('level').value).toBe(s[1]);
+        expect(skills.at(i).get('total').value).toBe(s[2]);
       });
     });
   });
@@ -172,10 +205,23 @@ describe('CharacterSheetPageComponent', () => {
     // Check if stats are correctly serialized back
     const savedStats = JSON.parse(args[1].stats);
     expect(savedStats.strength.val).toBe(10);
+    expect(savedStats.strength.skills.length).toBe(1);
     expect(savedStats.strength.skills[0]).toEqual(['Melee', 2, 12]);
+    // Extra checks to kill mutations in mapping
+    expect(savedStats.strength.skills[0][0]).toBe('Melee');
+    expect(savedStats.strength.skills[0][1]).toBe(2);
+    expect(savedStats.strength.skills[0][2]).toBe(12);
 
     expect(console.log).toHaveBeenCalledWith('Character saved!', jasmine.any(Object));
     expect(mockToastService.success).toHaveBeenCalledWith('Character saved successfully!');
+  });
+
+  it('should NOT call updateCharacter on save if characterId is missing and show warning', () => {
+    fixture.detectChanges();
+    component.currentCharacterId = undefined;
+    component.onSave();
+    expect(mockCharacterService.updateCharacter).not.toHaveBeenCalled();
+    expect(mockToastService.warning).toHaveBeenCalledWith('Cannot save character: No character ID found.');
   });
 
   it('should load dummy data when getCharacter fails and stop loading and show toast error', () => {
@@ -189,7 +235,17 @@ describe('CharacterSheetPageComponent', () => {
     // Check specific dummy values to kill StringLiteral mutations
     expect(component.characterForm.get('info.name')?.value).toBe('Tonny Ballony');
     expect(component.characterForm.get('info.profession')?.value).toBe('Kanciarz');
+    expect(component.characterForm.get('info.ambition')?.value).toBe('To dobry interes');
+    expect(component.characterForm.get('info.nemesis')?.value).toBe('Interes ponad wszystko');
+    
     expect(component.characterForm.get('attributes.strength')?.get('value')?.value).toBe(12);
+    
+    const strengthSkills = component.characterForm.get('attributes.strength.skills') as any;
+    expect(strengthSkills.length).toBe(3);
+    expect(strengthSkills.at(0).get('name').value).toBe('Broń biała');
+    expect(strengthSkills.at(1).get('name').value).toBe('Bijatyka');
+    expect(strengthSkills.at(2).get('name').value).toBe('Zastraszanie');
+
     expect(component.isLoading).toBeFalse();
   });
 
@@ -203,6 +259,9 @@ describe('CharacterSheetPageComponent', () => {
     expect(console.error).not.toHaveBeenCalled();
     expect(component.isLoading).toBeFalse();
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
+    expect(component.characterForm.get('info.ambition')?.value).toBe('Z bazy danych');
+    expect(component.characterForm.get('info.nemesis')?.value).toBe('Brak danych');
+    
     // attributes group should be empty
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBe(0);
@@ -259,6 +318,12 @@ describe('CharacterSheetPageComponent', () => {
     expect(Object.keys(attrsGroup.controls).length).toBe(1);
     expect(attrsGroup.get('testAttr')).toBeTruthy();
     expect(attrsGroup.get('testAttr')?.get('value')?.value).toBe(15);
+    
+    const skills = attrsGroup.get('testAttr')?.get('skills') as any;
+    expect(skills.length).toBe(1);
+    expect(skills.at(0).get('name').value).toBe('Skill 1');
+    expect(skills.at(0).get('level').value).toBe(5);
+    expect(skills.at(0).get('total').value).toBe(20);
   }));
 
   it('should skip attribute if it is not an object or lacks skills (kills mutations at line 145)', () => {

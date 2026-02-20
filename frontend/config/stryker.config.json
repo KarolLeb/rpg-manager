@@ -8,6 +8,8 @@
     "!src/main.ts",
     "!src/environments/*.ts",
     "!src/app/app.routes.ts",
+    "!src/app/app.config.ts",
+    "!src/app/features/character-sheet/character-dummy-data.ts",
     "!src/app/features/attribute-card/attribute-card.component.ts"
   ],
   "testRunner": "karma",

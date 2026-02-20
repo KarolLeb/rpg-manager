@@ -13,7 +13,7 @@ export interface Toast {
   providedIn: 'root'
 })
 export class ToastService {
-  private toastsSignal = signal<Toast[]>([]);
+  private readonly toastsSignal = signal<Toast[]>([]);
   toasts = this.toastsSignal.asReadonly();
   private nextId = 0;
 

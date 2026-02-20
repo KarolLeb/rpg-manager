@@ -42,30 +42,33 @@ describe('DashboardComponent', () => {
   });
 
   it('should create', () => {
+    // Before first detectChanges, isLoading should be true
+    expect(component.isLoading).toBeTrue();
+    
     userSubject.next(null);
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(component.isLoading).toBeFalse(); // BehaviorSubject emits immediately
+    expect(component.isLoading).toBeFalse(); // BehaviorSubject emits immediately, not GM -> false
     expect(component.error).toBeNull();
   });
 
   it('should show GM dashboard when user role is GM and manage isLoading correctly', fakeAsync(() => {
+    // Setup delayed response to catch isLoading = true
     mockCampaignService.getCampaigns.and.returnValue(of([]).pipe(delay(10)));
 
     userSubject.next({ id: 1, username: 'gm', role: 'GM' });
-    fixture.detectChanges();
+    fixture.detectChanges(); // calls ngOnInit -> subscribe -> loadCampaigns -> sets isLoading = true
 
-    // Should be loading now because of delay
     expect(component.isLoading).toBeTrue();
     expect(component.userRole).toBe('GM');
+    expect(mockCampaignService.getCampaigns).toHaveBeenCalled();
 
-    tick(10); // Finish loading
+    tick(10); // Finish loading -> sets isLoading = false
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.gm-dashboard')).toBeTruthy();
     expect(component.isLoading).toBeFalse();
-    expect(mockCampaignService.getCampaigns).toHaveBeenCalled();
   }));
 
   it('should show Player dashboard when user role is PLAYER and stop loading', () => {
@@ -79,6 +82,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should handle error when loading campaigns and stop loading', fakeAsync(() => {
+    // Setup error response with delay
     mockCampaignService.getCampaigns.and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => new Error('Error')))));
 
     userSubject.next({ id: 1, username: 'gm', role: 'GM' });
@@ -86,7 +90,7 @@ describe('DashboardComponent', () => {
 
     expect(component.isLoading).toBeTrue();
 
-    tick(10);
+    tick(10); // Process error
 
     expect(component.error).toBe('Failed to load campaigns.');
     expect(component.isLoading).toBeFalse();
@@ -106,5 +110,6 @@ describe('DashboardComponent', () => {
     
     expect(component.userRole).toBeNull();
     expect(component.isLoading).toBeFalse();
+    expect(mockCampaignService.getCampaigns).not.toHaveBeenCalled();
   });
 });

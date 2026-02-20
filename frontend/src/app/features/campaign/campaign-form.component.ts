@@ -103,7 +103,7 @@ export class CampaignFormComponent implements OnInit {
         error: (err: any) => {
           this.isLoading = false;
           this.error = 'Wystąpił błąd podczas aktualizacji kampanii.';
-          this.toastService.error(this.error || 'Update failed');
+          this.toastService.error(this.error);
           console.error('Error updating campaign', err);
         }
       });
@@ -117,7 +117,7 @@ export class CampaignFormComponent implements OnInit {
         error: (err: any) => {
           this.isLoading = false;
           this.error = 'Wystąpił błąd podczas tworzenia kampanii.';
-          this.toastService.error(this.error || 'Creation failed');
+          this.toastService.error(this.error);
           console.error('Error creating campaign', err);
         }
       });
