@@ -66,9 +66,9 @@ PROMPTING: Reference, don't duplicate. Keep actions concrete for frontend.
 	- **Targets**: >= 80% (Global/UI), >= 90% (Domain/Utils), 100% (Security/Critical).
 	- Run limited mutation tests on changed files using: `npx stryker run --mutate src/path/to/file.ts`.
 
-5. **Coverage Policy**
-	- Follow central Quality & Coverage Policy in `.github/copilot-instructions.md#quality-policy`.
-	- Ensure hot paths and error paths are fully covered (100%).
+6. **Efficiency**
+	- When fixing or updating tests, only rerun relevant test classes or modules (e.g., `npx jest src/path/to/test.spec.ts`) to ensure fast feedback cycles.
+	- Run the full test suite only after local changes are verified.
 
 <!--
 SECTION PURPOSE: Keep apps fast and responsive.

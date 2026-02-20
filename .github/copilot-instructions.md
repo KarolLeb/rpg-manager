@@ -380,6 +380,7 @@ Principles:
 - Tiered Targets: Apply realistic thresholds by test type and importance.
 - Quality > Percentage: Prefer meaningful assertions and coverage of error/security paths over chasing a numeric score.
 - Transparency: Exceptions must be explicit and justified in the PR.
+- Efficient Testing: When fixing or updating tests, only rerun relevant test classes or modules to ensure fast feedback cycles. Run the full test suite only after local changes are verified.
 
 Tiered Targets:
 - All application code: target ≥ 95% line/branch coverage

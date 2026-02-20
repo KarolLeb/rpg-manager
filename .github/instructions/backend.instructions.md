@@ -15,6 +15,7 @@ Follow idiomatic practices for the chosen programming language and framework. Pr
 - **Configuration Management**: Externalize configuration from code. Use environment variables or configuration files. Do not commit secrets to version control.
 - **Testing**: Write unit tests for business logic and integration tests for critical paths. Aim for high test coverage, especially on new code.
   - **Mutation Testing**: Use PITest (`mvn pitest:mutationCoverage`) to verify assertion quality. Mutation testing ensures your assertions actually verify business logic, not just execute lines.
+  - **Efficiency**: When fixing or updating tests, only rerun relevant test classes or modules to ensure fast feedback cycles. Run the full test suite only after local changes are verified.
 
 ## Language-Specific Guidelines
 

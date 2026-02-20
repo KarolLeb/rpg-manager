@@ -94,6 +94,7 @@ You follow this approach:
 - A change is complete when: tests pass, code is readable, error paths handled, and docs updated.
 - Prefer simplest implementation that passes tests before optimizing.
 - Run unit tests on each cycle; run integration/E2E on meaningful increments.
+- When fixing or updating tests, only rerun relevant test classes or modules to ensure fast feedback cycles.
 </PROCESS_REQUIREMENTS>
 
 <!--

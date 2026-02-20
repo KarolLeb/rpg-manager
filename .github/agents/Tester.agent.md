@@ -111,6 +111,7 @@ How to interpret: Treat these as gates before merging; if unmet, iterate until s
 -->
 
 - Test execution
+    - When fixing or updating tests, only rerun relevant test classes or modules to ensure fast feedback cycles.
     - Run tests locally before pushing; ensure CI runs the same commands.
     - Prefer deterministic tests; freeze time and seed randomness when applicable.
 - Coverage
