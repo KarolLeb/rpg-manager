@@ -1,6 +1,6 @@
 package com.rpgmanager.auth.config;
 
-import com.rpgmanager.auth.security.JwtFilter;
+import com.rpgmanager.common.security.JwtFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
   private final JwtFilter jwtFilter;
-  private final com.rpgmanager.auth.security.BrowserNavigationFilter browserNavigationFilter;
+  private final com.rpgmanager.common.security.BrowserNavigationFilter browserNavigationFilter;
 
   /**
    * Configures the security filter chain.

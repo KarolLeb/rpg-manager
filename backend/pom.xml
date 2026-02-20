@@ -16,6 +16,7 @@
     <description>Parent POM for RPG Manager Microservices</description>
 
     <modules>
+        <module>backend-common</module>
         <module>backend-core</module>
         <module>backend-auth</module>
         <module>backend-admin</module>

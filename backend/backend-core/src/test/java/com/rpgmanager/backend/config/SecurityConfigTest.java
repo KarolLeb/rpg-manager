@@ -3,8 +3,8 @@ package com.rpgmanager.backend.config;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import com.rpgmanager.backend.security.BrowserNavigationFilter;
-import com.rpgmanager.backend.security.JwtFilter;
+import com.rpgmanager.common.security.BrowserNavigationFilter;
+import com.rpgmanager.common.security.JwtFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.password.PasswordEncoder;

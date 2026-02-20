@@ -1,9 +1,10 @@
-package com.rpgmanager.backend.security;
+package com.rpgmanager.common.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.function.Function;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,13 +25,22 @@ public class JwtUtil {
   }
 
   /**
-   * Extracts the username from a JWT token.
+   * Generates a JWT token for a given user.
    *
-   * @param token the JWT token
-   * @return the username
+   * @param username the username
+   * @param userId the user ID
+   * @param role the user role
+   * @return the generated token
    */
-  public String extractUsername(String token) {
-    return extractClaim(token, Claims::getSubject);
+  public String generateToken(String username, Long userId, String role) {
+    return Jwts.builder()
+        .subject(username)
+        .claim("userId", userId)
+        .claim("role", role)
+        .issuedAt(new Date(System.currentTimeMillis()))
+        .expiration(new Date(System.currentTimeMillis() + expiration))
+        .signWith(getSigningKey())
+        .compact();
   }
 
   /**
@@ -51,6 +61,16 @@ public class JwtUtil {
    */
   public String extractRole(String token) {
     return extractClaim(token, claims -> claims.get("role", String.class));
+  }
+
+  /**
+   * Extracts the username from a JWT token.
+   *
+   * @param token the JWT token
+   * @return the username
+   */
+  public String extractUsername(String token) {
+    return extractClaim(token, Claims::getSubject);
   }
 
   /**

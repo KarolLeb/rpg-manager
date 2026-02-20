@@ -1,7 +1,7 @@
 package com.rpgmanager.admin.config;
 
-import com.rpgmanager.admin.security.BrowserNavigationFilter;
-import com.rpgmanager.admin.security.JwtFilter;
+import com.rpgmanager.common.security.BrowserNavigationFilter;
+import com.rpgmanager.common.security.JwtFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

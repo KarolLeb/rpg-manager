@@ -12,9 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rpgmanager.backend.config.SecurityConfig;
 import com.rpgmanager.backend.config.SecurityProperties;
-import com.rpgmanager.backend.security.BrowserNavigationFilter;
-import com.rpgmanager.backend.security.JwtFilter;
-import com.rpgmanager.backend.security.JwtUtil;
+import com.rpgmanager.common.security.BrowserNavigationFilter;
+import com.rpgmanager.common.security.JwtFilter;
+import com.rpgmanager.common.security.JwtUtil;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.instancio.Instancio;

@@ -1,4 +1,4 @@
-package com.rpgmanager.backend.security;
+package com.rpgmanager.common.security;
 
 import static org.mockito.Mockito.*;
 

@@ -1,6 +1,6 @@
 package com.rpgmanager.auth.auth;
 
-import com.rpgmanager.auth.security.JwtUtil;
+import com.rpgmanager.common.security.JwtUtil;
 import com.rpgmanager.auth.user.domain.model.UserDomain;
 import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;

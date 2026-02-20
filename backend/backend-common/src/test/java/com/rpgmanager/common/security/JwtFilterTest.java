@@ -1,4 +1,4 @@
-package com.rpgmanager.backend.security;
+package com.rpgmanager.common.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;

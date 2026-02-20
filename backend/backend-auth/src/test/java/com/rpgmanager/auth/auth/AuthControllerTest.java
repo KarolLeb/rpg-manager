@@ -10,9 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rpgmanager.auth.config.SecurityConfig;
 import com.rpgmanager.auth.config.SecurityProperties;
-import com.rpgmanager.auth.security.BrowserNavigationFilter;
-import com.rpgmanager.auth.security.JwtFilter;
-import com.rpgmanager.auth.security.JwtUtil;
+import com.rpgmanager.common.security.BrowserNavigationFilter;
+import com.rpgmanager.common.security.JwtFilter;
+import com.rpgmanager.common.security.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

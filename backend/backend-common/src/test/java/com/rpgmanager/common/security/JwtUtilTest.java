@@ -1,4 +1,4 @@
-package com.rpgmanager.backend.security;
+package com.rpgmanager.common.security;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -88,5 +88,14 @@ class JwtUtilTest {
     assertFalse(jwtUtil.validateToken("", username));
     assertFalse(jwtUtil.validateToken("  ", username));
     assertFalse(jwtUtil.validateToken("invalid.token.here", username));
+  }
+
+  @Test
+  void shouldGenerateToken() {
+    String token = jwtUtil.generateToken(username, userId, role);
+    assertNotNull(token);
+    assertEquals(username, jwtUtil.extractUsername(token));
+    assertEquals(userId, jwtUtil.extractUserId(token));
+    assertEquals(role, jwtUtil.extractRole(token));
   }
 }

@@ -6,7 +6,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /** Main entry point for the RPG Manager Backend application. */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.rpgmanager")
 @EnableCaching
 @EnableFeignClients
 public class RpgManagerBackendApplication {

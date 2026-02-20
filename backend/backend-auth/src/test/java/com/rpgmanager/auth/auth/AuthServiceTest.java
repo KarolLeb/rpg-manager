@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import com.rpgmanager.auth.security.JwtUtil;
+import com.rpgmanager.common.security.JwtUtil;
 import com.rpgmanager.auth.user.domain.model.UserDomain;
 import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
 import java.util.Optional;
