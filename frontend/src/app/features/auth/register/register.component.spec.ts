@@ -5,22 +5,27 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { of, throwError, delay, switchMap } from 'rxjs';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let authService: AuthService;
+  let toastServiceSpy: jasmine.SpyObj<ToastService>;
   let router: Router;
 
   beforeEach(async () => {
+    toastServiceSpy = jasmine.createSpyObj('ToastService', ['success', 'error']);
+
     await TestBed.configureTestingModule({
       imports: [RegisterComponent, ReactiveFormsModule],
       providers: [
         provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),
-        AuthService
+        AuthService,
+        { provide: ToastService, useValue: toastServiceSpy }
       ]
     })
     .compileComponents();
@@ -140,6 +145,7 @@ describe('RegisterComponent', () => {
       password: 'password123'
     });
 
+    expect(toastServiceSpy.success).toHaveBeenCalledWith('Registration successful! Please login.');
     expect(navigateSpy).toHaveBeenCalledWith(['/login'], { queryParams: { registered: true } });
     const navigateArgs = navigateSpy.calls.mostRecent().args;
     expect(navigateArgs[0]).toEqual(['/login']);
@@ -166,6 +172,7 @@ describe('RegisterComponent', () => {
     tick(10);
 
     expect(component.error).toBe('Registration failed');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Registration failed');
     expect(component.isLoading).toBe(false);
   }));
 
@@ -183,6 +190,7 @@ describe('RegisterComponent', () => {
     tick(10);
 
     expect(component.error).toBe('Registration failed. Please try again.');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Registration failed. Please try again.');
     expect(component.isLoading).toBe(false);
   }));
 
@@ -200,6 +208,7 @@ describe('RegisterComponent', () => {
     tick(10);
 
     expect(component.error).toBe('Registration failed. Please try again.');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Registration failed. Please try again.');
   }));
 
   it('should use default error message on registration failure if message is missing in error object', fakeAsync(() => {
@@ -216,6 +225,7 @@ describe('RegisterComponent', () => {
     tick(10);
 
     expect(component.error).toBe('Registration failed. Please try again.');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Registration failed. Please try again.');
   }));
 
   it('should return early if form is invalid and NOT set isLoading to true', () => {

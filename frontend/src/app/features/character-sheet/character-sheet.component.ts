@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AttributeCardComponent } from '../attribute-card/attribute-card.component';
 import { AttributeConfig } from './models/character-data.model';
 import { CharacterService } from '../../core/services/character.service';
+import { ToastService } from '../../core/services/toast.service';
 import { Character } from '../../core/models/character.model';
 import { ActivatedRoute } from '@angular/router';
 
@@ -17,6 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 export class CharacterSheetPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly characterService = inject(CharacterService);
+  private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
 
   characterForm: FormGroup;
@@ -63,6 +65,7 @@ export class CharacterSheetPageComponent implements OnInit {
         },
         error: (err: any) => {
           console.error('Failed to load character', err);
+          this.toastService.error('Failed to load character from server. Loading dummy data.');
           this.loadDummyData();
           this.isLoading = false;
         }
@@ -74,7 +77,10 @@ export class CharacterSheetPageComponent implements OnInit {
   }
 
   onSave() {
-    if (!this.currentCharacterId) return;
+    if (!this.currentCharacterId) {
+      this.toastService.warning('Cannot save character: No character ID found.');
+      return;
+    }
 
     const formVal = this.characterForm.value;
     const attributesRaw = formVal.attributes;
@@ -100,11 +106,11 @@ export class CharacterSheetPageComponent implements OnInit {
     this.characterService.updateCharacter(this.currentCharacterId, characterToSave).subscribe({
       next: (res) => {
         console.log('Character saved!', res);
-        alert('Postać została zapisana pomyślnie!');
+        this.toastService.success('Character saved successfully!');
       },
       error: (err) => {
         console.error('Save failed', err);
-        alert('Błąd podczas zapisywania postaci.');
+        this.toastService.error('Error saving character. Please try again.');
       }
     });
   }

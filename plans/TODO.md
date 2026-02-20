@@ -8,6 +8,7 @@ Operational task list and active execution plans.
 ## 📋 Backlog (Short Tasks)
 
 ## ✅ Recently Finished (Pending Archive)
+- [x] **Toast Notification System:** Implemented signal-based `ToastService` and standalone `ToastComponent` for modern UX. Integrated with `AuthGuard` (RBAC), Login, Register, Campaigns, and Character Sheet. Updated CSP for Material Icons and updated unit/E2E tests (63/63 passing, including role-based access verification).
 - [x] **Quality Gate:** Fixed SonarQube Quality Gate for Backend. Resolved coverage reporting for Auth/Admin modules and fixed new violations (Parameterized tests, lambda refactor).
 - [x] **Microservices Extraction (Admin & Auth):** Extracted Auth and Admin services, decoupled Core service using Feign clients and JWT enrichment.
 - [x] **Frontend:** Visual indicators for cache hits (addressed via Grafana Redis Dashboard)

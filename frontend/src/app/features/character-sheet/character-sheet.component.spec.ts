@@ -6,11 +6,13 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { Character } from '../../core/models/character.model';
 import { provideRouter } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { ToastService } from '../../core/services/toast.service';
 
 describe('CharacterSheetPageComponent', () => {
   let component: CharacterSheetPageComponent;
   let fixture: ComponentFixture<CharacterSheetPageComponent>;
   let mockCharacterService: jasmine.SpyObj<CharacterService>;
+  let mockToastService: jasmine.SpyObj<ToastService>;
   let routeId: string | null = '1';
 
   const dummyCharacter: Character = {
@@ -30,11 +32,13 @@ describe('CharacterSheetPageComponent', () => {
     mockCharacterService.getCharacter.and.returnValue(of(dummyCharacter));
     mockCharacterService.getCharacters.and.returnValue(of([dummyCharacter]));
     mockCharacterService.updateCharacter.and.returnValue(of(dummyCharacter));
+    mockToastService = jasmine.createSpyObj('ToastService', ['success', 'error', 'warning']);
 
     await TestBed.configureTestingModule({
       imports: [CharacterSheetPageComponent, ReactiveFormsModule],
       providers: [
         { provide: CharacterService, useValue: mockCharacterService },
+        { provide: ToastService, useValue: mockToastService },
         provideRouter([]),
         {
           provide: ActivatedRoute,
@@ -156,7 +160,6 @@ describe('CharacterSheetPageComponent', () => {
     // Modify value
     component.characterForm.get('info.name')?.setValue('Updated Char');
 
-    spyOn(window, 'alert');
     spyOn(console, 'log');
     component.onSave();
 
@@ -172,17 +175,17 @@ describe('CharacterSheetPageComponent', () => {
     expect(savedStats.strength.skills[0]).toEqual(['Melee', 2, 12]);
 
     expect(console.log).toHaveBeenCalledWith('Character saved!', jasmine.any(Object));
-    expect(window.alert).toHaveBeenCalledWith('Postać została zapisana pomyślnie!');
-    expect(window.alert).not.toHaveBeenCalledWith('');
+    expect(mockToastService.success).toHaveBeenCalledWith('Character saved successfully!');
   });
 
-  it('should load dummy data when getCharacter fails and stop loading', () => {
+  it('should load dummy data when getCharacter fails and stop loading and show toast error', () => {
     mockCharacterService.getCharacter.and.returnValue(throwError(() => new Error('Not found')));
     spyOn(console, 'error');
 
     fixture.detectChanges();
 
     expect(console.error).toHaveBeenCalledWith('Failed to load character', jasmine.any(Error));
+    expect(mockToastService.error).toHaveBeenCalledWith('Failed to load character from server. Loading dummy data.');
     // Check specific dummy values to kill StringLiteral mutations
     expect(component.characterForm.get('info.name')?.value).toBe('Tonny Ballony');
     expect(component.characterForm.get('info.profession')?.value).toBe('Kanciarz');
@@ -278,17 +281,15 @@ describe('CharacterSheetPageComponent', () => {
     expect(attrsGroup.get('invalid3')).toBeFalsy();
   });
 
-  it('should handle save error and show alert', () => {
+  it('should handle save error and show toast error', () => {
     fixture.detectChanges();
     mockCharacterService.updateCharacter.and.returnValue(throwError(() => new Error('Save failed')));
     spyOn(console, 'error');
-    spyOn(window, 'alert');
 
     component.onSave();
 
     expect(console.error).toHaveBeenCalledWith('Save failed', jasmine.any(Error));
-    expect(window.alert).toHaveBeenCalledWith('Błąd podczas zapisywania postaci.');
-    expect(window.alert).not.toHaveBeenCalledWith('');
+    expect(mockToastService.error).toHaveBeenCalledWith('Error saving character. Please try again.');
   });
 
   it('should handle invalid stats JSON', () => {

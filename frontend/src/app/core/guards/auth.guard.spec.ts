@@ -2,42 +2,59 @@ import { TestBed } from '@angular/core/testing';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { authGuard } from './auth.guard';
 import { AuthService } from '../services/auth.service';
+import { ToastService } from '../services/toast.service';
 
 describe('authGuard', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let routerSpy: jasmine.SpyObj<Router>;
+  let toastServiceSpy: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['isLoggedIn']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['isLoggedIn'], { currentUserValue: null });
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    toastServiceSpy = jasmine.createSpyObj('ToastService', ['error']);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
-        { provide: Router, useValue: routerSpy }
+        { provide: Router, useValue: routerSpy },
+        { provide: ToastService, useValue: toastServiceSpy }
       ]
     });
   });
 
-  it('should return true if user is logged in', () => {
+  it('should return true if user is logged in and no roles required', () => {
     authServiceSpy.isLoggedIn.and.returnValue(true);
-    const result = TestBed.runInInjectionContext(() => authGuard({} as ActivatedRouteSnapshot, { url: '/test' } as RouterStateSnapshot));
+    const mockRoute = { data: {} } as ActivatedRouteSnapshot;
+    const result = TestBed.runInInjectionContext(() => authGuard(mockRoute, { url: '/test' } as RouterStateSnapshot));
     expect(result).toBeTrue();
-    expect(result).not.toBeFalse();
     expect(routerSpy.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should return true if user is logged in and has required role', () => {
+    authServiceSpy.isLoggedIn.and.returnValue(true);
+    Object.defineProperty(authServiceSpy, 'currentUserValue', { get: () => ({ role: 'ADMIN' }) });
+    const mockRoute = { data: { roles: ['ADMIN'] } } as unknown as ActivatedRouteSnapshot;
+    const result = TestBed.runInInjectionContext(() => authGuard(mockRoute, { url: '/test' } as RouterStateSnapshot));
+    expect(result).toBeTrue();
+    expect(routerSpy.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should return false and navigate to dashboard if user has wrong role', () => {
+    authServiceSpy.isLoggedIn.and.returnValue(true);
+    Object.defineProperty(authServiceSpy, 'currentUserValue', { get: () => ({ role: 'PLAYER' }) });
+    const mockRoute = { data: { roles: ['ADMIN'] } } as unknown as ActivatedRouteSnapshot;
+    const result = TestBed.runInInjectionContext(() => authGuard(mockRoute, { url: '/test' } as RouterStateSnapshot));
+    expect(result).toBeFalse();
+    expect(toastServiceSpy.error).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should navigate to login if user is not logged in', () => {
     authServiceSpy.isLoggedIn.and.returnValue(false);
-    const result = TestBed.runInInjectionContext(() => authGuard({} as ActivatedRouteSnapshot, { url: '/test' } as RouterStateSnapshot));
+    const mockRoute = { data: {} } as ActivatedRouteSnapshot;
+    const result = TestBed.runInInjectionContext(() => authGuard(mockRoute, { url: '/test' } as RouterStateSnapshot));
     expect(result).toBeFalse();
-    expect(result).not.toBeTrue();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { returnUrl: '/test' } });
-    const navigateArgs = routerSpy.navigate.calls.mostRecent().args;
-    expect(navigateArgs[0]).toEqual(['/login']);
-    expect(navigateArgs[0]).not.toEqual([]);
-    expect(navigateArgs[1]?.queryParams?.['returnUrl']).toBe('/test');
-    expect(navigateArgs[1]?.queryParams).toEqual({ returnUrl: '/test' });
-    expect(navigateArgs[1]?.queryParams).not.toEqual({});
   });
 });

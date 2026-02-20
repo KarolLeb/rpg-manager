@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CampaignService } from '../../core/services/campaign.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 import { CreateCampaignRequest, Campaign } from '../../core/models/campaign.model';
 
 @Component({
@@ -26,6 +27,7 @@ export class CampaignFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly campaignService = inject(CampaignService);
   private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -67,6 +69,7 @@ export class CampaignFormComponent implements OnInit {
       error: (err: any) => {
         this.isLoading = false;
         console.error('Error loading campaign', err);
+        this.toastService.error('Error loading campaign details');
       }
     });
   }
@@ -79,7 +82,7 @@ export class CampaignFormComponent implements OnInit {
     this.error = null;
     const user = this.authService.currentUserValue;
     if (!user) {
-      this.error = 'Musisz być zalogowany, aby stworzyć kampanię.';
+      this.toastService.error('You must be logged in to create a campaign.');
       return;
     }
 
@@ -94,11 +97,13 @@ export class CampaignFormComponent implements OnInit {
       this.campaignService.updateCampaign(this.campaignId, request).subscribe({
         next: () => {
           this.isLoading = false;
+          this.toastService.success('Campaign updated successfully!');
           this.router.navigate(['/campaigns']);
         },
         error: (err: any) => {
           this.isLoading = false;
           this.error = 'Wystąpił błąd podczas aktualizacji kampanii.';
+          this.toastService.error(this.error || 'Update failed');
           console.error('Error updating campaign', err);
         }
       });
@@ -106,11 +111,13 @@ export class CampaignFormComponent implements OnInit {
       this.campaignService.createCampaign(request).subscribe({
         next: () => {
           this.isLoading = false;
+          this.toastService.success('Campaign created successfully!');
           this.router.navigate(['/campaigns']);
         },
         error: (err: any) => {
           this.isLoading = false;
           this.error = 'Wystąpił błąd podczas tworzenia kampanii.';
+          this.toastService.error(this.error || 'Creation failed');
           console.error('Error creating campaign', err);
         }
       });

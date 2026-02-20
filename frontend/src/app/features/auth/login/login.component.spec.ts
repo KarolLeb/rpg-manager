@@ -5,22 +5,27 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { of, throwError, delay, switchMap } from 'rxjs';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authService: AuthService;
+  let toastServiceSpy: jasmine.SpyObj<ToastService>;
   let router: Router;
 
   beforeEach(async () => {
+    toastServiceSpy = jasmine.createSpyObj('ToastService', ['success', 'error']);
+
     await TestBed.configureTestingModule({
       imports: [LoginComponent, ReactiveFormsModule],
       providers: [
         provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),
-        AuthService
+        AuthService,
+        { provide: ToastService, useValue: toastServiceSpy }
       ]
     })
     .compileComponents();
@@ -76,6 +81,7 @@ describe('LoginComponent', () => {
     tick(10);
 
     expect(loginSpy).toHaveBeenCalled();
+    expect(toastServiceSpy.success).toHaveBeenCalledWith('Welcome back, u!');
     expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
     expect(component.isLoading).toBeFalse();
   }));
@@ -93,6 +99,7 @@ describe('LoginComponent', () => {
     tick(10);
 
     expect(component.error).toBe('Custom error');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Custom error');
     expect(component.isLoading).toBeFalse();
   }));
 
@@ -106,6 +113,7 @@ describe('LoginComponent', () => {
     tick(10);
 
     expect(component.error).toBe('Login failed. Please check your credentials.');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Login failed. Please check your credentials.');
     expect(component.isLoading).toBeFalse();
   }));
 
@@ -119,6 +127,7 @@ describe('LoginComponent', () => {
     tick(10);
 
     expect(component.error).toBe('Login failed. Please check your credentials.');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Login failed. Please check your credentials.');
   }));
 
   it('should not submit if form is invalid and should NOT set isLoading to true', () => {

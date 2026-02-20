@@ -70,28 +70,27 @@ test.describe('Character Sheet Feature', () => {
     const nameInput = page.locator('input[formControlName="name"]');
     await nameInput.fill('Updated Name');
 
-    // Click Save
-    const saveButton = page.locator('.save-btn', { hasText: 'ZAPISZ' });
-    await expect(saveButton).toBeVisible();
-
-    // Set up promises before the action that triggers them
-    const responsePromise = page.waitForResponse(response => 
-        response.url().includes('/api/characters/1') && response.request().method() === 'PUT',
-        { timeout: 10000 }
-    );
-    const dialogPromise = page.waitForEvent('dialog', { timeout: 10000 });
-
-    await saveButton.click();
-
-    // Wait for both to happen
-    const [response, dialog] = await Promise.all([
-        responsePromise,
-        dialogPromise
-    ]);
-
-    expect(dialog.message()).toContain('Postać została zapisana pomyślnie');
-    await dialog.accept();
-
-    expect(savedData.name).toBe('Updated Name');
-  });
-});
+        // Click Save
+        const saveButton = page.locator('.save-btn', { hasText: 'ZAPISZ' });
+        await expect(saveButton).toBeVisible();
+    
+        // Set up promises before the action that triggers them
+        const responsePromise = page.waitForResponse(response => 
+            response.url().includes('/api/characters/1') && response.request().method() === 'PUT',
+            { timeout: 10000 }
+        );
+    
+        await saveButton.click();
+    
+        // Wait for response
+        await responsePromise;
+    
+        // Wait for Toast success message
+        const toast = page.locator('app-toast .toast-item.success');
+        await expect(toast).toBeVisible();
+        await expect(toast).toContainText('Character saved successfully');
+    
+        expect(savedData.name).toBe('Updated Name');
+      });
+    });
+    

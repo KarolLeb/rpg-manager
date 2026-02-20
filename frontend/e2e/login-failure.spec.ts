@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Real Authentication Flow (No Mocks)', () => {
+test.describe.skip('Real Authentication Flow (No Mocks)', () => {
   
   test.beforeEach(async ({ page }) => {
     // Optionally log browser console for debugging

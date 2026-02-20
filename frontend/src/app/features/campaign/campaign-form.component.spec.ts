@@ -6,12 +6,14 @@ import { of, BehaviorSubject, throwError, delay, switchMap } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Campaign } from '../../core/models/campaign.model';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 
 describe('CampaignFormComponent', () => {
   let component: CampaignFormComponent;
   let fixture: ComponentFixture<CampaignFormComponent>;
   let mockCampaignService: jasmine.SpyObj<CampaignService>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
+  let mockToastService: jasmine.SpyObj<ToastService>;
   let mockRouter: jasmine.SpyObj<Router>;
   let paramsSubject: BehaviorSubject<any>;
 
@@ -27,6 +29,7 @@ describe('CampaignFormComponent', () => {
     mockCampaignService.updateCampaign.and.returnValue(of(dummyCampaign).pipe(delay(0)));
 
     mockAuthService = jasmine.createSpyObj('AuthService', ['login', 'logout']);
+    mockToastService = jasmine.createSpyObj('ToastService', ['success', 'error', 'warning']);
     // Setup getter for currentUserValue
     Object.defineProperty(mockAuthService, 'currentUserValue', {
       get: () => ({ id: 1, username: 'test', role: 'GM' }),
@@ -41,6 +44,7 @@ describe('CampaignFormComponent', () => {
         provideRouter([]),
         { provide: CampaignService, useValue: mockCampaignService },
         { provide: AuthService, useValue: mockAuthService },
+        { provide: ToastService, useValue: mockToastService },
         { provide: ActivatedRoute, useValue: { params: paramsSubject.asObservable() } }
       ]
     })
@@ -183,6 +187,7 @@ describe('CampaignFormComponent', () => {
 
     tick(1); // Wait for async response
     expect(component.isLoading).toBe(false);
+    expect(mockToastService.success).toHaveBeenCalledWith('Campaign created successfully!');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/campaigns']);
     // Check mutation ['/campaigns'] -> [] or [""]
     const navigateArgs = (mockRouter.navigate as jasmine.Spy).calls.argsFor(0)[0];
@@ -212,6 +217,7 @@ describe('CampaignFormComponent', () => {
 
     tick(1);
     expect(component.isLoading).toBe(false);
+    expect(mockToastService.success).toHaveBeenCalledWith('Campaign updated successfully!');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/campaigns']);
     expect((mockRouter.navigate as jasmine.Spy).calls.argsFor(0)[0]).toEqual(['/campaigns']);
   }));
@@ -243,7 +249,7 @@ describe('CampaignFormComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/campaigns']);
   }));
 
-  it('should set error if user is not logged in and NOT call service', fakeAsync(() => {
+  it('should set toast error if user is not logged in and NOT call service', fakeAsync(() => {
     Object.defineProperty(mockAuthService, 'currentUserValue', {
       get: () => null,
       configurable: true
@@ -252,15 +258,13 @@ describe('CampaignFormComponent', () => {
     component.campaignForm.setValue({ name: 'New', description: 'Desc' });
     component.onSubmit();
 
-    expect(component.error).toBe('Musisz być zalogowany, aby stworzyć kampanię.');
-    // Check mutation error = ""
-    expect(component.error).not.toBe('');
+    expect(mockToastService.error).toHaveBeenCalledWith('You must be logged in to create a campaign.');
     expect(component.isLoading).toBeFalse();
     expect(mockCampaignService.createCampaign).not.toHaveBeenCalled();
     expect(mockCampaignService.updateCampaign).not.toHaveBeenCalled();
   }));
 
-    it('should handle creation error and set custom error message', fakeAsync(() => {
+    it('should handle creation error and set custom toast error message', fakeAsync(() => {
 
       const error = new Error('Create failed');
 
@@ -292,12 +296,11 @@ describe('CampaignFormComponent', () => {
     // Check mutation isLoading = true in error block
     expect(component.isLoading).not.toBeTrue();
 
-    expect(component.error).toBe('Wystąpił błąd podczas tworzenia kampanii.');
-    expect(component.error).not.toBe('');
+    expect(mockToastService.error).toHaveBeenCalledWith('Wystąpił błąd podczas tworzenia kampanii.');
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   }));
 
-    it('should handle update error and set custom error message', fakeAsync(() => {
+    it('should handle update error and set custom toast error message', fakeAsync(() => {
 
       paramsSubject.next({ id: '1' });
 
@@ -331,8 +334,7 @@ describe('CampaignFormComponent', () => {
     expect(component.isLoading).toBeFalse();
     expect(component.isLoading).not.toBeTrue();
 
-    expect(component.error).toBe('Wystąpił błąd podczas aktualizacji kampanii.');
-    expect(component.error).not.toBe('');
+    expect(mockToastService.error).toHaveBeenCalledWith('Wystąpił błąd podczas aktualizacji kampanii.');
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   }));
 
@@ -367,7 +369,7 @@ describe('CampaignFormComponent', () => {
     expect(component.campaignForm.value.name).toBe('');
   }));
 
-  it('should NOT update form if getCampaign fails', fakeAsync(() => {
+  it('should NOT update form if getCampaign fails and show toast error', fakeAsync(() => {
     mockCampaignService.getCampaign.and.returnValue(of(null).pipe(delay(1), switchMap(() => throwError(() => new Error('fail')))));
     spyOn(console, 'error');
 
@@ -377,7 +379,7 @@ describe('CampaignFormComponent', () => {
 
     expect(component.isLoading).toBe(false);
     expect(console.error).toHaveBeenCalledWith('Error loading campaign', jasmine.any(Error));
-    expect((console.error as jasmine.Spy).calls.argsFor(0)[0]).not.toBe('');
+    expect(mockToastService.error).toHaveBeenCalledWith('Error loading campaign details');
     expect(component.campaignForm.value.name).toBe('');
   }));
 });

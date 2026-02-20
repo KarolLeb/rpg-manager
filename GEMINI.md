@@ -18,6 +18,12 @@ Use these standardized npm scripts (defined in root `package.json`) to verify co
 - **`npm run sonar:full`**: **Deep Check**. Runs everything in Quick + **Mutation Testing** (PIT/Stryker). Use this for critical logic verification.
 - **`npm run sonar:scan`**: **Upload Only**. Uploads existing reports without re-running tests.
 
+### 🎭 End-to-End (E2E) Testing
+Run E2E tests using Playwright (requires the frontend to be buildable):
+- **`cd frontend; npm run e2e`**: Runs all E2E tests in headless mode.
+- **`cd frontend; npm run e2e:cli`**: Runs E2E tests with list reporter (best for terminal output).
+- **`cd frontend; npm run e2e:ui`**: Opens Playwright UI for interactive debugging.
+
 ## 📅 Project Management
 - **[Plans & TODO](plans/TODO.md)**: Current development roadmap and task tracking.
 
