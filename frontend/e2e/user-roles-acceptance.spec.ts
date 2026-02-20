@@ -41,6 +41,29 @@ test.describe('Akceptacja: Gracz (PLAYER)', () => {
     // 4. Sprawdzenie braku uprawnień GM (Gracz nie powinien widzieć "Create New Campaign")
     await expect(page.locator('text=Create New Campaign')).not.toBeVisible();
   });
+
+  test('Nie powinien mieć dostępu do formularza tworzenia kampanii', async ({ page }) => {
+    // 1. Mockowanie zalogowanego Gracza
+    await page.route('**/api/auth/login', async route => {
+      await route.fulfill({ json: { token: 'jwt', username: 'TestPlayer', role: 'PLAYER' } });
+    });
+    
+    // 2. Próba bezpośredniego wejścia na URL dla GM
+    await page.goto('/campaigns/new');
+    
+    // 3. Powinien zostać przekierowany na stronę logowania (ponieważ nie ma uprawnień do tego zasobu)
+    await expect(page).toHaveURL(/\/login\?returnUrl=.*/);
+  });
+});
+
+test.describe('Zabezpieczenia: Gość (Użytkownik Niezalogowany)', () => {
+  test('Nie powinien mieć dostępu do Dashboardu bez logowania', async ({ page }) => {
+    // 1. Próba wejścia na chroniony zasób
+    await page.goto('/dashboard');
+    
+    // 2. Powinien zostać przekierowany na /login (AuthGuard)
+    await expect(page).toHaveURL(/\/login/);
+  });
 });
 
 test.describe('Akceptacja: Mistrz Gry (GM)', () => {
