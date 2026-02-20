@@ -58,7 +58,7 @@ class AuthControllerTest {
 
   @Test
   void shouldRegister() throws Exception {
-    RegisterRequest request = new RegisterRequest("testuser", "test@example.com", "password");
+    RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
 
     mockMvc
         .perform(

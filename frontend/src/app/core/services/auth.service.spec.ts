@@ -180,6 +180,7 @@ describe('AuthService', () => {
     s.register({ username: 'u', email: 'e', password: 'p' }).subscribe();
     const req2 = httpMock.expectOne(req => req.url === '/api/auth/register');
     expect(req2.request.url).toBe('/api/auth/register');
+    expect(req2.request.responseType).toBe('text');
     req2.flush({});
     
     tick();

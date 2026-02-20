@@ -74,6 +74,10 @@ class JwtFilterTest {
     assertThat(auth).isNotNull();
     assertThat(((UserContext) auth.getPrincipal()).getUsername()).isEqualTo(username);
     assertThat(((UserContext) auth.getPrincipal()).getUserId()).isEqualTo(userId);
+    assertThat(
+            ((org.springframework.security.web.authentication.WebAuthenticationDetails)
+                auth.getDetails()))
+        .isNotNull();
   }
 
   @Test

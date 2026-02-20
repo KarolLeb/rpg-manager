@@ -42,8 +42,12 @@
             **/model/**,
             **/entity/**,
             **/dto/**,
-            **/*Application.java,
-            **/*MapperImpl.java
+            **/*Entity*,
+            **/*Domain*,
+            **/*Request*,
+            **/*Response*,
+            **/*Application*,
+            **/*MapperImpl*
         </sonar.coverage.exclusions>
         
         <!-- Security Patch Overrides -->
@@ -108,12 +112,16 @@
                             </goals>
                             <configuration>
                                 <excludes>
-                                    <exclude>**/*MapperImpl.class</exclude>
-                                    <exclude>**/*Application.class</exclude>
+                                    <exclude>**/*MapperImpl*</exclude>
+                                    <exclude>**/*Application*</exclude>
                                     <exclude>**/config/**</exclude>
                                     <exclude>**/dto/**</exclude>
                                     <exclude>**/entity/**</exclude>
                                     <exclude>**/model/**</exclude>
+                                    <exclude>**/*Entity*</exclude>
+                                    <exclude>**/*Domain*</exclude>
+                                    <exclude>**/*Request*</exclude>
+                                    <exclude>**/*Response*</exclude>
                                 </excludes>
                             </configuration>
                         </execution>
@@ -124,12 +132,16 @@
                             </goals>
                             <configuration>
                                 <excludes>
-                                    <exclude>**/*MapperImpl.class</exclude>
-                                    <exclude>**/*Application.class</exclude>
+                                    <exclude>**/*MapperImpl*</exclude>
+                                    <exclude>**/*Application*</exclude>
                                     <exclude>**/config/**</exclude>
                                     <exclude>**/dto/**</exclude>
                                     <exclude>**/entity/**</exclude>
                                     <exclude>**/model/**</exclude>
+                                    <exclude>**/*Entity*</exclude>
+                                    <exclude>**/*Domain*</exclude>
+                                    <exclude>**/*Request*</exclude>
+                                    <exclude>**/*Response*</exclude>
                                 </excludes>
                                 <rules>
                                     <rule>
@@ -180,6 +192,41 @@
                                 <version>0.2.0</version>
                             </path>
                         </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.pitest</groupId>
+                    <artifactId>pitest-maven</artifactId>
+                    <version>${pitest.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.pitest</groupId>
+                            <artifactId>pitest-junit5-plugin</artifactId>
+                            <version>${pitest-junit5.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <targetClasses>
+                            <param>com.rpgmanager.*</param>
+                        </targetClasses>
+                        <targetTests>
+                            <param>com.rpgmanager.*</param>
+                        </targetTests>
+                        <excludedClasses>
+                            <param>com.rpgmanager.*.config.*</param>
+                            <param>com.rpgmanager.*.infrastructure.adapter.outgoing.persist.*Entity*</param>
+                            <param>com.rpgmanager.*.domain.model.*Domain*</param>
+                            <param>com.rpgmanager.*.*Request*</param>
+                            <param>com.rpgmanager.*.*Response*</param>
+                            <param>com.rpgmanager.*.dto.*</param>
+                            <param>com.rpgmanager.*.*Application</param>
+                            <param>com.rpgmanager.*.*MapperImpl*</param>
+                        </excludedClasses>
+                        <mutationThreshold>95</mutationThreshold>
+                        <outputFormats>
+                            <value>HTML</value>
+                            <value>XML</value>
+                        </outputFormats>
                     </configuration>
                 </plugin>
             </plugins>

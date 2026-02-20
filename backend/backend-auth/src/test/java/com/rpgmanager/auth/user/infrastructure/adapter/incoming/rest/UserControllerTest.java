@@ -7,11 +7,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.rpgmanager.auth.config.SecurityConfig;
 import com.rpgmanager.auth.config.SecurityProperties;
+import com.rpgmanager.auth.user.domain.model.UserDomain;
+import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
 import com.rpgmanager.common.security.BrowserNavigationFilter;
 import com.rpgmanager.common.security.JwtFilter;
 import com.rpgmanager.common.security.JwtUtil;
-import com.rpgmanager.auth.user.domain.model.UserDomain;
-import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;

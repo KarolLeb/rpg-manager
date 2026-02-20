@@ -1,8 +1,8 @@
 package com.rpgmanager.auth.auth;
 
-import com.rpgmanager.common.security.JwtUtil;
 import com.rpgmanager.auth.user.domain.model.UserDomain;
 import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
+import com.rpgmanager.common.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -72,6 +72,7 @@ class BrowserNavigationFilterTest {
     verify(response).setStatus(HttpServletResponse.SC_FORBIDDEN);
     verify(response).setContentType("application/json");
     verify(filterChain, never()).doFilter(any(), any());
+    assert responseWriter.toString().contains("API access is restricted to the web application.");
   }
 
   @Test

@@ -6,9 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import com.rpgmanager.common.security.JwtUtil;
 import com.rpgmanager.auth.user.domain.model.UserDomain;
 import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
+import com.rpgmanager.common.security.JwtUtil;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,7 +81,14 @@ class AuthServiceTest {
 
     authService.register(request);
 
-    verify(userRepository).save(any(UserDomain.class));
+    org.mockito.ArgumentCaptor<UserDomain> userCaptor =
+        org.mockito.ArgumentCaptor.forClass(UserDomain.class);
+    verify(userRepository).save(userCaptor.capture());
+    UserDomain savedUser = userCaptor.getValue();
+    assertThat(savedUser.getUsername()).isEqualTo("newuser");
+    assertThat(savedUser.getPassword()).isEqualTo("encoded");
+    assertThat(savedUser.getEmail()).isEqualTo("test@example.com");
+    assertThat(savedUser.getRole()).isEqualTo(UserDomain.Role.PLAYER);
   }
 
   @Test

@@ -76,4 +76,14 @@ class UserPersistenceAdapterTest {
     assertThat(result).isEqualTo(domain);
     verify(jpaUserRepository).save(entity);
   }
+
+  @Test
+  void existsById_shouldReturnTrue_whenExists() {
+    given(jpaUserRepository.existsById(1L)).willReturn(true);
+
+    boolean result = userPersistenceAdapter.existsById(1L);
+
+    assertThat(result).isTrue();
+    verify(jpaUserRepository).existsById(1L);
+  }
 }
