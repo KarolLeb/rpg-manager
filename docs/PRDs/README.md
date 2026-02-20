@@ -4,7 +4,7 @@ PRDs define product goals, scope, stakeholders, and success criteria. Use this d
 
 ## Index
 
-- Add links to PRDs here. Use clear, descriptive filenames (e.g., `prd-feature-x.md`).
+- **[Role i Uprawnienia Użytkowników](prd-user-roles-and-capabilities.md):** Definicja ról (Gracz, Mistrz Gry, Administrator) i ich możliwości w systemie.
 
 ## Archive
 
