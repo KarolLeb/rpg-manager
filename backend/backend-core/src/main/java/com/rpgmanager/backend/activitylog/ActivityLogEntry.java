@@ -70,8 +70,8 @@ public class ActivityLogEntry {
   /** Types of actions tracked in the activity log. */
   public enum ActionType {
     DICE_ROLL,
-    CHARACTER_UPDATE,
-    NOTE_ADDED,
+    CHARACTER_CHANGE,
+    NOTE,
     SESSION_START,
     SESSION_END,
     CAMPAIGN_ACTION

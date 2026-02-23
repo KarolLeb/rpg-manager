@@ -14,13 +14,17 @@ class DiceServiceTest {
 
   private DiceService diceService;
 
-  @Mock private DiceRollerClient diceRollerClient;
-  @Mock private SecureRandom secureRandom;
+  @Mock
+  private DiceRollerClient diceRollerClient;
+  @Mock
+  private SecureRandom secureRandom;
+  @Mock
+  private org.springframework.context.ApplicationEventPublisher eventPublisher;
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    diceService = new DiceService(diceRollerClient, secureRandom);
+    diceService = new DiceService(diceRollerClient, secureRandom, eventPublisher);
   }
 
   @Test
