@@ -45,3 +45,22 @@ CREATE TABLE race_styles (
     race_name VARCHAR(255) NOT NULL UNIQUE,
     css_content TEXT
 );
+
+CREATE TABLE action_policies (
+    id BIGSERIAL PRIMARY KEY,
+    action_type VARCHAR(255) NOT NULL,
+    context_type VARCHAR(255) NOT NULL,
+    context_id BIGINT,
+    is_allowed BOOLEAN NOT NULL,
+    CONSTRAINT uk_action_policies UNIQUE (action_type, context_type, context_id)
+);
+
+CREATE TABLE character_action_overrides (
+    id BIGSERIAL PRIMARY KEY,
+    character_id BIGINT NOT NULL,
+    action_type VARCHAR(255) NOT NULL,
+    context_type VARCHAR(255) NOT NULL,
+    context_id BIGINT,
+    is_allowed BOOLEAN NOT NULL,
+    CONSTRAINT uk_character_action_overrides UNIQUE (character_id, action_type, context_type, context_id)
+);
