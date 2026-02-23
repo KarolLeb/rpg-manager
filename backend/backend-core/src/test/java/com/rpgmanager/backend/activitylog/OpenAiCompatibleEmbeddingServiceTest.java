@@ -47,7 +47,7 @@ class OpenAiCompatibleEmbeddingServiceTest {
     when(client.getEmbeddings(anyString(), any(OpenAiEmbeddingRequest.class))).thenReturn(null);
 
     assertThatThrownBy(() -> service.embed("test text"))
-        .isInstanceOf(RuntimeException.class)
+        .isInstanceOf(EmbeddingException.class)
         .hasMessageContaining("Empty or null response");
   }
 
@@ -58,7 +58,18 @@ class OpenAiCompatibleEmbeddingServiceTest {
     when(client.getEmbeddings(anyString(), any(OpenAiEmbeddingRequest.class))).thenReturn(response);
 
     assertThatThrownBy(() -> service.embed("test text"))
-        .isInstanceOf(RuntimeException.class)
+        .isInstanceOf(EmbeddingException.class)
+        .hasMessageContaining("Empty or null response");
+  }
+
+  @Test
+  void embed_shouldThrowExceptionOnNullData() {
+    OpenAiEmbeddingResponse response = new OpenAiEmbeddingResponse(null);
+
+    when(client.getEmbeddings(anyString(), any(OpenAiEmbeddingRequest.class))).thenReturn(response);
+
+    assertThatThrownBy(() -> service.embed("test text"))
+        .isInstanceOf(EmbeddingException.class)
         .hasMessageContaining("Empty or null response");
   }
 
@@ -68,7 +79,17 @@ class OpenAiCompatibleEmbeddingServiceTest {
         .thenThrow(new RuntimeException("API error"));
 
     assertThatThrownBy(() -> service.embed("test text"))
-        .isInstanceOf(RuntimeException.class)
+        .isInstanceOf(EmbeddingException.class)
+        .hasMessageContaining("Embedding generation failed");
+  }
+
+  @Test
+  void embed_shouldThrowExceptionOnOtherEmbeddingException() {
+    when(client.getEmbeddings(anyString(), any(OpenAiEmbeddingRequest.class)))
+        .thenThrow(new EmbeddingException("Some other error"));
+
+    assertThatThrownBy(() -> service.embed("test text"))
+        .isInstanceOf(EmbeddingException.class)
         .hasMessageContaining("Embedding generation failed");
   }
 

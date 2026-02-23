@@ -34,13 +34,14 @@ public class OpenAiCompatibleEmbeddingService implements EmbeddingService {
       if (response != null && response.getData() != null && !response.getData().isEmpty()) {
         return response.getData().get(0).getEmbedding();
       }
-      throw new RuntimeException("Empty or null response from embedding API");
+      throw new EmbeddingException("Empty or null response from embedding API");
     } catch (Exception e) {
-      if (e instanceof RuntimeException && e.getMessage().contains("Empty or null response")) {
-        throw (RuntimeException) e;
+      if (e instanceof EmbeddingException embeddingException
+          && embeddingException.getMessage().contains("Empty or null response")) {
+        throw embeddingException;
       }
       log.error("Failed to generate embedding via API: {}", e.getMessage());
-      throw new RuntimeException("Embedding generation failed", e);
+      throw new EmbeddingException("Embedding generation failed", e);
     }
   }
 

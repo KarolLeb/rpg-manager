@@ -32,7 +32,8 @@ public class HashBasedEmbeddingService implements EmbeddingService {
 
     for (String token : tokens) {
       byte[] hash = sha256(token);
-      for (int i = 0; i < DIMENSION && i < hash.length * 8; i++) {
+      int limit = Math.min(DIMENSION, hash.length * 8);
+      for (int i = 0; i < limit; i++) {
         int byteIdx = (i / 8) % hash.length;
         int bitIdx = i % 8;
         if (((hash[byteIdx] & 0xff) & (1 << bitIdx)) != 0) {

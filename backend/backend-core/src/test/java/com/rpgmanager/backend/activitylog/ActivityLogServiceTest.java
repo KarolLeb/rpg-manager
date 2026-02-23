@@ -1,6 +1,7 @@
 package com.rpgmanager.backend.activitylog;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -171,7 +172,7 @@ class ActivityLogServiceTest {
   @Test
   void shouldHandleEmptyRequestMetadata() {
     // given
-    createRequest.setMetadata(null);
+    createRequest.setMetadata(Collections.emptyMap());
     when(embeddingService.embed(any())).thenReturn(new float[384]);
     when(activityLogRepository.save(any())).thenReturn(entry);
 
@@ -180,5 +181,124 @@ class ActivityLogServiceTest {
 
     // then
     verify(activityLogRepository).save(any());
+  }
+
+  @Test
+  void shouldHandleBlankMetadata() {
+    // given
+    Object[] row = new Object[10];
+    row[0] = 100L;
+    row[1] = 1L;
+    row[2] = 2L;
+    row[3] = 3L;
+    row[4] = "DICE_ROLL";
+    row[5] = "Description";
+    row[6] = "  "; // blank metadata
+    row[7] = null;
+    row[8] = OffsetDateTime.now();
+    row[9] = null;
+
+    when(activityLogRepository.findSimilar(any(), eq(5)))
+        .thenReturn(Collections.singletonList(row));
+
+    // when
+    List<ActivityLogDto> results = activityLogService.searchActivities("query", 5);
+
+    // then
+    assertThat(results).hasSize(1);
+    assertThat(results.get(0).getMetadata()).isEmpty();
+  }
+
+  @Test
+  void shouldHandleJsonProcessingExceptionOnSerialize() throws JsonProcessingException {
+    // given
+    createRequest.setMetadata(Map.of("key", "value"));
+    when(objectMapper.writeValueAsString(any())).thenThrow(new JsonProcessingException("error") {});
+
+    // when / then
+    assertThatThrownBy(() -> activityLogService.logActivity(createRequest))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Failed to serialize metadata");
+  }
+
+  @Test
+  void shouldHandleJsonProcessingExceptionOnDeserialize() throws JsonProcessingException {
+    // given
+    Object[] row = new Object[10];
+    row[0] = 100L;
+    row[1] = 1L;
+    row[2] = 2L;
+    row[3] = 3L;
+    row[4] = "DICE_ROLL";
+    row[5] = "Description";
+    row[6] = "invalid json";
+    row[7] = null;
+    row[8] = OffsetDateTime.now();
+    row[9] = null;
+
+    when(activityLogRepository.findSimilar(any(), eq(5)))
+        .thenReturn(Collections.singletonList(row));
+    when(objectMapper.readValue(anyString(), any(TypeReference.class)))
+        .thenThrow(new JsonProcessingException("error") {});
+
+    // when
+    List<ActivityLogDto> results = activityLogService.searchActivities("query", 5);
+
+    // then
+    assertThat(results).hasSize(1);
+    assertThat(results.get(0).getMetadata()).isEmpty();
+  }
+
+  @Test
+  void shouldHandleNullVectorInVectorToString() {
+    // given
+    when(embeddingService.embed("query")).thenReturn(null);
+    when(activityLogRepository.findSimilar("[]", 5)).thenReturn(Collections.emptyList());
+
+    // when
+    activityLogService.searchActivities("query", 5);
+
+    // then
+    verify(activityLogRepository).findSimilar("[]", 5);
+  }
+
+  @Test
+  void shouldHandleSingleElementVectorInVectorToString() {
+    // given
+    float[] vector = new float[] {1.0f};
+    when(embeddingService.embed("query")).thenReturn(vector);
+    when(activityLogRepository.findSimilar("[1.0]", 5)).thenReturn(Collections.emptyList());
+
+    // when
+    activityLogService.searchActivities("query", 5);
+
+    // then
+    verify(activityLogRepository).findSimilar("[1.0]", 5);
+  }
+
+  @Test
+  void shouldHandleOtherTypesInToOffsetDateTime() {
+    // given
+    Object[] row = new Object[10];
+    row[0] = 100L;
+    row[1] = 1L;
+    row[2] = 2L;
+    row[3] = 3L;
+    row[4] = "DICE_ROLL";
+    row[5] = "Description";
+    row[6] = "{}";
+    row[7] = null;
+    row[8] = "invalid date type"; // some other type
+    row[9] = null;
+
+    when(activityLogRepository.findSimilar(any(), eq(5)))
+        .thenReturn(Collections.singletonList(row));
+
+    // when
+    List<ActivityLogDto> results = activityLogService.searchActivities("query", 5);
+
+    // then
+    assertThat(results).hasSize(1);
+    assertThat(results.get(0).getCreatedAt()).isNull();
   }
 }

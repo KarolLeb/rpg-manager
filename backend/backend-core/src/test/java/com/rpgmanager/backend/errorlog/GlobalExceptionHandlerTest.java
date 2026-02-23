@@ -112,6 +112,23 @@ class GlobalExceptionHandlerTest {
     assertThat(response.getBody().message()).isEqualTo("Not found");
   }
 
+  @Test
+  void handleException_shouldTruncateLongStackTrace() {
+    setupRequest("GET", "/api/test");
+    // Create an exception with many nested causes to increase stack trace length
+    Exception ex = new Exception("Root");
+    for (int i = 0; i < 100; i++) {
+      ex = new Exception("Layer " + i, ex);
+    }
+
+    handler.handleException(ex, request);
+
+    ArgumentCaptor<CreateErrorLogRequest> captor =
+        ArgumentCaptor.forClass(CreateErrorLogRequest.class);
+    verify(errorLogService).logError(captor.capture());
+    assertThat(captor.getValue().getStackTrace()).hasSizeLessThanOrEqualTo(4000);
+  }
+
   private void setupRequest(String method, String uri) {
     org.mockito.Mockito.lenient().when(request.getMethod()).thenReturn(method);
     org.mockito.Mockito.lenient().when(request.getRequestURI()).thenReturn(uri);

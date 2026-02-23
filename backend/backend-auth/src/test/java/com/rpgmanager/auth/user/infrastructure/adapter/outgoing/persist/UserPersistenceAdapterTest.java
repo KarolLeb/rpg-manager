@@ -76,8 +76,26 @@ class UserPersistenceAdapterTest {
   }
 
   @Test
+  void findById_shouldReturnEmpty_whenNotFound() {
+    given(jpaUserRepository.findById(1L)).willReturn(Optional.empty());
+    assertThat(adapter.findById(1L)).isEmpty();
+  }
+
+  @Test
+  void findByUsername_shouldReturnEmpty_whenNotFound() {
+    given(jpaUserRepository.findByUsername("test")).willReturn(Optional.empty());
+    assertThat(adapter.findByUsername("test")).isEmpty();
+  }
+
+  @Test
   void existsById_shouldReturnTrue_whenExists() {
     given(jpaUserRepository.existsById(1L)).willReturn(true);
     assertThat(adapter.existsById(1L)).isTrue();
+  }
+
+  @Test
+  void existsById_shouldReturnFalse_whenNotExists() {
+    given(jpaUserRepository.existsById(1L)).willReturn(false);
+    assertThat(adapter.existsById(1L)).isFalse();
   }
 }
