@@ -61,8 +61,7 @@ class ActionPermissionServiceTest {
 
     // when
     boolean result =
-        underTest.canPerformAction(
-            CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
 
     // then
     assertThat(result).isFalse();

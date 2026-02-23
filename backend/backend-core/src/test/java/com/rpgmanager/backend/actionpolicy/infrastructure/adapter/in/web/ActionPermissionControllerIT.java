@@ -35,8 +35,7 @@ class ActionPermissionControllerIT {
   @Test
   void shouldReturnTrueWhenServiceAllowsAction() throws Exception {
     // given
-    when(actionPermissionService.canPerformAction(
-            eq(1L), eq(ActionType.LEVEL_UP), any(), any()))
+    when(actionPermissionService.canPerformAction(eq(1L), eq(ActionType.LEVEL_UP), any(), any()))
         .thenReturn(true);
 
     // when & then
