@@ -73,4 +73,46 @@ class AdminPolicyManagementControllerIT {
 
     verify(characterActionOverrideRepository).save(any(CharacterActionOverrideEntity.class));
   }
+
+  @Test
+  void shouldUpdateExistingPolicySuccessfully() throws Exception {
+    // given
+    ActionPolicyEntity existing = ActionPolicyEntity.builder().build();
+    when(actionPolicyRepository.findByActionTypeAndContextTypeAndContextId(any(), any(), any()))
+        .thenReturn(Optional.of(existing));
+
+    // when & then
+    mockMvc
+        .perform(
+            post("/api/v1/permissions/admin/policy")
+                .param("actionType", "LEVEL_UP")
+                .param("contextType", "CAMPAIGN")
+                .param("contextId", "1")
+                .param("isAllowed", "false"))
+        .andExpect(status().isCreated());
+
+    verify(actionPolicyRepository).save(existing);
+  }
+
+  @Test
+  void shouldUpdateExistingCharacterOverrideSuccessfully() throws Exception {
+    // given
+    CharacterActionOverrideEntity existing = CharacterActionOverrideEntity.builder().build();
+    when(characterActionOverrideRepository.findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+            any(), any(), any(), any()))
+        .thenReturn(Optional.of(existing));
+
+    // when & then
+    mockMvc
+        .perform(
+            post("/api/v1/permissions/admin/override")
+                .param("characterId", "100")
+                .param("actionType", "DISTRIBUTE_POINTS")
+                .param("contextType", "SESSION")
+                .param("contextId", "2")
+                .param("isAllowed", "true"))
+        .andExpect(status().isCreated());
+
+    verify(characterActionOverrideRepository).save(existing);
+  }
 }

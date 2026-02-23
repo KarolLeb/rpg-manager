@@ -1,6 +1,7 @@
 package com.rpgmanager.backend.actionpolicy.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.rpgmanager.backend.actionpolicy.application.port.out.ActionPolicyRepositoryPort;
@@ -93,6 +94,90 @@ class ActionPermissionServiceTest {
     // when
     boolean result =
         underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
+
+    // then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  void shouldCheckSessionOverrideFirst() {
+    // given
+    when(characterActionOverrideRepositoryPort
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+                CHARACTER_ID, ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+        .thenReturn(Optional.of(CharacterActionOverride.builder().isAllowed(false).build()));
+
+    // when
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+
+    // then
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  void shouldFallBackToCampaignOverrideIfSessionOverrideMissing() {
+    // given
+    when(characterActionOverrideRepositoryPort
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+                CHARACTER_ID, ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+        .thenReturn(Optional.empty());
+    when(characterActionOverrideRepositoryPort
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+                CHARACTER_ID, ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
+        .thenReturn(Optional.of(CharacterActionOverride.builder().isAllowed(true).build()));
+
+    // when
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+
+    // then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  void shouldCheckSessionPolicyIfNoOverridesExist() {
+    // given
+    when(characterActionOverrideRepositoryPort
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(any(), any(), any(), any()))
+        .thenReturn(Optional.empty());
+    when(actionPolicyRepositoryPort.findByActionTypeAndContextTypeAndContextId(
+            ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+        .thenReturn(Optional.of(ActionPolicy.builder().isAllowed(false).build()));
+
+    // when
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+
+    // then
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  void shouldFallBackToCampaignPolicyIfNoSessionPolicyExists() {
+    // given
+    when(characterActionOverrideRepositoryPort
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(any(), any(), any(), any()))
+        .thenReturn(Optional.empty());
+    when(actionPolicyRepositoryPort.findByActionTypeAndContextTypeAndContextId(
+            ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+        .thenReturn(Optional.empty());
+    when(actionPolicyRepositoryPort.findByActionTypeAndContextTypeAndContextId(
+            ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
+        .thenReturn(Optional.of(ActionPolicy.builder().isAllowed(false).build()));
+
+    // when
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+
+    // then
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  void shouldHandleNullCampaignAndSessionIds() {
+    // when
+    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, null, null);
 
     // then
     assertThat(result).isTrue();

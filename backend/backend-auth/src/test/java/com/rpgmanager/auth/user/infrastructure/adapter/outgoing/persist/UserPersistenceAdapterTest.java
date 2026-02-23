@@ -8,9 +8,9 @@ import com.rpgmanager.auth.user.domain.model.UserDomain;
 import com.rpgmanager.auth.user.infrastructure.mapper.UserPersistenceMapper;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,12 +20,7 @@ class UserPersistenceAdapterTest {
   @Mock private JpaUserRepository jpaUserRepository;
   @Mock private UserPersistenceMapper userPersistenceMapper;
 
-  private UserPersistenceAdapter userPersistenceAdapter;
-
-  @BeforeEach
-  void setUp() {
-    userPersistenceAdapter = new UserPersistenceAdapter(jpaUserRepository, userPersistenceMapper);
-  }
+  @InjectMocks private UserPersistenceAdapter adapter;
 
   @Test
   void findAll_shouldReturnList() {
@@ -34,56 +29,55 @@ class UserPersistenceAdapterTest {
     given(jpaUserRepository.findAll()).willReturn(List.of(entity));
     given(userPersistenceMapper.toDomain(entity)).willReturn(domain);
 
-    List<UserDomain> result = userPersistenceAdapter.findAll();
+    List<UserDomain> result = adapter.findAll();
 
-    assertThat(result).hasSize(1);
+    assertThat(result).hasSize(1).contains(domain);
   }
 
   @Test
-  void findById_shouldReturnUser_whenExists() {
+  void findById_shouldReturnDomain() {
     UserEntity entity = new UserEntity();
     UserDomain domain = new UserDomain();
     given(jpaUserRepository.findById(1L)).willReturn(Optional.of(entity));
     given(userPersistenceMapper.toDomain(entity)).willReturn(domain);
 
-    Optional<UserDomain> result = userPersistenceAdapter.findById(1L);
+    Optional<UserDomain> result = adapter.findById(1L);
 
-    assertThat(result).isPresent();
+    assertThat(result).isPresent().contains(domain);
   }
 
   @Test
-  void findByUsername_shouldReturnUser_whenExists() {
+  void findByUsername_shouldReturnDomain() {
     UserEntity entity = new UserEntity();
     UserDomain domain = new UserDomain();
-    given(jpaUserRepository.findByUsername("testuser")).willReturn(Optional.of(entity));
+    given(jpaUserRepository.findByUsername("test")).willReturn(Optional.of(entity));
     given(userPersistenceMapper.toDomain(entity)).willReturn(domain);
 
-    Optional<UserDomain> result = userPersistenceAdapter.findByUsername("testuser");
+    Optional<UserDomain> result = adapter.findByUsername("test");
 
-    assertThat(result).isPresent();
+    assertThat(result).isPresent().contains(domain);
   }
 
   @Test
-  void save_shouldReturnSavedUser() {
-    UserEntity entity = new UserEntity();
+  void save_shouldSaveAndReturnDomain() {
     UserDomain domain = new UserDomain();
+    UserEntity entity = new UserEntity();
+    UserEntity savedEntity = new UserEntity();
+    UserDomain savedDomain = new UserDomain();
+
     given(userPersistenceMapper.toEntity(domain)).willReturn(entity);
-    given(jpaUserRepository.save(entity)).willReturn(entity);
-    given(userPersistenceMapper.toDomain(entity)).willReturn(domain);
+    given(jpaUserRepository.save(entity)).willReturn(savedEntity);
+    given(userPersistenceMapper.toDomain(savedEntity)).willReturn(savedDomain);
 
-    UserDomain result = userPersistenceAdapter.save(domain);
+    UserDomain result = adapter.save(domain);
 
-    assertThat(result).isEqualTo(domain);
+    assertThat(result).isEqualTo(savedDomain);
     verify(jpaUserRepository).save(entity);
   }
 
   @Test
   void existsById_shouldReturnTrue_whenExists() {
     given(jpaUserRepository.existsById(1L)).willReturn(true);
-
-    boolean result = userPersistenceAdapter.existsById(1L);
-
-    assertThat(result).isTrue();
-    verify(jpaUserRepository).existsById(1L);
+    assertThat(adapter.existsById(1L)).isTrue();
   }
 }

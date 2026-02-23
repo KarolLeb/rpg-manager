@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +24,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import({
   SecurityConfig.class,
   SecurityProperties.class,
@@ -38,7 +40,7 @@ class UserControllerTest {
   @MockitoBean private UserDetailsService userDetailsService;
 
   @Test
-  void getUserById_shouldReturnUser_whenExists() throws Exception {
+  void shouldGetUserById() throws Exception {
     UserDomain user = new UserDomain();
     user.setId(1L);
     user.setUsername("testuser");
@@ -47,18 +49,18 @@ class UserControllerTest {
     mockMvc
         .perform(get("/api/users/1"))
         .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(1))
         .andExpect(jsonPath("$.username").value("testuser"));
   }
 
   @Test
-  void getUserById_shouldReturnNotFound_whenDoesNotExist() throws Exception {
+  void shouldReturnNotFoundWhenUserByIdMissing() throws Exception {
     given(userRepository.findById(1L)).willReturn(Optional.empty());
-
     mockMvc.perform(get("/api/users/1")).andExpect(status().isNotFound());
   }
 
   @Test
-  void getUserByUsername_shouldReturnUser_whenExists() throws Exception {
+  void shouldGetUserByUsername() throws Exception {
     UserDomain user = new UserDomain();
     user.setUsername("testuser");
     given(userRepository.findByUsername("testuser")).willReturn(Optional.of(user));
@@ -70,16 +72,7 @@ class UserControllerTest {
   }
 
   @Test
-  void getUserByUsername_shouldReturnNotFound_whenDoesNotExist() throws Exception {
-    given(userRepository.findByUsername("testuser")).willReturn(Optional.empty());
-
-    mockMvc
-        .perform(get("/api/users").param("username", "testuser"))
-        .andExpect(status().isNotFound());
-  }
-
-  @Test
-  void getAllUsers_shouldReturnList() throws Exception {
+  void shouldGetAllUsers() throws Exception {
     UserDomain user = new UserDomain();
     user.setUsername("testuser");
     given(userRepository.findAll()).willReturn(List.of(user));

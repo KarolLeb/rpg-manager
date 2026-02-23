@@ -7,9 +7,9 @@ import static org.mockito.BDDMockito.given;
 import com.rpgmanager.auth.user.domain.model.UserDomain;
 import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,12 +20,7 @@ class UserDetailsServiceImplTest {
 
   @Mock private UserRepositoryPort userRepository;
 
-  private UserDetailsServiceImpl userDetailsService;
-
-  @BeforeEach
-  void setUp() {
-    userDetailsService = new UserDetailsServiceImpl(userRepository);
-  }
+  @InjectMocks private UserDetailsServiceImpl userDetailsService;
 
   @Test
   void loadUserByUsername_shouldReturnUserDetails_whenUserExists() {
@@ -36,19 +31,25 @@ class UserDetailsServiceImplTest {
 
     given(userRepository.findByUsername("testuser")).willReturn(Optional.of(user));
 
-    UserDetails userDetails = userDetailsService.loadUserByUsername("testuser");
+    UserDetails result = userDetailsService.loadUserByUsername("testuser");
 
-    assertThat(userDetails.getUsername()).isEqualTo("testuser");
-    assertThat(userDetails.getAuthorities()).hasSize(1);
-    assertThat(userDetails.getAuthorities().iterator().next().getAuthority())
-        .isEqualTo("ROLE_PLAYER");
+    assertThat(result.getUsername()).isEqualTo("testuser");
+    assertThat(result.getPassword()).isEqualTo("password");
+    assertThat(result.getAuthorities()).hasSize(1);
+    assertThat(result.getAuthorities().iterator().next().getAuthority()).isEqualTo("ROLE_PLAYER");
   }
 
   @Test
   void loadUserByUsername_shouldThrowException_whenUserDoesNotExist() {
-    given(userRepository.findByUsername("nonexistent")).willReturn(Optional.empty());
+    given(userRepository.findByUsername("unknown")).willReturn(Optional.empty());
 
-    assertThatThrownBy(() -> userDetailsService.loadUserByUsername("nonexistent"))
+    assertThatThrownBy(() -> userDetailsService.loadUserByUsername("unknown"))
+        .isInstanceOf(UsernameNotFoundException.class);
+  }
+
+  @Test
+  void loadUserByUsername_shouldThrowException_whenUsernameIsEmpty() {
+    assertThatThrownBy(() -> userDetailsService.loadUserByUsername(""))
         .isInstanceOf(UsernameNotFoundException.class);
   }
 }

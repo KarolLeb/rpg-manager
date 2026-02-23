@@ -100,4 +100,18 @@ class AuthServiceTest {
     assertThatThrownBy(() -> authService.register(request))
         .isInstanceOf(IllegalArgumentException.class);
   }
+
+  @Test
+  void login_shouldThrowException_whenUsernameIsEmpty() {
+    LoginRequest request = new LoginRequest("", "password");
+    assertThatThrownBy(() -> authService.login(request))
+        .isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
+  void register_shouldThrowException_whenUsernameIsEmpty() {
+    RegisterRequest request = new RegisterRequest("", "password", "test@example.com");
+    assertThatThrownBy(() -> authService.register(request))
+        .isInstanceOf(IllegalArgumentException.class);
+  }
 }

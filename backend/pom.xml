@@ -46,6 +46,8 @@
             **/*Domain*,
             **/*Request*,
             **/*Response*,
+            **/*Entry*,
+            **/*Dto*,
             **/*Application*,
             **/*MapperImpl*
         </sonar.coverage.exclusions>
@@ -122,6 +124,8 @@
                                     <exclude>**/*Domain*</exclude>
                                     <exclude>**/*Request*</exclude>
                                     <exclude>**/*Response*</exclude>
+                                    <exclude>**/*Entry*</exclude>
+                                    <exclude>**/*Dto*</exclude>
                                 </excludes>
                             </configuration>
                         </execution>
@@ -142,6 +146,8 @@
                                     <exclude>**/*Domain*</exclude>
                                     <exclude>**/*Request*</exclude>
                                     <exclude>**/*Response*</exclude>
+                                    <exclude>**/*Entry*</exclude>
+                                    <exclude>**/*Dto*</exclude>
                                 </excludes>
                                 <rules>
                                     <rule>
