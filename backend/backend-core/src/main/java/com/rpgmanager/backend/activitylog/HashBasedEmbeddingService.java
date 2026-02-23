@@ -7,9 +7,12 @@ import java.util.Locale;
 import org.springframework.stereotype.Service;
 
 /**
- * A lightweight, local embedding service that generates deterministic 384-dimensional vectors from
- * text using hash-based feature extraction. This is a placeholder implementation suitable for
- * development and testing. For production-quality semantic search, replace with an OpenAI or Ollama
+ * A lightweight, local embedding service that generates deterministic
+ * 384-dimensional vectors from
+ * text using hash-based feature extraction. This is a placeholder
+ * implementation suitable for
+ * development and testing. For production-quality semantic search, replace with
+ * an OpenAI or Ollama
  * embedding provider.
  */
 @Service

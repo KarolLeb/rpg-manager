@@ -2,7 +2,7 @@ package com.rpgmanager.backend.errorlog;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +79,7 @@ public class ErrorLogService {
             entries = errorLogRepository.findAll();
         }
 
-        return entries.stream().map(this::toDto).collect(Collectors.toList());
+        return entries.stream().map(this::toDto).toList();
     }
 
     private ErrorLogDto toDto(ErrorLogEntry entry) {
