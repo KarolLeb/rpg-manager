@@ -2,7 +2,7 @@ name: rpg-app
 
 services:
   postgres:
-    image: postgres:15-alpine
+    image: pgvector/pgvector:pg15
     container_name: rpg-postgres
     restart: always
     environment:
