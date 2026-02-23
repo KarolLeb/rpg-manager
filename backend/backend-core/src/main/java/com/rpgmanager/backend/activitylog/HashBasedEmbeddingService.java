@@ -4,18 +4,16 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 /**
- * A lightweight, local embedding service that generates deterministic
- * 384-dimensional vectors from
- * text using hash-based feature extraction. This is a placeholder
- * implementation suitable for
- * development and testing. For production-quality semantic search, replace with
- * an OpenAI or Ollama
- * embedding provider.
+ * Local hash-based embedding service for development and testing. Produces
+ * deterministic
+ * 384-dimensional vectors from text input.
  */
 @Service
+@ConditionalOnProperty(name = "rpg.embeddings.provider", havingValue = "hash", matchIfMissing = true)
 public class HashBasedEmbeddingService implements EmbeddingService {
 
   private static final int DIMENSION = 384;

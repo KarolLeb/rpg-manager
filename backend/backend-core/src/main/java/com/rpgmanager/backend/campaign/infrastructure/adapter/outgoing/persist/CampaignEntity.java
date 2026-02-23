@@ -49,7 +49,34 @@ public class CampaignEntity {
   @Column(name = "game_master_id", nullable = false)
   private Long gameMasterId;
 
-  /** Sets the creation date to the current timestamp before persisting if it's null. */
+  public CampaignStatus getStatus() {
+    return status;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public OffsetDateTime getCreationDate() {
+    return creationDate;
+  }
+
+  public Long getGameMasterId() {
+    return gameMasterId;
+  }
+
+  /**
+   * Sets the creation date to the current timestamp before persisting if it's
+   * null.
+   */
   @PrePersist
   protected void onCreate() {
     if (creationDate == null) {

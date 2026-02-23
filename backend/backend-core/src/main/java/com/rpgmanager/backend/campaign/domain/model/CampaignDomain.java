@@ -12,13 +12,32 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CampaignDomain {
-  private Long id;
-  private String name;
-  private String description;
-  private OffsetDateTime creationDate;
-  private CampaignStatus status;
   private Long gameMasterId;
   private String gameMasterName;
+
+  public Long getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public OffsetDateTime getCreationDate() {
+    return creationDate;
+  }
+
+  public CampaignStatus getStatus() {
+    return status;
+  }
+
+  public Long getGameMasterId() {
+    return gameMasterId;
+  }
 
   /** Status of the campaign. */
   public enum CampaignStatus {

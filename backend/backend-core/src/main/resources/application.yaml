@@ -41,6 +41,12 @@ rpg:
     url: http://www.randomnumberapi.com/api/v1.0
   security:
     allowed-origins: ${ALLOWED_ORIGINS:http://localhost:4200,http://127.0.0.1:4200}
+  embeddings:
+    provider: ${EMBEDDING_PROVIDER:hash}
+    url: ${EMBEDDING_URL:http://localhost:11434/v1/embeddings}
+    api-key: ${EMBEDDING_API_KEY:none}
+    model: ${EMBEDDING_MODEL:nomic-embed-text}
+    dimensions: 384
 
 management:
   endpoints:
