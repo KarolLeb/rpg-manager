@@ -32,7 +32,7 @@ public class HashBasedEmbeddingService implements EmbeddingService {
       for (int i = 0; i < DIMENSION && i < hash.length * 8; i++) {
         int byteIdx = (i / 8) % hash.length;
         int bitIdx = i % 8;
-        if ((hash[byteIdx] & (1 << bitIdx)) != 0) {
+        if (((hash[byteIdx] & 0xff) & (1 << bitIdx)) != 0) {
           vector[i % DIMENSION] += 1.0f;
         } else {
           vector[i % DIMENSION] -= 1.0f;

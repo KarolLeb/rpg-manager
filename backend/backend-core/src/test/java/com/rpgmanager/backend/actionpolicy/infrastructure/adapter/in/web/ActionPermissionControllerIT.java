@@ -36,7 +36,7 @@ class ActionPermissionControllerIT {
   void shouldReturnTrueWhenServiceAllowsAction() throws Exception {
     // given
     when(actionPermissionService.canPerformAction(
-            eq(1L), eq(ActionType.LEVEL_UP), any(), any(), any()))
+            eq(1L), eq(ActionType.LEVEL_UP), any(), any()))
         .thenReturn(true);
 
     // when & then
@@ -53,7 +53,7 @@ class ActionPermissionControllerIT {
   void shouldReturnFalseWhenServiceDeniesAction() throws Exception {
     // given
     when(actionPermissionService.canPerformAction(
-            eq(2L), eq(ActionType.DISTRIBUTE_POINTS), eq(100L), any(), any()))
+            eq(2L), eq(ActionType.DISTRIBUTE_POINTS), eq(100L), any()))
         .thenReturn(false);
 
     // when & then

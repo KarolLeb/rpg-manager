@@ -10,7 +10,6 @@ import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +62,7 @@ public class ActivityLogService {
     String embeddingStr = vectorToString(queryEmbedding);
 
     List<Object[]> results = activityLogRepository.findSimilar(embeddingStr, limit);
-    return results.stream().map(this::mapNativeResult).collect(Collectors.toList());
+    return results.stream().map(this::mapNativeResult).toList();
   }
 
   /**
@@ -76,7 +75,7 @@ public class ActivityLogService {
   public List<ActivityLogDto> getActivitiesBySession(Long sessionId) {
     return activityLogRepository.findBySessionIdOrderByCreatedAtDesc(sessionId).stream()
         .map(entry -> toDto(entry, null))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**
@@ -89,7 +88,7 @@ public class ActivityLogService {
   public List<ActivityLogDto> getActivitiesByCampaign(Long campaignId) {
     return activityLogRepository.findByCampaignIdOrderByCreatedAtDesc(campaignId).stream()
         .map(entry -> toDto(entry, null))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private ActivityLogDto toDto(ActivityLogEntry entry, Double similarityScore) {

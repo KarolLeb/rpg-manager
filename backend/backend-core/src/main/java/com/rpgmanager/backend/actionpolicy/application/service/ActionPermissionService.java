@@ -18,7 +18,7 @@ public class ActionPermissionService {
   private final CharacterActionOverrideRepositoryPort characterActionOverrideRepositoryPort;
 
   public boolean canPerformAction(
-      Long characterId, ActionType actionType, Long campaignId, Long sessionId, Long dialogueId) {
+      Long characterId, ActionType actionType, Long campaignId, Long sessionId) {
     // 1. Check Character Overrides (from most specific to least specific)
     if (sessionId != null) {
       Optional<CharacterActionOverride> sessionOverride =

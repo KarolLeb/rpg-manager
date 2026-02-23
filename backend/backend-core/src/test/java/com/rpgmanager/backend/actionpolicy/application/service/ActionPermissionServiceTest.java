@@ -44,7 +44,7 @@ class ActionPermissionServiceTest {
 
     // when
     boolean result =
-        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null, null);
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
 
     // then
     assertThat(result).isFalse();
@@ -62,7 +62,7 @@ class ActionPermissionServiceTest {
     // when
     boolean result =
         underTest.canPerformAction(
-            CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID, null);
+            CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
 
     // then
     assertThat(result).isFalse();
@@ -80,7 +80,7 @@ class ActionPermissionServiceTest {
 
     // when
     boolean result =
-        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null, null);
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
 
     // then
     assertThat(result).isTrue();
@@ -93,7 +93,7 @@ class ActionPermissionServiceTest {
 
     // when
     boolean result =
-        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null, null);
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
 
     // then
     assertThat(result).isTrue();

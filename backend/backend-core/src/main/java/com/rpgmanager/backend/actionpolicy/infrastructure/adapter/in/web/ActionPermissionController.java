@@ -21,12 +21,11 @@ public class ActionPermissionController {
       @RequestParam Long characterId,
       @RequestParam ActionType actionType,
       @RequestParam(required = false) Long campaignId,
-      @RequestParam(required = false) Long sessionId,
-      @RequestParam(required = false) Long dialogueId) {
+      @RequestParam(required = false) Long sessionId) {
 
     boolean isAllowed =
         actionPermissionService.canPerformAction(
-            characterId, actionType, campaignId, sessionId, dialogueId);
+            characterId, actionType, campaignId, sessionId);
 
     return ResponseEntity.ok(new PermissionCheckResponse(isAllowed));
   }
