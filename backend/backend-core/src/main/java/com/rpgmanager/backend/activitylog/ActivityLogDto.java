@@ -16,13 +16,13 @@ import lombok.Setter;
 @Builder
 public class ActivityLogDto {
 
-    private Long id;
-    private Long sessionId;
-    private Long campaignId;
-    private Long userId;
-    private ActivityLogEntry.ActionType actionType;
-    private String description;
-    private Map<String, Object> metadata;
-    private OffsetDateTime createdAt;
-    private Double similarityScore;
+  private Long id;
+  private Long sessionId;
+  private Long campaignId;
+  private Long userId;
+  private ActivityLogEntry.ActionType actionType;
+  private String description;
+  private Map<String, Object> metadata;
+  private OffsetDateTime createdAt;
+  private Double similarityScore;
 }

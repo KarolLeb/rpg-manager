@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActionPolicy {
-    private Long id;
-    private ActionType actionType;
-    private ContextType contextType;
-    private Long contextId;
-    private boolean isAllowed;
+  private Long id;
+  private ActionType actionType;
+  private ContextType contextType;
+  private Long contextId;
+  private boolean isAllowed;
 }

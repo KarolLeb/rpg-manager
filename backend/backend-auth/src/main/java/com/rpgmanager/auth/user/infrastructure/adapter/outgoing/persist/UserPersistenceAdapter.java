@@ -4,8 +4,8 @@ import com.rpgmanager.auth.user.domain.model.UserDomain;
 import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
 import com.rpgmanager.auth.user.infrastructure.mapper.UserPersistenceMapper;
 import java.util.Optional;
-import org.springframework.lang.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 /** Adapter implementation for User persistence. */

@@ -13,10 +13,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CreateActivityLogRequest {
 
-    private Long sessionId;
-    private Long campaignId;
-    private Long userId;
-    private ActivityLogEntry.ActionType actionType;
-    private String description;
-    private Map<String, Object> metadata;
+  private Long sessionId;
+  private Long campaignId;
+  private Long userId;
+  private ActivityLogEntry.ActionType actionType;
+  private String description;
+  private Map<String, Object> metadata;
 }

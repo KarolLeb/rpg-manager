@@ -9,7 +9,7 @@ import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
 @AnalyzeClasses(
-    packages = "com.rpgmanager.backend",
+    packages = "com.rpgmanager",
     importOptions = {ImportOption.DoNotIncludeTests.class})
 public class HexagonalArchitectureTest {
 
@@ -19,11 +19,11 @@ public class HexagonalArchitectureTest {
           .consideringOnlyDependenciesInAnyPackage(
               "com.rpgmanager.backend.character..", "com.rpgmanager.backend.campaign..")
           .layer("Domain")
-          .definedBy("..domain..")
+          .definedBy("com.rpgmanager.backend..domain..")
           .layer("Application")
-          .definedBy("..application..")
+          .definedBy("com.rpgmanager.backend..application..")
           .layer("Infrastructure")
-          .definedBy("..infrastructure..")
+          .definedBy("com.rpgmanager.backend..infrastructure..")
           .whereLayer("Domain")
           .mayOnlyBeAccessedByLayers("Application", "Infrastructure")
           .whereLayer("Application")
@@ -38,7 +38,8 @@ public class HexagonalArchitectureTest {
           .resideInAPackage("..domain..")
           .should()
           .onlyDependOnClassesThat()
-          .resideInAnyPackage("..domain..", "java..", "lombok..", "org.slf4j..");
+          .resideInAnyPackage(
+              "com.rpgmanager.backend..domain..", "java..", "lombok..", "org.slf4j..");
 
   @ArchTest
   public static final ArchRule application_should_not_depend_on_infrastructure =
@@ -54,5 +55,7 @@ public class HexagonalArchitectureTest {
               "lombok..",
               "org.slf4j..",
               "org.springframework..",
-              "org.mapstruct..");
+              "org.mapstruct..",
+              "com.rpgmanager.backend..application..",
+              "com.rpgmanager.backend..domain..");
 }

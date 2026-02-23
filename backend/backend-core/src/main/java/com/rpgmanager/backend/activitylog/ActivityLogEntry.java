@@ -30,50 +30,50 @@ import lombok.ToString;
 @Builder
 public class ActivityLogEntry {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "session_id")
-    private Long sessionId;
+  @Column(name = "session_id")
+  private Long sessionId;
 
-    @Column(name = "campaign_id")
-    private Long campaignId;
+  @Column(name = "campaign_id")
+  private Long campaignId;
 
-    @Column(name = "user_id")
-    private Long userId;
+  @Column(name = "user_id")
+  private Long userId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "action_type", nullable = false, length = 50)
-    private ActionType actionType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "action_type", nullable = false, length = 50)
+  private ActionType actionType;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String description;
+  @Column(nullable = false, columnDefinition = "TEXT")
+  private String description;
 
-    @Column(columnDefinition = "JSONB")
-    private String metadata;
+  @Column(columnDefinition = "JSONB")
+  private String metadata;
 
-    @Column(columnDefinition = "vector(384)")
-    private float[] embedding;
+  @Column(columnDefinition = "vector(384)")
+  private float[] embedding;
 
-    @Column(name = "created_at")
-    private OffsetDateTime createdAt;
+  @Column(name = "created_at")
+  private OffsetDateTime createdAt;
 
-    /** Sets creation timestamp before persisting. */
-    @PrePersist
-    protected void onCreate() {
-        if (createdAt == null) {
-            createdAt = OffsetDateTime.now();
-        }
+  /** Sets creation timestamp before persisting. */
+  @PrePersist
+  protected void onCreate() {
+    if (createdAt == null) {
+      createdAt = OffsetDateTime.now();
     }
+  }
 
-    /** Types of actions tracked in the activity log. */
-    public enum ActionType {
-        DICE_ROLL,
-        CHARACTER_UPDATE,
-        NOTE_ADDED,
-        SESSION_START,
-        SESSION_END,
-        CAMPAIGN_ACTION
-    }
+  /** Types of actions tracked in the activity log. */
+  public enum ActionType {
+    DICE_ROLL,
+    CHARACTER_UPDATE,
+    NOTE_ADDED,
+    SESSION_START,
+    SESSION_END,
+    CAMPAIGN_ACTION
+  }
 }

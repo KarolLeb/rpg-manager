@@ -14,22 +14,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ActionPermissionController {
 
-    private final ActionPermissionService actionPermissionService;
+  private final ActionPermissionService actionPermissionService;
 
-    @GetMapping("/check")
-    public ResponseEntity<PermissionCheckResponse> checkPermission(
-            @RequestParam Long characterId,
-            @RequestParam ActionType actionType,
-            @RequestParam(required = false) Long campaignId,
-            @RequestParam(required = false) Long sessionId,
-            @RequestParam(required = false) Long dialogueId) {
+  @GetMapping("/check")
+  public ResponseEntity<PermissionCheckResponse> checkPermission(
+      @RequestParam Long characterId,
+      @RequestParam ActionType actionType,
+      @RequestParam(required = false) Long campaignId,
+      @RequestParam(required = false) Long sessionId,
+      @RequestParam(required = false) Long dialogueId) {
 
-        boolean isAllowed = actionPermissionService.canPerformAction(characterId, actionType, campaignId, sessionId,
-                dialogueId);
+    boolean isAllowed =
+        actionPermissionService.canPerformAction(
+            characterId, actionType, campaignId, sessionId, dialogueId);
 
-        return ResponseEntity.ok(new PermissionCheckResponse(isAllowed));
-    }
+    return ResponseEntity.ok(new PermissionCheckResponse(isAllowed));
+  }
 
-    public record PermissionCheckResponse(boolean allowed) {
-    }
+  public record PermissionCheckResponse(boolean allowed) {}
 }

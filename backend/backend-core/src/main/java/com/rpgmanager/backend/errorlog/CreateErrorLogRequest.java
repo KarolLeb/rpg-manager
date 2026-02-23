@@ -12,11 +12,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CreateErrorLogRequest {
 
-    private String serviceName;
-    private ErrorLogEntry.Severity severity;
-    private String message;
-    private String stackTrace;
-    private String correlationId;
-    private Long userId;
-    private String requestPath;
+  private String serviceName;
+  private ErrorLogEntry.Severity severity;
+  private String message;
+  private String stackTrace;
+  private String correlationId;
+  private Long userId;
+  private String requestPath;
 }

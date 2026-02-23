@@ -9,13 +9,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ErrorLogRepository extends JpaRepository<ErrorLogEntry, Long> {
 
-    List<ErrorLogEntry> findBySeverityOrderByCreatedAtDesc(ErrorLogEntry.Severity severity);
+  List<ErrorLogEntry> findBySeverityOrderByCreatedAtDesc(ErrorLogEntry.Severity severity);
 
-    List<ErrorLogEntry> findByServiceNameOrderByCreatedAtDesc(String serviceName);
+  List<ErrorLogEntry> findByServiceNameOrderByCreatedAtDesc(String serviceName);
 
-    List<ErrorLogEntry> findByCreatedAtBetweenOrderByCreatedAtDesc(
-            OffsetDateTime from, OffsetDateTime to);
+  List<ErrorLogEntry> findByCreatedAtBetweenOrderByCreatedAtDesc(
+      OffsetDateTime from, OffsetDateTime to);
 
-    List<ErrorLogEntry> findBySeverityAndServiceNameOrderByCreatedAtDesc(
-            ErrorLogEntry.Severity severity, String serviceName);
+  List<ErrorLogEntry> findBySeverityAndServiceNameOrderByCreatedAtDesc(
+      ErrorLogEntry.Severity severity, String serviceName);
 }

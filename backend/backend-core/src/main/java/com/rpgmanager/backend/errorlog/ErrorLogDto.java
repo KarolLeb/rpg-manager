@@ -15,13 +15,13 @@ import lombok.Setter;
 @Builder
 public class ErrorLogDto {
 
-    private Long id;
-    private String serviceName;
-    private ErrorLogEntry.Severity severity;
-    private String message;
-    private String stackTrace;
-    private String correlationId;
-    private Long userId;
-    private String requestPath;
-    private OffsetDateTime createdAt;
+  private Long id;
+  private String serviceName;
+  private ErrorLogEntry.Severity severity;
+  private String message;
+  private String stackTrace;
+  private String correlationId;
+  private Long userId;
+  private String requestPath;
+  private OffsetDateTime createdAt;
 }
