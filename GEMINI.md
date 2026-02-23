@@ -11,6 +11,10 @@ This file provides a high-level map of the project structure and resources for t
 - **Compatibility**: See **[Testcontainers Compatibility](docs/TESTCONTAINERS_COMPATIBILITY.md)** for known issues with Docker Desktop versions.
 - **Action**: If Docker is not running, ask the user to start it before proceeding with tests.
 
+## 🌿 Branching Strategy
+- **New Features**: Starting work on a new feature must ALWAYS be done on a new, dedicated branch.
+- **Bug Fixes & Separate Tasks**: When starting work on something else (such as simple bug fixes or unrelated tasks), you MUST create and use separate branches. Do not mix unrelated changes in a single branch.
+
 ## 🧪 Quality Assurance Workflows
 Use these standardized npm scripts (defined in root `package.json`) to verify code quality. They cover both Backend and Frontend.
 
