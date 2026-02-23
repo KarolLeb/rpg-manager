@@ -11,6 +11,7 @@ import com.rpgmanager.backend.actionpolicy.infrastructure.adapter.outgoing.persi
 import com.rpgmanager.backend.actionpolicy.infrastructure.adapter.outgoing.persist.JpaActionPolicyRepository;
 import com.rpgmanager.backend.actionpolicy.infrastructure.adapter.outgoing.persist.JpaCharacterActionOverrideRepository;
 import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.errorlog.ErrorLogService;
 import com.rpgmanager.common.security.JwtUtil;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,8 @@ class AdminPolicyManagementControllerIT {
   @MockitoBean private JpaActionPolicyRepository actionPolicyRepository;
 
   @MockitoBean private JpaCharacterActionOverrideRepository characterActionOverrideRepository;
+
+  @MockitoBean private ErrorLogService errorLogService;
 
   @MockitoBean private SecurityProperties securityProperties;
 

@@ -21,15 +21,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class CharacterApplicationServiceTest {
 
-  @Mock
-  private CharacterRepository characterRepository;
-  @Mock
-  private CharacterApplicationMapper characterApplicationMapper;
-  @Mock
-  private org.springframework.context.ApplicationEventPublisher eventPublisher;
+  @Mock private CharacterRepository characterRepository;
+  @Mock private CharacterApplicationMapper characterApplicationMapper;
+  @Mock private org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-  @InjectMocks
-  private CharacterApplicationService service;
+  @InjectMocks private CharacterApplicationService service;
 
   @Test
   void getAllCharacters_shouldReturnList() {

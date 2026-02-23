@@ -28,7 +28,8 @@ class CharacterActionOverridePersistenceAdapterTest {
     CharacterActionOverrideEntity entity = CharacterActionOverrideEntity.builder().build();
     CharacterActionOverride domain = CharacterActionOverride.builder().build();
 
-    when(jpaRepository.findByCharacterIdAndActionTypeAndContextTypeAndContextId(any(), any(), any(), any()))
+    when(jpaRepository.findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+            any(), any(), any(), any()))
         .thenReturn(Optional.of(entity));
     when(mapper.toDomain(entity)).thenReturn(domain);
 
@@ -41,7 +42,8 @@ class CharacterActionOverridePersistenceAdapterTest {
 
   @Test
   void shouldReturnEmptyWhenNotFound() {
-    when(jpaRepository.findByCharacterIdAndActionTypeAndContextTypeAndContextId(any(), any(), any(), any()))
+    when(jpaRepository.findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+            any(), any(), any(), any()))
         .thenReturn(Optional.empty());
 
     Optional<CharacterActionOverride> result =

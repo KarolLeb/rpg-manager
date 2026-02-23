@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.rpgmanager.backend.config.SecurityConfig;
 import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.errorlog.ErrorLogService;
 import com.rpgmanager.common.security.BrowserNavigationFilter;
 import com.rpgmanager.common.security.JwtFilter;
 import com.rpgmanager.common.security.JwtUtil;
@@ -33,6 +34,8 @@ class StyleControllerTest {
   @Autowired private MockMvc mockMvc;
 
   @MockitoBean private StyleService styleService;
+
+  @MockitoBean private ErrorLogService errorLogService;
 
   @MockitoBean private JwtUtil jwtUtil;
 

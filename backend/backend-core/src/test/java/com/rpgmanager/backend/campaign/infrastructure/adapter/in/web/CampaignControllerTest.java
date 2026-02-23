@@ -20,6 +20,7 @@ import com.rpgmanager.backend.campaign.application.port.in.UpdateCampaignUseCase
 import com.rpgmanager.backend.campaign.domain.model.CampaignDomain;
 import com.rpgmanager.backend.config.SecurityConfig;
 import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.errorlog.ErrorLogService;
 import com.rpgmanager.common.security.BrowserNavigationFilter;
 import com.rpgmanager.common.security.JwtFilter;
 import com.rpgmanager.common.security.JwtUtil;
@@ -49,6 +50,7 @@ class CampaignControllerTest {
   @MockitoBean private GetCampaignUseCase getCampaignUseCase;
   @MockitoBean private UpdateCampaignUseCase updateCampaignUseCase;
   @MockitoBean private DeleteCampaignUseCase deleteCampaignUseCase;
+  @MockitoBean private ErrorLogService errorLogService;
   @MockitoBean private JwtUtil jwtUtil;
   @MockitoBean private UserDetailsService userDetailsService;
 

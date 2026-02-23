@@ -73,10 +73,7 @@ public class CampaignEntity {
     return gameMasterId;
   }
 
-  /**
-   * Sets the creation date to the current timestamp before persisting if it's
-   * null.
-   */
+  /** Sets the creation date to the current timestamp before persisting if it's null. */
   @PrePersist
   protected void onCreate() {
     if (creationDate == null) {

@@ -8,12 +8,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 /**
- * Local hash-based embedding service for development and testing. Produces
- * deterministic
+ * Local hash-based embedding service for development and testing. Produces deterministic
  * 384-dimensional vectors from text input.
  */
 @Service
-@ConditionalOnProperty(name = "rpg.embeddings.provider", havingValue = "hash", matchIfMissing = true)
+@ConditionalOnProperty(
+    name = "rpg.embeddings.provider",
+    havingValue = "hash",
+    matchIfMissing = true)
 public class HashBasedEmbeddingService implements EmbeddingService {
 
   private static final int DIMENSION = 384;

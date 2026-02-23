@@ -20,6 +20,7 @@ import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import com.rpgmanager.backend.character.infrastructure.adapter.in.web.CharacterController;
 import com.rpgmanager.backend.config.SecurityConfig;
 import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.errorlog.ErrorLogService;
 import com.rpgmanager.common.security.BrowserNavigationFilter;
 import com.rpgmanager.common.security.JwtFilter;
 import com.rpgmanager.common.security.JwtUtil;
@@ -49,6 +50,8 @@ class CharacterControllerTest {
   @MockitoBean private UpdateCharacterUseCase updateCharacterUseCase;
 
   @MockitoBean private JoinCampaignUseCase joinCampaignUseCase;
+
+  @MockitoBean private ErrorLogService errorLogService;
 
   @MockitoBean private JwtUtil jwtUtil;
 
@@ -119,16 +122,14 @@ class CharacterControllerTest {
         .willThrow(new RuntimeException("Character not found"));
 
     String content = objectMapper.writeValueAsString(updateRequest);
-    org.junit.jupiter.api.Assertions.assertThrows(
-        Exception.class,
-        () -> {
-          mockMvc.perform(
-              put("/api/characters/{id}", charId)
-                  .with(csrf())
-                  .with(user("user"))
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content(content));
-        });
+    mockMvc
+        .perform(
+            put("/api/characters/{id}", charId)
+                .with(csrf())
+                .with(user("user"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+        .andExpect(status().isInternalServerError());
   }
 
   @Test

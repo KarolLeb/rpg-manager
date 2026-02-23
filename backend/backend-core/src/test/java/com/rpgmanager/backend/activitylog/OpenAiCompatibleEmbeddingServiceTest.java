@@ -18,66 +18,62 @@ import org.springframework.test.util.ReflectionTestUtils;
 @ExtendWith(MockitoExtension.class)
 class OpenAiCompatibleEmbeddingServiceTest {
 
-    @Mock
-    private OpenAiEmbeddingClient client;
+  @Mock private OpenAiEmbeddingClient client;
 
-    @InjectMocks
-    private OpenAiCompatibleEmbeddingService service;
+  @InjectMocks private OpenAiCompatibleEmbeddingService service;
 
-    @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(service, "apiKey", "test-key");
-        ReflectionTestUtils.setField(service, "model", "test-model");
-    }
+  @BeforeEach
+  void setUp() {
+    ReflectionTestUtils.setField(service, "apiKey", "test-key");
+    ReflectionTestUtils.setField(service, "model", "test-model");
+  }
 
-    @Test
-    void generateEmbedding_shouldReturnEmbeddingFromClient() {
-        float[] expectedEmbedding = new float[] { 0.1f, 0.2f, 0.3f };
-        OpenAiEmbeddingResponse response = new OpenAiEmbeddingResponse(
-                List.of(new OpenAiEmbeddingResponse.Data(expectedEmbedding)));
+  @Test
+  void embed_shouldReturnEmbeddingFromClient() {
+    float[] expectedEmbedding = new float[] {0.1f, 0.2f, 0.3f};
+    OpenAiEmbeddingResponse response =
+        new OpenAiEmbeddingResponse(List.of(new OpenAiEmbeddingResponse.Data(expectedEmbedding)));
 
-        when(client.getEmbeddings(eq("Bearer test-key"), any(OpenAiEmbeddingRequest.class)))
-                .thenReturn(response);
+    when(client.getEmbeddings(eq("Bearer test-key"), any(OpenAiEmbeddingRequest.class)))
+        .thenReturn(response);
 
-        float[] actualEmbedding = service.generateEmbedding("test text");
+    float[] actualEmbedding = service.embed("test text");
 
-        assertThat(actualEmbedding).isEqualTo(expectedEmbedding);
-    }
+    assertThat(actualEmbedding).isEqualTo(expectedEmbedding);
+  }
 
-    @Test
-    void generateEmbedding_shouldThrowExceptionOnNullResponse() {
-        when(client.getEmbeddings(anyString(), any(OpenAiEmbeddingRequest.class)))
-                .thenReturn(null);
+  @Test
+  void embed_shouldThrowExceptionOnNullResponse() {
+    when(client.getEmbeddings(anyString(), any(OpenAiEmbeddingRequest.class))).thenReturn(null);
 
-        assertThatThrownBy(() -> service.generateEmbedding("test text"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Empty or null response");
-    }
+    assertThatThrownBy(() -> service.embed("test text"))
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("Empty or null response");
+  }
 
-    @Test
-    void generateEmbedding_shouldThrowExceptionOnEmptyData() {
-        OpenAiEmbeddingResponse response = new OpenAiEmbeddingResponse(List.of());
+  @Test
+  void embed_shouldThrowExceptionOnEmptyData() {
+    OpenAiEmbeddingResponse response = new OpenAiEmbeddingResponse(List.of());
 
-        when(client.getEmbeddings(anyString(), any(OpenAiEmbeddingRequest.class)))
-                .thenReturn(response);
+    when(client.getEmbeddings(anyString(), any(OpenAiEmbeddingRequest.class))).thenReturn(response);
 
-        assertThatThrownBy(() -> service.generateEmbedding("test text"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Empty or null response");
-    }
+    assertThatThrownBy(() -> service.embed("test text"))
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("Empty or null response");
+  }
 
-    @Test
-    void generateEmbedding_shouldThrowExceptionOnClientError() {
-        when(client.getEmbeddings(anyString(), any(OpenAiEmbeddingRequest.class)))
-                .thenThrow(new RuntimeException("API error"));
+  @Test
+  void embed_shouldThrowExceptionOnClientError() {
+    when(client.getEmbeddings(anyString(), any(OpenAiEmbeddingRequest.class)))
+        .thenThrow(new RuntimeException("API error"));
 
-        assertThatThrownBy(() -> service.generateEmbedding("test text"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Embedding generation failed");
-    }
+    assertThatThrownBy(() -> service.embed("test text"))
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("Embedding generation failed");
+  }
 
-    // Helper to fix any(...) matchers
-    private static <T> T any(Class<T> type) {
-        return org.mockito.ArgumentMatchers.any(type);
-    }
+  // Helper to fix any(...) matchers
+  private static <T> T any(Class<T> type) {
+    return org.mockito.ArgumentMatchers.any(type);
+  }
 }

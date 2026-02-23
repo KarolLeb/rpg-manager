@@ -23,19 +23,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class CampaignApplicationServiceTest {
 
-  @Mock
-  private CampaignRepository campaignRepository;
+  @Mock private CampaignRepository campaignRepository;
 
-  @Mock
-  private UserRepositoryPort userRepository;
+  @Mock private UserRepositoryPort userRepository;
 
-  @Mock
-  private CampaignApplicationMapper campaignApplicationMapper;
-  @Mock
-  private org.springframework.context.ApplicationEventPublisher eventPublisher;
+  @Mock private CampaignApplicationMapper campaignApplicationMapper;
+  @Mock private org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-  @InjectMocks
-  private CampaignApplicationService campaignService;
+  @InjectMocks private CampaignApplicationService campaignService;
 
   private UserDomain user;
 

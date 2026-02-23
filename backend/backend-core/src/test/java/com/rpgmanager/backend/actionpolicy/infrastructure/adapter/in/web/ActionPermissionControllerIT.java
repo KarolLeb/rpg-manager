@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.rpgmanager.backend.actionpolicy.application.service.ActionPermissionService;
 import com.rpgmanager.backend.actionpolicy.domain.ActionType;
 import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.errorlog.ErrorLogService;
 import com.rpgmanager.common.security.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ class ActionPermissionControllerIT {
   @Autowired private MockMvc mockMvc;
 
   @MockitoBean private ActionPermissionService actionPermissionService;
+
+  @MockitoBean private ErrorLogService errorLogService;
 
   @MockitoBean private SecurityProperties securityProperties;
 

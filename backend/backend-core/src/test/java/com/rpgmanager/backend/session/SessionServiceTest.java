@@ -19,16 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class SessionServiceTest {
 
-  @Mock
-  private SessionRepository sessionRepository;
+  @Mock private SessionRepository sessionRepository;
 
-  @Mock
-  private JpaCampaignRepository campaignRepository;
-  @Mock
-  private org.springframework.context.ApplicationEventPublisher eventPublisher;
+  @Mock private JpaCampaignRepository campaignRepository;
+  @Mock private org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-  @InjectMocks
-  private SessionService sessionService;
+  @InjectMocks private SessionService sessionService;
 
   private CampaignEntity campaign;
   private Session session;
@@ -39,13 +35,14 @@ class SessionServiceTest {
   void setUp() {
     campaign = CampaignEntity.builder().id(1L).name("Campaign 1").build();
 
-    session = Session.builder()
-        .id(100L)
-        .campaign(campaign)
-        .name("Session 1")
-        .sessionDate(OLD_DATE)
-        .status(Session.SessionStatus.ACTIVE)
-        .build();
+    session =
+        Session.builder()
+            .id(100L)
+            .campaign(campaign)
+            .name("Session 1")
+            .sessionDate(OLD_DATE)
+            .status(Session.SessionStatus.ACTIVE)
+            .build();
   }
 
   @Test
@@ -144,7 +141,7 @@ class SessionServiceTest {
     when(sessionRepository.findById(100L)).thenReturn(Optional.empty());
 
     org.assertj.core.api.Assertions.assertThatThrownBy(
-        () -> sessionService.updateSession(100L, request))
+            () -> sessionService.updateSession(100L, request))
         .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("Session not found with id: 100");
   }

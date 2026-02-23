@@ -14,12 +14,9 @@ class DiceServiceTest {
 
   private DiceService diceService;
 
-  @Mock
-  private DiceRollerClient diceRollerClient;
-  @Mock
-  private SecureRandom secureRandom;
-  @Mock
-  private org.springframework.context.ApplicationEventPublisher eventPublisher;
+  @Mock private DiceRollerClient diceRollerClient;
+  @Mock private SecureRandom secureRandom;
+  @Mock private org.springframework.context.ApplicationEventPublisher eventPublisher;
 
   @BeforeEach
   void setUp() {

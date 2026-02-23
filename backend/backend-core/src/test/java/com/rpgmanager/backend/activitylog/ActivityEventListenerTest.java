@@ -13,39 +13,39 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ActivityEventListenerTest {
 
-    @Mock
-    private ActivityLogService activityLogService;
+  @Mock private ActivityLogService activityLogService;
 
-    @InjectMocks
-    private ActivityEventListener activityEventListener;
+  @InjectMocks private ActivityEventListener activityEventListener;
 
-    @Test
-    void handleActivityEvent_shouldDelegateToActivityLogService() {
-        ActivityEvent event = new ActivityEvent(
-                ActivityLogEntry.ActionType.DICE_ROLL,
-                "Rolled d20, got 18",
-                1L,
-                2L,
-                3L,
-                Map.of("sides", 20, "result", 18));
+  @Test
+  void handleActivityEvent_shouldDelegateToActivityLogService() {
+    ActivityEvent event =
+        new ActivityEvent(
+            ActivityLogEntry.ActionType.DICE_ROLL,
+            "Rolled d20, got 18",
+            1L,
+            2L,
+            3L,
+            Map.of("sides", 20, "result", 18));
 
-        activityEventListener.handleActivityEvent(event);
+    activityEventListener.handleActivityEvent(event);
 
-        verify(activityLogService).logActivity(any(CreateActivityLogRequest.class));
-    }
+    verify(activityLogService).logActivity(any(CreateActivityLogRequest.class));
+  }
 
-    @Test
-    void handleActivityEvent_shouldHandleNullMetadata() {
-        ActivityEvent event = new ActivityEvent(
-                ActivityLogEntry.ActionType.SESSION_START,
-                "Session 'Adventure' started",
-                1L,
-                2L,
-                null,
-                null);
+  @Test
+  void handleActivityEvent_shouldHandleNullMetadata() {
+    ActivityEvent event =
+        new ActivityEvent(
+            ActivityLogEntry.ActionType.SESSION_START,
+            "Session 'Adventure' started",
+            1L,
+            2L,
+            null,
+            null);
 
-        activityEventListener.handleActivityEvent(event);
+    activityEventListener.handleActivityEvent(event);
 
-        verify(activityLogService).logActivity(any(CreateActivityLogRequest.class));
-    }
+    verify(activityLogService).logActivity(any(CreateActivityLogRequest.class));
+  }
 }

@@ -49,25 +49,27 @@ public class CharacterApplicationService
   @Override
   @Transactional(readOnly = true)
   public CharacterResponse getCharacter(Long id) {
-    CharacterDomain character = characterRepository
-        .findById(id)
-        .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
+    CharacterDomain character =
+        characterRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
     return characterApplicationMapper.toResponse(character);
   }
 
   /**
    * Updates an existing character.
    *
-   * @param id               the ID of the character to update
+   * @param id the ID of the character to update
    * @param characterDetails the new character details
    * @return the updated character response
    */
   @Override
   @Transactional
   public CharacterResponse updateCharacter(Long id, CharacterDomain characterDetails) {
-    CharacterDomain character = characterRepository
-        .findById(id)
-        .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
+    CharacterDomain character =
+        characterRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
 
     character.setName(characterDetails.getName());
     character.setCharacterClass(characterDetails.getCharacterClass());
@@ -82,7 +84,8 @@ public class CharacterApplicationService
             null,
             savedCharacter.getCampaignId(),
             null,
-            Map.of("characterId", savedCharacter.getId(), "characterName", savedCharacter.getName())));
+            Map.of(
+                "characterId", savedCharacter.getId(), "characterName", savedCharacter.getName())));
     return characterApplicationMapper.toResponse(savedCharacter);
   }
 
@@ -90,15 +93,16 @@ public class CharacterApplicationService
    * Allows a character to join a campaign.
    *
    * @param characterId the ID of the character
-   * @param campaignId  the ID of the campaign
+   * @param campaignId the ID of the campaign
    * @return the updated character response
    */
   @Override
   @Transactional
   public CharacterResponse joinCampaign(Long characterId, Long campaignId) {
-    CharacterDomain character = characterRepository
-        .findById(characterId)
-        .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + characterId));
+    CharacterDomain character =
+        characterRepository
+            .findById(characterId)
+            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + characterId));
 
     // Note: Campaign verification should ideally happen here via a CampaignPort
     // For now, we trust the ID or handle it in the persistence adapter
@@ -108,7 +112,8 @@ public class CharacterApplicationService
     eventPublisher.publishEvent(
         new ActivityEvent(
             ActivityLogEntry.ActionType.CHARACTER_CHANGE,
-            String.format("Character '%s' joined campaign %d", savedCharacter.getName(), campaignId),
+            String.format(
+                "Character '%s' joined campaign %d", savedCharacter.getName(), campaignId),
             null,
             campaignId,
             null,

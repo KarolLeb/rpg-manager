@@ -29,24 +29,28 @@ public class SessionService {
    */
   @Transactional
   public SessionDto createSession(CreateSessionRequest request) {
-    CampaignEntity campaign = campaignRepository
-        .findById(request.getCampaignId())
-        .orElseThrow(
-            () -> new RuntimeException("Campaign not found with id: " + request.getCampaignId()));
+    CampaignEntity campaign =
+        campaignRepository
+            .findById(request.getCampaignId())
+            .orElseThrow(
+                () ->
+                    new RuntimeException("Campaign not found with id: " + request.getCampaignId()));
 
-    Session session = Session.builder()
-        .campaign(campaign)
-        .name(request.getName())
-        .description(request.getDescription())
-        .sessionDate(request.getSessionDate())
-        .status(Session.SessionStatus.ACTIVE)
-        .build();
+    Session session =
+        Session.builder()
+            .campaign(campaign)
+            .name(request.getName())
+            .description(request.getDescription())
+            .sessionDate(request.getSessionDate())
+            .status(Session.SessionStatus.ACTIVE)
+            .build();
 
     Session savedSession = sessionRepository.save(session);
     eventPublisher.publishEvent(
         new ActivityEvent(
             ActivityLogEntry.ActionType.SESSION_START,
-            String.format("Session '%s' created for campaign %d", savedSession.getName(), campaign.getId()),
+            String.format(
+                "Session '%s' created for campaign %d", savedSession.getName(), campaign.getId()),
             savedSession.getId(),
             campaign.getId(),
             null,
@@ -62,9 +66,10 @@ public class SessionService {
    */
   @Transactional(readOnly = true)
   public SessionDto getSession(Long id) {
-    Session session = sessionRepository
-        .findById(id)
-        .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
+    Session session =
+        sessionRepository
+            .findById(id)
+            .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
     return toDto(session);
   }
 
@@ -82,15 +87,16 @@ public class SessionService {
   /**
    * Updates an existing session.
    *
-   * @param id      the ID of the session to update
+   * @param id the ID of the session to update
    * @param request the updated session details
    * @return the updated session DTO
    */
   @Transactional
   public SessionDto updateSession(Long id, CreateSessionRequest request) {
-    Session session = sessionRepository
-        .findById(id)
-        .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
+    Session session =
+        sessionRepository
+            .findById(id)
+            .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
 
     session.setName(request.getName());
     session.setDescription(request.getDescription());
@@ -115,9 +121,10 @@ public class SessionService {
    */
   @Transactional
   public void cancelSession(Long id) {
-    Session session = sessionRepository
-        .findById(id)
-        .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
+    Session session =
+        sessionRepository
+            .findById(id)
+            .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
     session.setStatus(Session.SessionStatus.CANCELLED);
     sessionRepository.save(session);
     eventPublisher.publishEvent(
@@ -137,9 +144,10 @@ public class SessionService {
    */
   @Transactional
   public void completeSession(Long id) {
-    Session session = sessionRepository
-        .findById(id)
-        .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
+    Session session =
+        sessionRepository
+            .findById(id)
+            .orElseThrow(() -> new RuntimeException(SESSION_NOT_FOUND_MSG + id));
     session.setStatus(Session.SessionStatus.FINISHED);
     sessionRepository.save(session);
     eventPublisher.publishEvent(

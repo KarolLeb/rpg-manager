@@ -90,9 +90,9 @@ class ActivityLogServiceTest {
 
     Object[] row = new Object[10];
     row[0] = 100L; // id
-    row[1] = 1L;   // sessionId
-    row[2] = 2L;   // campaignId
-    row[3] = 3L;   // userId
+    row[1] = 1L; // sessionId
+    row[2] = 2L; // campaignId
+    row[3] = 3L; // userId
     row[4] = "DICE_ROLL"; // actionType
     row[5] = "Rolled a 20"; // description
     row[6] = "{\"die\":\"d20\"}"; // metadata

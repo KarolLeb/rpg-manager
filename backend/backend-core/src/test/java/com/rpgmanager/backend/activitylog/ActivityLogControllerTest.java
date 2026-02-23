@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.errorlog.ErrorLogService;
 import com.rpgmanager.common.security.JwtUtil;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,7 @@ class ActivityLogControllerTest {
   @Autowired private ObjectMapper objectMapper;
 
   @MockitoBean private ActivityLogService activityLogService;
+  @MockitoBean private ErrorLogService errorLogService;
   @MockitoBean private SecurityProperties securityProperties;
   @MockitoBean private JwtUtil jwtUtil;
 
@@ -65,7 +67,8 @@ class ActivityLogControllerTest {
 
   @Test
   void shouldSearchActivities() throws Exception {
-    when(activityLogService.searchActivities(anyString(), anyInt())).thenReturn(List.of(activityDto));
+    when(activityLogService.searchActivities(anyString(), anyInt()))
+        .thenReturn(List.of(activityDto));
 
     mockMvc
         .perform(get("/api/activity-log/search").param("q", "test").param("limit", "5"))

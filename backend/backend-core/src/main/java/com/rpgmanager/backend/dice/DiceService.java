@@ -22,8 +22,7 @@ public class DiceService {
   private final ApplicationEventPublisher eventPublisher;
 
   /**
-   * Rolls a die with the specified number of sides using an external API, falling
-   * back to a local
+   * Rolls a die with the specified number of sides using an external API, falling back to a local
    * random generator if the API fails.
    *
    * @param sides the number of sides on the die
@@ -42,7 +41,7 @@ public class DiceService {
    * Fallback method for local dice rolling when the external API is unavailable.
    *
    * @param sides the number of sides on the die
-   * @param t     the exception that caused the fallback
+   * @param t the exception that caused the fallback
    * @return the result of the local roll
    */
   public int localRoll(int sides, Throwable t) {

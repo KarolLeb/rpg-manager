@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rpgmanager.backend.config.SecurityConfig;
 import com.rpgmanager.backend.config.SecurityProperties;
+import com.rpgmanager.backend.errorlog.ErrorLogService;
 import com.rpgmanager.common.security.BrowserNavigationFilter;
 import com.rpgmanager.common.security.JwtFilter;
 import com.rpgmanager.common.security.JwtUtil;
@@ -41,6 +42,7 @@ class SessionControllerTest {
   @Autowired private ObjectMapper objectMapper;
 
   @MockitoBean private SessionService sessionService;
+  @MockitoBean private ErrorLogService errorLogService;
   @MockitoBean private JwtUtil jwtUtil;
   @MockitoBean private UserDetailsService userDetailsService;
 
