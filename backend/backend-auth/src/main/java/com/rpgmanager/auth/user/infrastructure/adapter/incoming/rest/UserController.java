@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.lang.NonNull;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,7 +19,7 @@ public class UserController {
   private final UserRepositoryPort userRepository;
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserDomain> getUserById(@PathVariable Long id) {
+  public ResponseEntity<UserDomain> getUserById(@PathVariable @NonNull Long id) {
     return userRepository
         .findById(id)
         .map(ResponseEntity::ok)
@@ -26,7 +27,7 @@ public class UserController {
   }
 
   @GetMapping
-  public ResponseEntity<UserDomain> getUserByUsername(@RequestParam String username) {
+  public ResponseEntity<UserDomain> getUserByUsername(@RequestParam @NonNull String username) {
     return userRepository
         .findByUsername(username)
         .map(ResponseEntity::ok)

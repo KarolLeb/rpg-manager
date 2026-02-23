@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /** Service for handling authentication and user registration. */
 @Service
@@ -30,27 +31,30 @@ public class AuthService {
    * @return the authentication response containing the JWT token
    */
   public AuthResponse login(LoginRequest request) {
-    log.info("Attempting login for user: {}", request.getUsername());
+    String username = request.getUsername();
+    if (!StringUtils.hasText(username)) {
+      throw new IllegalArgumentException("Username must not be empty");
+    }
+    log.info("Attempting login for user: {}", username);
     try {
       authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+          new UsernamePasswordAuthenticationToken(username, request.getPassword()));
     } catch (Exception e) {
       log.error(
-          "Authentication failed for user: {}. Error: {}", request.getUsername(), e.getMessage());
+          "Authentication failed for user: {}. Error: {}", username, e.getMessage());
       throw e;
     }
 
-    UserDomain user =
-        userRepository
-            .findByUsername(request.getUsername())
-            .orElseThrow(
-                () -> {
-                  log.error("User not found after authentication: {}", request.getUsername());
-                  return new UsernameNotFoundException("User not found");
-                });
+    UserDomain user = userRepository
+        .findByUsername(username)
+        .orElseThrow(
+            () -> {
+              log.error("User not found after authentication: {}", username);
+              return new UsernameNotFoundException("User not found");
+            });
 
     String token = jwtUtil.generateToken(user.getUsername(), user.getId(), user.getRole().name());
-    log.info("Login successful for user: {}", request.getUsername());
+    log.info("Login successful for user: {}", username);
 
     return new AuthResponse(token, user.getUsername(), user.getRole().name(), user.getId());
   }
@@ -62,19 +66,23 @@ public class AuthService {
    */
   @Transactional
   public void register(RegisterRequest request) {
-    log.info("Registering user: {}", request.getUsername());
-    if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-      log.warn("Registration failed: Username already exists: {}", request.getUsername());
+    String username = request.getUsername();
+    if (!StringUtils.hasText(username)) {
+      throw new IllegalArgumentException("Username must not be empty");
+    }
+    log.info("Registering user: {}", username);
+    if (userRepository.findByUsername(username).isPresent()) {
+      log.warn("Registration failed: Username already exists: {}", username);
       throw new IllegalArgumentException("Username already exists");
     }
 
     UserDomain user = new UserDomain();
-    user.setUsername(request.getUsername());
+    user.setUsername(username);
     user.setPassword(passwordEncoder.encode(request.getPassword()));
     user.setEmail(request.getEmail());
     user.setRole(UserDomain.Role.PLAYER);
 
     userRepository.save(user);
-    log.info("User registered successfully: {}", request.getUsername());
+    log.info("User registered successfully: {}", username);
   }
 }

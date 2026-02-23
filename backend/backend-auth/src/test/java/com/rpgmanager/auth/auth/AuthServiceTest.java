@@ -24,10 +24,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-  @Mock private AuthenticationManager authenticationManager;
-  @Mock private JwtUtil jwtUtil;
-  @Mock private UserRepositoryPort userRepository;
-  @Mock private PasswordEncoder passwordEncoder;
+  @Mock
+  private AuthenticationManager authenticationManager;
+  @Mock
+  private JwtUtil jwtUtil;
+  @Mock
+  private UserRepositoryPort userRepository;
+  @Mock
+  private PasswordEncoder passwordEncoder;
 
   private AuthService authService;
 
@@ -74,6 +78,7 @@ class AuthServiceTest {
   }
 
   @Test
+  @SuppressWarnings("null")
   void register_shouldSaveUser_whenUsernameIsAvailable() {
     RegisterRequest request = new RegisterRequest("newuser", "password", "test@example.com");
     given(userRepository.findByUsername("newuser")).willReturn(Optional.empty());
@@ -81,8 +86,7 @@ class AuthServiceTest {
 
     authService.register(request);
 
-    org.mockito.ArgumentCaptor<UserDomain> userCaptor =
-        org.mockito.ArgumentCaptor.forClass(UserDomain.class);
+    org.mockito.ArgumentCaptor<UserDomain> userCaptor = org.mockito.ArgumentCaptor.forClass(UserDomain.class);
     verify(userRepository).save(userCaptor.capture());
     UserDomain savedUser = userCaptor.getValue();
     assertThat(savedUser.getUsername()).isEqualTo("newuser");

@@ -4,6 +4,7 @@ import com.rpgmanager.auth.user.domain.model.UserDomain;
 import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
 import com.rpgmanager.auth.user.infrastructure.mapper.UserPersistenceMapper;
 import java.util.Optional;
+import org.springframework.lang.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,24 +22,24 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
   }
 
   @Override
-  public Optional<UserDomain> findById(Long id) {
+  public Optional<UserDomain> findById(@NonNull Long id) {
     return jpaUserRepository.findById(id).map(userPersistenceMapper::toDomain);
   }
 
   @Override
-  public Optional<UserDomain> findByUsername(String username) {
+  public Optional<UserDomain> findByUsername(@NonNull String username) {
     return jpaUserRepository.findByUsername(username).map(userPersistenceMapper::toDomain);
   }
 
   @Override
-  public UserDomain save(UserDomain user) {
+  public UserDomain save(@NonNull UserDomain user) {
     UserEntity entity = userPersistenceMapper.toEntity(user);
     UserEntity savedEntity = jpaUserRepository.save(entity);
     return userPersistenceMapper.toDomain(savedEntity);
   }
 
   @Override
-  public boolean existsById(Long id) {
+  public boolean existsById(@NonNull Long id) {
     return jpaUserRepository.existsById(id);
   }
 }

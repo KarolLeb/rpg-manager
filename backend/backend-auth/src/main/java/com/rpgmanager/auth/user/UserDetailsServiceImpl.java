@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /** Service implementation for loading user details. */
 @Service
@@ -19,10 +20,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    UserDomain user =
-        userRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    if (!StringUtils.hasText(username)) {
+      throw new UsernameNotFoundException("Username cannot be empty");
+    }
+    UserDomain user = userRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
     return new org.springframework.security.core.userdetails.User(
         user.getUsername(),
