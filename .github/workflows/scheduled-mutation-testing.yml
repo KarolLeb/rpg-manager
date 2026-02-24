@@ -9,9 +9,9 @@ jobs:
   backend-mutation:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
       with:
         java-version: '21'
         distribution: 'temurin'
@@ -24,7 +24,7 @@ jobs:
         ./mvnw test-compile pitest:mutationCoverage -B
     - name: Upload Pitest Report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         name: pitest-full-report
         path: backend/target/pit-reports
@@ -32,9 +32,9 @@ jobs:
   frontend-mutation:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
     - name: Set up Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
       with:
         node-version: '22'
         cache: 'npm'
@@ -49,7 +49,7 @@ jobs:
         npm run stryker
     - name: Upload Stryker Report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         name: stryker-full-report
         path: frontend/reports/mutation

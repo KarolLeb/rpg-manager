@@ -10,10 +10,10 @@ jobs:
   backend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
       with:
         java-version: '21'
         distribution: 'temurin'
@@ -29,14 +29,14 @@ jobs:
 
     - name: Upload Test Results
       if: always() && !env.ACT
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         name: backend-test-results
         path: backend/**/target/surefire-reports
 
     - name: Upload Coverage
       if: success() && !env.ACT
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         name: backend-coverage
         path: backend/**/target/site/jacoco
@@ -56,9 +56,9 @@ jobs:
     needs: [backend, frontend]
     if: github.event_name == 'pull_request'
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
       with:
         java-version: '21'
         distribution: 'temurin'
@@ -70,7 +70,7 @@ jobs:
         sed -i 's/\r$//' mvnw
         ./mvnw test-compile pitest:mutationCoverage -B
     - name: Set up Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
       with:
         node-version: '22'
         cache: 'npm'
@@ -88,7 +88,7 @@ jobs:
         npm run stryker -- --concurrency 2
     - name: Upload Mutation Reports
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         name: mutation-reports
         path: |
@@ -98,10 +98,10 @@ jobs:
   frontend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Set up Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
       with:
         node-version: '22'
         cache: 'npm'
@@ -155,7 +155,7 @@ jobs:
 
     - name: Upload Build Artifact
       if: ${{ !env.ACT }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         name: frontend-dist
         path: frontend/dist/rpg-client
@@ -163,10 +163,10 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Set up Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
       with:
         node-version: '22'
         cache: 'npm'
@@ -189,7 +189,7 @@ jobs:
 
     - name: Upload Playwright Report
       if: always() && !env.ACT
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         name: playwright-report
         path: frontend/playwright-report/
@@ -205,17 +205,17 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
 
       - name: Prepare lowercase repo name
         run: echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Log in to GHCR
         if: ${{ !env.ACT }}
-        uses: docker/login-action@v3
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -223,7 +223,7 @@ jobs:
 
       - name: Build and push Backend-Auth
         if: ${{ !env.ACT }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: ./backend
           file: ./backend/backend-auth/Dockerfile
@@ -235,7 +235,7 @@ jobs:
 
       - name: Build and push Backend-Admin
         if: ${{ !env.ACT }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: ./backend
           file: ./backend/backend-admin/Dockerfile
@@ -247,7 +247,7 @@ jobs:
 
       - name: Build and push Backend-Core
         if: ${{ !env.ACT }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: ./backend
           file: ./backend/backend-core/Dockerfile
@@ -259,7 +259,7 @@ jobs:
 
       - name: Build and push Frontend
         if: ${{ !env.ACT }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: ./frontend
           target: production
