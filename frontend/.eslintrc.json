@@ -6,11 +6,12 @@
   "overrides": [
     {
       "files": [
-        "*.ts"
+        "src/**/*.ts"
       ],
       "parserOptions": {
         "project": [
-          "tsconfig.json"
+          "tsconfig.app.json",
+          "tsconfig.spec.json"
         ],
         "createDefaultProgram": true
       },
@@ -47,7 +48,7 @@
     },
     {
       "files": [
-        "*.html"
+        "src/**/*.html"
       ],
       "extends": [
         "plugin:@angular-eslint/template/recommended"
