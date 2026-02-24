@@ -138,7 +138,7 @@ describe('CampaignFormComponent', () => {
 
     expect(component.isEditMode).toBe(true);
     expect(component.campaignId).toBeNaN();
-    expect(mockCampaignService.getCampaign).toHaveBeenCalledWith(NaN);
+    expect(mockCampaignService.getCampaign).toHaveBeenCalledWith(Number.NaN);
   }));
 
   it('should treat id "0" as falsy and fall back to createCampaign in edit mode', fakeAsync(() => {

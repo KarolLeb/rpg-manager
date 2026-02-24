@@ -41,7 +41,7 @@ test.describe('Campaign CRUD', () => {
     await page.route(/.*\/api\/campaigns\/\d+$/, async route => {
       const method = route.request().method();
       const url = route.request().url();
-      const id = parseInt(url.split('/').pop() || '0', 10);
+      const id = Number.parseInt(url.split('/').pop() || '0', 10);
 
       if (method === 'DELETE') {
         db = db.filter(c => c.id !== id);
