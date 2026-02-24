@@ -112,7 +112,7 @@ AI assistants MUST follow trunk-based development with lightweight, short-lived 
 3. **Integration**: Regularly rebase/merge from `master` to stay current.
 4. **Review**: Submit PR when feature/fix is complete.
 5. **Approval**: Obtain at least one approval before merging.
-6. **Cleanup**: Delete feature branch after successful merge.
+6. **Cleanup**: Delete feature/fix branch from both local and remote immediately after successful merge. No unnecessary branches should remain on origin.
 
 <WORKFLOW_ENFORCEMENT>
 - Branch lifetime: Maximum 3 days from creation to merge

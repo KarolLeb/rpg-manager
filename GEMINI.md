@@ -13,6 +13,7 @@ This file provides a high-level map of the project structure and resources for t
 
 ## 🌿 Branching Strategy
 - **Create Worktree First**: A new, dedicated git worktree and branch MUST be created from `master` BEFORE making any modifications to the codebase. This ensures the environment remains clean for other agents.
+- **Remote Branch Cleanup**: All remote branches (other than `master`/`main`) MUST be deleted immediately after merging to keep the remote environment clean. No unnecessary branches should be kept on remote.
 - **New Features**: All new features must be developed on their own branches (e.g., `feature/description`) in separate worktrees.
 - **Bug Fixes & Tasks**: Use separate branches and worktrees for bug fixes (`fix/description`) or tasks (`task/description`). Do not mix unrelated changes.
 

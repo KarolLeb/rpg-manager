@@ -95,6 +95,18 @@ Framework-specific notes:
 - Django: Views/ViewSets → Services (plain modules) → ORM Models/Managers. Keep fat models thin services as needed; avoid business logic in views.
 - ASP.NET Core: Controllers → Services (DI) → Repositories (EF Core). Prefer interfaces for services/repositories for testability.
 
+### Multi-Service Architecture
+The backend is composed of three interconnected services:
+- **`backend-auth`**: Handles authentication and user management.
+- **`backend-admin`**: Administrative functions and dashboards.
+- **`backend-core`**: Core RPG management logic.
+
+### Docker Build Strategy
+Due to the multi-module nature of the project:
+1.  **Build Context**: The build context for all backend services MUST be the root `./backend` directory.
+2.  **Shared Resources**: Submodules rely on the root `pom.xml` and shared configuration files (like `checkstyle.xml`).
+3.  **Dockerfile Location**: Individual `Dockerfile`s are located in their respective submodule directories (e.g., `./backend/backend-core/Dockerfile`).
+
 Testing guidance: unit-test services with fakes; integration-test controllers and repositories. See `.github/copilot-instructions.md#quality-policy` for coverage expectations.
 
 <a name="backend-error-handling"></a>
