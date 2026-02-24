@@ -41,14 +41,16 @@ describe('authGuard', () => {
   });
 
   it('should return false and navigate to dashboard if user has wrong role', () => {
+    spyOn(console, 'warn');
     authServiceSpy.isLoggedIn.and.returnValue(true);
     Object.defineProperty(authServiceSpy, 'currentUserValue', { get: () => ({ role: 'PLAYER' }) });
-    const mockRoute = { data: { roles: ['ADMIN'] } } as unknown as ActivatedRouteSnapshot;
+    const mockRoute = { data: { roles: ['ADMIN', 'GM'] } } as unknown as ActivatedRouteSnapshot;
     const result = TestBed.runInInjectionContext(() => authGuard(mockRoute, { url: '/test' } as RouterStateSnapshot));
+    
     expect(result).toBeFalse();
-    expect(toastServiceSpy.error).toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalledWith('Access denied for role: PLAYER. Required: ADMIN,GM');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Access Denied. Required roles: ADMIN, GM');
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/dashboard']);
-    expect((routerSpy.navigate as jasmine.Spy).calls.argsFor(0)[0]).toEqual(['/dashboard']);
   });
 
   it('should navigate to login if user is not logged in', () => {

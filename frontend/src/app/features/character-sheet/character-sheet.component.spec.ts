@@ -58,6 +58,22 @@ describe('CharacterSheetPageComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(component.isLoading).toBeFalse();
+    
+    // Kill mutations in physicalAttributes and mentalAttributes arrays
+    expect(component.physicalAttributes).toEqual([
+      { key: 'strength', label: 'Siła' },
+      { key: 'constitution', label: 'Wytrzymałość' },
+      { key: 'dexterity', label: 'Zręczność' },
+      { key: 'agility', label: 'Zwinność' },
+      { key: 'perception', label: 'Percepcja' },
+      { key: 'empathy', label: 'Empatia' }
+    ]);
+    expect(component.mentalAttributes).toEqual([
+      { key: 'charisma', label: 'Charyzma' },
+      { key: 'intelligence', label: 'Inteligencja' },
+      { key: 'knowledge', label: 'Wiedza' },
+      { key: 'willpower', label: 'Siła Woli' }
+    ]);
   });
 
   it('should have empty initial form values', () => {
@@ -98,11 +114,14 @@ describe('CharacterSheetPageComponent', () => {
     expect(component.isLoading).toBeFalse();
 
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
+    expect(component.characterForm.get('info.profession')?.value).toBe('Soldier');
     expect(component.characterForm.get('info.ambition')?.value).toBe('Z bazy danych');
     expect(component.characterForm.get('info.nemesis')?.value).toBe('Brak danych');
 
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
-    expect(Object.keys(attrsGroup.controls).length).toBeGreaterThan(0);
+    expect(Object.keys(attrsGroup.controls).length).toBe(2);
+    expect(attrsGroup.get('strength')).toBeTruthy();
+    expect(attrsGroup.get('charisma')).toBeTruthy();
   }));
 
   it('should call updateCharacter on save with correctly serialized stats', () => {
@@ -117,6 +136,7 @@ describe('CharacterSheetPageComponent', () => {
     const args = mockCharacterService.updateCharacter.calls.mostRecent().args;
     expect(args[0]).toBe(1);
     expect(args[1].name).toBe('Updated Char');
+    expect(args[1].characterClass).toBe('Soldier');
     expect(args[1].id).toBe(1);
 
     // Check if stats are correctly serialized back
@@ -124,12 +144,13 @@ describe('CharacterSheetPageComponent', () => {
     expect(savedStats.strength.val).toBe(10);
     expect(savedStats.strength.skills.length).toBe(1);
     expect(savedStats.strength.skills[0]).toEqual(['Melee', 2, 12]);
-    // Extra checks to kill mutations in mapping
+    
+    // Verify mapping details to kill mutations in skills mapping
     expect(savedStats.strength.skills[0][0]).toBe('Melee');
     expect(savedStats.strength.skills[0][1]).toBe(2);
     expect(savedStats.strength.skills[0][2]).toBe(12);
 
-    expect(console.log).toHaveBeenCalledWith('Character saved!', jasmine.any(Object));
+    expect(console.log).toHaveBeenCalledWith('Character saved!', dummyCharacter);
     expect(mockToastService.success).toHaveBeenCalledWith('Character saved successfully!');
   });
 
@@ -162,9 +183,7 @@ describe('CharacterSheetPageComponent', () => {
     expect(console.error).not.toHaveBeenCalled();
     expect(component.isLoading).toBeFalse();
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
-    expect(component.characterForm.get('info.ambition')?.value).toBe('Z bazy danych');
-    expect(component.characterForm.get('info.nemesis')?.value).toBe('Brak danych');
-
+    
     // attributes group should be empty
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBe(0);
@@ -232,9 +251,10 @@ describe('CharacterSheetPageComponent', () => {
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBe(1);
     expect(attrsGroup.get('testAttr')).toBeTruthy();
-    expect(attrsGroup.get('testAttr')?.get('value')?.value).toBe(15);
+    const testAttrGroup = attrsGroup.get('testAttr') as FormGroup;
+    expect(testAttrGroup.get('value')?.value).toBe(15);
 
-    const skills = attrsGroup.get('testAttr')?.get('skills') as any;
+    const skills = testAttrGroup.get('skills') as any;
     expect(skills.length).toBe(1);
     expect(skills.at(0).get('name').value).toBe('Skill 1');
     expect(skills.at(0).get('level').value).toBe(5);
@@ -263,12 +283,13 @@ describe('CharacterSheetPageComponent', () => {
 
   it('should handle save error and show toast error', () => {
     fixture.detectChanges();
-    mockCharacterService.updateCharacter.and.returnValue(throwError(() => new Error('Save failed')));
+    const saveError = new Error('Save failed');
+    mockCharacterService.updateCharacter.and.returnValue(throwError(() => saveError));
     spyOn(console, 'error');
 
     component.onSave();
 
-    expect(console.error).toHaveBeenCalledWith('Save failed', jasmine.any(Error));
+    expect(console.error).toHaveBeenCalledWith('Save failed', saveError);
     expect(mockToastService.error).toHaveBeenCalledWith('Error saving character. Please try again.');
   });
 

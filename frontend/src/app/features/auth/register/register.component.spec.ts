@@ -155,6 +155,7 @@ describe('RegisterComponent', () => {
   }));
 
   it('should set error on registration failure and manage isLoading correctly', fakeAsync(() => {
+    spyOn(console, 'error');
     const errorResponse = { error: { message: 'Registration failed' } };
     spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => errorResponse))));
 
@@ -172,6 +173,7 @@ describe('RegisterComponent', () => {
     tick(10);
 
     expect(component.error).toBe('Registration failed');
+    expect(console.error).toHaveBeenCalledWith('Registration error:', errorResponse);
     expect(toastServiceSpy.error).toHaveBeenCalledWith('Registration failed');
     expect(component.isLoading).toBe(false);
   }));
@@ -212,7 +214,26 @@ describe('RegisterComponent', () => {
   }));
 
   it('should use default error message on registration failure if message is missing in error object', fakeAsync(() => {
+    // error object exists but message property is missing
     spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: {} })))));
+
+    component.registerForm.patchValue({
+      username: 'User',
+      email: 'test@example.com',
+      password: 'password123',
+      confirmPassword: 'password123'
+    });
+
+    component.onSubmit();
+    tick(10);
+
+    expect(component.error).toBe('Registration failed. Please try again.');
+    expect(toastServiceSpy.error).toHaveBeenCalledWith('Registration failed. Please try again.');
+  }));
+
+  it('should handle mutation where err.error is null by using fallback message', fakeAsync(() => {
+    // err.error is null
+    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: null })))));
 
     component.registerForm.patchValue({
       username: 'User',

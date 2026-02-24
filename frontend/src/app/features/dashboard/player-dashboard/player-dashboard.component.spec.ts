@@ -27,6 +27,7 @@ describe('PlayerDashboardComponent', () => {
   });
 
   it('should create', () => {
+    expect(component.isLoading).toBeTrue();
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(component.isLoading).toBeFalse();
@@ -47,6 +48,7 @@ describe('PlayerDashboardComponent', () => {
     tick(10);
     fixture.detectChanges();
 
+    expect(component.characters).toEqual(mockCharacters);
     expect(component.characters.length).toBe(1);
     expect(component.characters[0].name).toBe('Char 1');
     expect(component.isLoading).toBeFalse();
@@ -64,6 +66,7 @@ describe('PlayerDashboardComponent', () => {
     tick(10);
     fixture.detectChanges();
 
+    expect(component.characters).toEqual([]);
     expect(component.characters.length).toBe(0);
     expect(component.isLoading).toBeFalse();
     
@@ -84,10 +87,12 @@ describe('PlayerDashboardComponent', () => {
 
     expect(component.error).toBe('Failed to load characters.');
     expect(component.isLoading).toBeFalse();
+    expect(component.characters).toEqual([]);
     expect(component.characters.length).toBe(0);
     
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.error')).toBeTruthy();
+    expect(compiled.querySelector('.error')?.textContent).toContain('Failed to load characters.');
     expect(compiled.querySelector('.loading')).toBeFalsy();
   }));
 });

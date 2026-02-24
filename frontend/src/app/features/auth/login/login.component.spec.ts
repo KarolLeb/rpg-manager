@@ -41,6 +41,8 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
     expect(component.isLoading).toBeFalse();
     expect(component.error).toBeNull();
+    expect(component.loginForm.get('username')?.value).toBe('');
+    expect(component.loginForm.get('password')?.value).toBe('');
   });
 
   it('should have validators on form controls', () => {
@@ -104,6 +106,7 @@ describe('LoginComponent', () => {
   }));
 
   it('should use fallback error message on login failure when message is missing', fakeAsync(() => {
+    // Error object is empty
     spyOn(authService, 'login').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({})))));
 
     component.loginForm.controls['username'].setValue('testuser');
@@ -117,7 +120,8 @@ describe('LoginComponent', () => {
     expect(component.isLoading).toBeFalse();
   }));
 
-  it('should use fallback error message on login failure when error object is null', fakeAsync(() => {
+  it('should use fallback error message on login failure when err.error is null', fakeAsync(() => {
+    // err.error is null
     spyOn(authService, 'login').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: null })))));
 
     component.loginForm.controls['username'].setValue('testuser');
@@ -131,6 +135,7 @@ describe('LoginComponent', () => {
   }));
 
   it('should use fallback message if err.error.message is empty string', fakeAsync(() => {
+    // err.error.message is empty string
     spyOn(authService, 'login').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: { message: '' } })))));
 
     component.loginForm.controls['username'].setValue('testuser');
@@ -141,6 +146,19 @@ describe('LoginComponent', () => {
 
     expect(component.error).toBe('Login failed. Please check your credentials.');
     expect(toastServiceSpy.error).toHaveBeenCalledWith('Login failed. Please check your credentials.');
+  }));
+
+  it('should kill mutation on success message by checking exact string', fakeAsync(() => {
+    const user = { token: 't', username: 'specific_user', role: 'R', id: 1 };
+    spyOn(authService, 'login').and.returnValue(of(user).pipe(delay(10)));
+    const navigateSpy = spyOn(router, 'navigate');
+
+    component.loginForm.patchValue({ username: 'testuser', password: 'password123' });
+    component.onSubmit();
+    tick(10);
+
+    expect(toastServiceSpy.success).toHaveBeenCalledWith('Welcome back, specific_user!');
+    expect(toastServiceSpy.success).not.toHaveBeenCalledWith('');
   }));
 
   it('should not submit if form is invalid and should NOT set isLoading to true', () => {

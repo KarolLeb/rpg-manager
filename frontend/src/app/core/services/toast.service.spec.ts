@@ -14,12 +14,20 @@ describe('ToastService', () => {
   });
 
   it('should add and remove toasts', () => {
-    service.success('Success message');
-    expect(service.toasts().length).toBe(1);
-    expect(service.toasts()[0].message).toBe('Success message');
-    expect(service.toasts()[0].type).toBe('success');
+    service.success('First message');
+    service.success('Second message');
+    
+    expect(service.toasts().length).toBe(2);
+    const firstId = service.toasts()[0].id;
+    const secondId = service.toasts()[1].id;
+    
+    expect(secondId).toBe(firstId + 1);
 
-    service.remove(service.toasts()[0].id);
+    service.remove(firstId);
+    expect(service.toasts().length).toBe(1);
+    expect(service.toasts()[0].id).toBe(secondId);
+    
+    service.remove(secondId);
     expect(service.toasts().length).toBe(0);
   });
 

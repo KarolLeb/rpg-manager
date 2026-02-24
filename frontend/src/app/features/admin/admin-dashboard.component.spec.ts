@@ -27,10 +27,13 @@ describe('AdminDashboardComponent', () => {
   it('should create', () => {
     // Initial expectation
     expect(component.isLoadingUsers).toBeTrue();
+    expect(component.users).toEqual([]);
+    expect(component.usersCount).toBe(0);
 
     fixture.detectChanges(); // calls ngOnInit
 
     const req = httpMock.expectOne('/api/admin/users');
+    expect(req.request.url).toBe('/api/admin/users');
     expect(req.request.method).toBe('GET');
     req.flush([]); // Flush empty to satisfy initial call
 
@@ -59,6 +62,7 @@ describe('AdminDashboardComponent', () => {
     const req = httpMock.expectOne('/api/admin/users');
     req.error(new ProgressEvent('Network error'));
 
+    expect(component.users).toEqual([]);
     expect(component.users.length).toBe(0);
     expect(component.usersCount).toBe(0);
     expect(component.isLoadingUsers).toBeFalse();
