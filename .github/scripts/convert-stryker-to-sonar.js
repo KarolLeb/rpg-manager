@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const STRYKER_REPORT_PATH = path.join(__dirname, '../frontend/reports/mutation/mutation.json');
-const SONAR_REPORT_PATH = path.join(__dirname, '../frontend/stryker-report.json');
+const STRYKER_REPORT_PATH = path.join(__dirname, '../../frontend/reports/mutation/mutation.json');
+const SONAR_REPORT_PATH = path.join(__dirname, '../../frontend/stryker-report.json');
 
 async function convert() {
     if (!fs.existsSync(STRYKER_REPORT_PATH)) {
