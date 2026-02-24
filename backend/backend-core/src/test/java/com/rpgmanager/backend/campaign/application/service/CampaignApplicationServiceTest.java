@@ -58,6 +58,7 @@ class CampaignApplicationServiceTest {
 
     assertThat(result.getName()).isEqualTo(request.getName());
     assertThat(result.getGameMasterId()).isEqualTo(1L);
+    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
     verify(campaignRepository)
         .save(
             argThat(
@@ -135,6 +136,7 @@ class CampaignApplicationServiceTest {
     CampaignDto result = campaignService.updateCampaign(1L, request);
 
     assertThat(result.getName()).isEqualTo(request.getName());
+    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
     verify(campaignRepository)
         .save(
             argThat(
@@ -241,6 +243,7 @@ class CampaignApplicationServiceTest {
 
     campaignService.deleteCampaign(1L);
 
+    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
     verify(campaignRepository).deleteById(1L);
   }
 
