@@ -5,6 +5,7 @@ COPY pom.xml .
 COPY backend-auth/pom.xml ./backend-auth/
 COPY backend-core/pom.xml ./backend-core/
 COPY backend-admin/pom.xml ./backend-admin/
+COPY backend-common/pom.xml ./backend-common/
 COPY checkstyle.xml .
 RUN mvn dependency:go-offline -pl backend-admin -am
 COPY backend-admin/src ./backend-admin/src
@@ -17,6 +18,7 @@ COPY pom.xml .
 COPY backend-auth/pom.xml ./backend-auth/
 COPY backend-core/pom.xml ./backend-core/
 COPY backend-admin/pom.xml ./backend-admin/
+COPY backend-common/pom.xml ./backend-common/
 COPY checkstyle.xml .
 RUN mvn dependency:go-offline -pl backend-admin -am
 COPY backend-admin/src ./backend-admin/src
