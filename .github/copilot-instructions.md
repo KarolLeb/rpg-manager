@@ -107,7 +107,7 @@ AI assistants MUST follow trunk-based development with lightweight, short-lived 
 - **Pull Request Mandatory**: ALL changes, no matter how small, MUST go through PR process
 
 **Workflow Requirements:**
-1. **Branch Creation**: Create a dedicated feature/fix branch from latest `master` BEFORE making any code changes.
+1. **Worktree Creation**: Create a dedicated git worktree and feature/fix branch from latest `master` BEFORE making any code changes.
 2. **Development**: Make small, focused commits with clear messages.
 3. **Integration**: Regularly rebase/merge from `master` to stay current.
 4. **Review**: Submit PR when feature/fix is complete.

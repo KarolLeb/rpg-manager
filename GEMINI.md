@@ -12,9 +12,9 @@ This file provides a high-level map of the project structure and resources for t
 - **Action**: If Docker is not running, ask the user to start it before proceeding with tests.
 
 ## 🌿 Branching Strategy
-- **Create Branch First**: A new, dedicated branch MUST be created from `master` BEFORE making any modifications to the codebase. This ensures the environment remains clean for other agents.
-- **New Features**: All new features must be developed on their own branches (e.g., `feature/description`).
-- **Bug Fixes & Tasks**: Use separate branches for bug fixes (`fix/description`) or tasks (`task/description`). Do not mix unrelated changes.
+- **Create Worktree First**: A new, dedicated git worktree and branch MUST be created from `master` BEFORE making any modifications to the codebase. This ensures the environment remains clean for other agents.
+- **New Features**: All new features must be developed on their own branches (e.g., `feature/description`) in separate worktrees.
+- **Bug Fixes & Tasks**: Use separate branches and worktrees for bug fixes (`fix/description`) or tasks (`task/description`). Do not mix unrelated changes.
 
 ## 🧪 Quality Assurance Workflows
 Use these standardized npm scripts (defined in root `package.json`) to verify code quality. They cover both Backend and Frontend.
