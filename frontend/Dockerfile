@@ -2,6 +2,7 @@
 FROM node:22-alpine AS base
 WORKDIR /app
 COPY package*.json ./
+COPY config ./config
 RUN npm install --legacy-peer-deps
 
 # Stage 2: Development
