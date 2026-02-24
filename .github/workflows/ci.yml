@@ -32,14 +32,14 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: backend-test-results
-        path: backend/target/surefire-reports
+        path: backend/**/target/surefire-reports
 
     - name: Upload Coverage
       if: success() && !env.ACT
       uses: actions/upload-artifact@v4
       with:
         name: backend-coverage
-        path: backend/target/site/jacoco
+        path: backend/**/target/site/jacoco
 
     - name: SonarQube Scan (Backend)
       if: success() && env.ACT
@@ -92,7 +92,7 @@ jobs:
       with:
         name: mutation-reports
         path: |
-          backend/target/pit-reports
+          backend/**/target/pit-reports
           frontend/reports/mutation
 
   frontend:
