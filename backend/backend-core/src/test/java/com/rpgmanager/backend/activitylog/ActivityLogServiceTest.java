@@ -288,7 +288,7 @@ class ActivityLogServiceTest {
     row[5] = "Description";
     row[6] = "{}";
     row[7] = null;
-    row[8] = Timestamp.from(Instant.now()); 
+    row[8] = Timestamp.from(Instant.now());
     row[9] = null;
 
     when(activityLogRepository.findSimilar(any(), eq(5)))

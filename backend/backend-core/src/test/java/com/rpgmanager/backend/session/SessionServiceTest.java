@@ -64,7 +64,8 @@ class SessionServiceTest {
     assertThat(result.getName()).isEqualTo("New Session");
     assertThat(result.getCampaignId()).isEqualTo(1L);
     assertThat(result.getSessionDate()).isEqualTo(NEW_DATE);
-    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
+    verify(eventPublisher)
+        .publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
     verify(sessionRepository)
         .save(
             argThat(
@@ -125,7 +126,8 @@ class SessionServiceTest {
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("Updated");
     assertThat(result.getSessionDate()).isEqualTo(NEW_DATE);
-    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
+    verify(eventPublisher)
+        .publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
     verify(sessionRepository)
         .save(
             argThat(
@@ -155,7 +157,8 @@ class SessionServiceTest {
     sessionService.cancelSession(100L);
 
     assertThat(session.getStatus()).isEqualTo(Session.SessionStatus.CANCELLED);
-    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
+    verify(eventPublisher)
+        .publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
     verify(sessionRepository).save(session);
   }
 
@@ -175,7 +178,8 @@ class SessionServiceTest {
     sessionService.completeSession(100L);
 
     assertThat(session.getStatus()).isEqualTo(Session.SessionStatus.FINISHED);
-    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
+    verify(eventPublisher)
+        .publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
     verify(sessionRepository).save(session);
   }
 
