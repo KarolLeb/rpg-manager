@@ -7,7 +7,6 @@ import { CharacterService } from '../../core/services/character.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Character } from '../../core/models/character.model';
 import { ActivatedRoute } from '@angular/router';
-import { DUMMY_CHARACTER_DATA } from './character-dummy-data';
 
 @Component({
   selector: 'app-character-sheet',
@@ -66,13 +65,10 @@ export class CharacterSheetPageComponent implements OnInit {
         },
         error: (err: any) => {
           console.error('Failed to load character', err);
-          this.toastService.error('Failed to load character from server. Loading dummy data.');
-          this.loadDummyData();
           this.isLoading = false;
         }
       });
     } else {
-      this.loadDummyData();
       this.isLoading = false;
     }
   }
@@ -140,7 +136,7 @@ export class CharacterSheetPageComponent implements OnInit {
 
     const attrsGroup = this.characterForm.get('attributes') as FormGroup;
     const dataKeys = Object.keys(attributesData);
-    
+
     dataKeys.forEach(key => {
       const data = attributesData[key];
       if (data && typeof data === 'object' && Array.isArray(data.skills)) {
@@ -157,30 +153,6 @@ export class CharacterSheetPageComponent implements OnInit {
           skills: skillsArray
         }));
       }
-    });
-  }
-
-  private loadDummyData() {
-    this.characterForm.get('info')?.patchValue(DUMMY_CHARACTER_DATA.info);
-
-    const attributesData = DUMMY_CHARACTER_DATA.attributes;
-    const attrsGroup = this.characterForm.get('attributes') as FormGroup;
-
-    Object.keys(attributesData).forEach(key => {
-      const data = attributesData[key];
-
-      const skillsArray = this.fb.array(
-        data.skills.map((s: any[]) => this.fb.group({
-          name: [s[0]],
-          level: [s[1]],
-          total: [s[2]]
-        }))
-      );
-
-      attrsGroup.addControl(key, this.fb.group({
-        value: [data.val],
-        skills: skillsArray
-      }));
     });
   }
 

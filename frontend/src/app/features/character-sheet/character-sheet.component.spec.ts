@@ -48,7 +48,7 @@ describe('CharacterSheetPageComponent', () => {
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CharacterSheetPageComponent);
     component = fixture.componentInstance;
@@ -70,120 +70,37 @@ describe('CharacterSheetPageComponent', () => {
     expect(comp2.characterForm.get('info.nemesis')?.value).toBe('');
   });
 
-  it('should load dummy data when no id is provided and verify basic info', () => {
+  it('should not load dummy data when no id is provided', () => {
     routeId = null;
     fixture.detectChanges(); // ngOnInit
     expect(component.currentCharacterId).toBeUndefined();
     expect(component.isLoading).toBeFalse();
 
     const info = component.characterForm.get('info')?.value;
-    expect(info.name).toBe('Tonny Ballony');
-    expect(info.profession).toBe('Kanciarz');
-    expect(info.ambition).toBe('To dobry interes');
-    expect(info.nemesis).toBe('Interes ponad wszystko');
-  });
-
-  it('should load dummy physical attributes correctly', () => {
-    routeId = null;
-    fixture.detectChanges();
-    expect(component.physicalAttributes.length).toBe(6);
-    const expectedPhysical = [
-      { key: 'strength', label: 'Siła', skills: ['Broń biała', 'Bijatyka', 'Zastraszanie'] },
-      { key: 'constitution', label: 'Wytrzymałość', skills: ['Atletyka', 'Mocna Głowa', 'Odporność'] },
-      { key: 'dexterity', label: 'Zręczność', skills: ['Parowanie', 'Pilotowanie', 'Sztuka'] },
-      { key: 'agility', label: 'Zwinność', skills: ['Akrobatyka', 'Rzucanie', 'Skradanie'] },
-      { key: 'perception', label: 'Percepcja', skills: ['Broń Długa', 'Nawigacja', 'Spostrzegawczość'] },
-      { key: 'empathy', label: 'Empatia', skills: ['Blef', 'Gadanina', 'Oswajanie'] }
-    ];
-
-    expectedPhysical.forEach(expected => {
-      expect(component.physicalAttributes.find(a => a.key === expected.key)).toBeTruthy();
-      const group = component.getAttributeGroup(expected.key);
-      expect(group).toBeTruthy();
-      expect(group.get('value')?.value).toBe(12);
-      
-      const skills = group.get('skills') as any;
-      expect(skills.length).toBe(3);
-      expected.skills.forEach((skillName, i) => {
-        expect(skills.at(i).get('name')?.value).toBe(skillName);
-      });
-    });
-  });
-
-  it('should load dummy mental attributes correctly', () => {
-    routeId = null;
-    fixture.detectChanges();
-    expect(component.mentalAttributes.length).toBe(4);
-    const expectedMental = [
-      { key: 'charisma', skills: ['Aktorstwo', 'Handel', 'Przekonywanie'] },
-      { key: 'intelligence', skills: ['Analiza', 'Komputery', 'Taktyka'] },
-      { key: 'knowledge', skills: ['Kosmos', 'Kultura', 'Medycyna'] },
-      { key: 'willpower', skills: ['Intuicja', 'Koncentracja', 'Siła Woli'] }
-    ];
-
-    expectedMental.forEach(expected => {
-      const group = component.getAttributeGroup(expected.key);
-      expect(group).toBeTruthy();
-      const skills = group.get('skills') as any;
-      expected.skills.forEach((skillName, i) => {
-        expect(skills.at(i).get('name')?.value).toBe(skillName);
-        expect(skills.at(i).get('level')?.value).toBe(5);
-        expect(skills.at(i).get('total')?.value).toBe(15);
-      });
-    });
-  });
-
-  it('should verify all dummy data values to kill survivors in loadDummyData', () => {
-    routeId = null;
-    fixture.detectChanges();
-
-    const expectedAttributes = [
-      { key: 'strength', val: 12, skills: [['Broń biała', 5, 15], ['Bijatyka', 5, 15], ['Zastraszanie', 5, 15]] },
-      { key: 'constitution', val: 12, skills: [['Atletyka', 5, 15], ['Mocna Głowa', 5, 15], ['Odporność', 5, 15]] },
-      { key: 'dexterity', val: 12, skills: [['Parowanie', 5, 15], ['Pilotowanie', 5, 15], ['Sztuka', 5, 15]] },
-      { key: 'agility', val: 12, skills: [['Akrobatyka', 5, 15], ['Rzucanie', 5, 15], ['Skradanie', 5, 15]] },
-      { key: 'perception', val: 12, skills: [['Broń Długa', 5, 15], ['Nawigacja', 5, 15], ['Spostrzegawczość', 5, 15]] },
-      { key: 'empathy', val: 12, skills: [['Blef', 5, 15], ['Gadanina', 5, 15], ['Oswajanie', 5, 15]] },
-      { key: 'charisma', val: 12, skills: [['Aktorstwo', 5, 15], ['Handel', 5, 15], ['Przekonywanie', 5, 15]] },
-      { key: 'intelligence', val: 12, skills: [['Analiza', 5, 15], ['Komputery', 5, 15], ['Taktyka', 5, 15]] },
-      { key: 'knowledge', val: 12, skills: [['Kosmos', 5, 15], ['Kultura', 5, 15], ['Medycyna', 5, 15]] },
-      { key: 'willpower', val: 12, skills: [['Intuicja', 5, 15], ['Koncentracja', 5, 15], ['Siła Woli', 5, 15]] }
-    ];
-
-    expectedAttributes.forEach(attr => {
-      const group = component.getAttributeGroup(attr.key);
-      expect(group).toBeTruthy();
-      expect(group.get('value')?.value).toBe(attr.val);
-      const skills = group.get('skills') as any;
-      expect(skills.length).toBe(3);
-      attr.skills.forEach((s, i) => {
-        expect(skills.at(i).get('name').value).toBe(s[0]);
-        expect(skills.at(i).get('level').value).toBe(s[1]);
-        expect(skills.at(i).get('total').value).toBe(s[2]);
-      });
-    });
+    expect(info.name).toBe('');
+    expect(info.profession).toBe('');
   });
 
   it('should load character data on init when id is provided and manage isLoading correctly', fakeAsync(() => {
     // Setup a delayed response
     mockCharacterService.getCharacter.and.returnValue(of(dummyCharacter).pipe(delay(100)));
-    
+
     // Before ngOnInit
     expect(component.isLoading).toBeTrue();
-    
+
     fixture.detectChanges(); // calls ngOnInit
-    
+
     expect(component.currentCharacterId).toBe(1);
     expect(component.isLoading).toBeTrue(); // Still true because of delay
-    
+
     tick(100); // Complete observable
-    
+
     expect(component.isLoading).toBeFalse();
-    
+
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
     expect(component.characterForm.get('info.ambition')?.value).toBe('Z bazy danych');
     expect(component.characterForm.get('info.nemesis')?.value).toBe('Brak danych');
-    
+
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBeGreaterThan(0);
   }));
@@ -224,28 +141,14 @@ describe('CharacterSheetPageComponent', () => {
     expect(mockToastService.warning).toHaveBeenCalledWith('Cannot save character: No character ID found.');
   });
 
-  it('should load dummy data when getCharacter fails and stop loading and show toast error', () => {
+  it('should NOT load dummy data when getCharacter fails and stop loading', () => {
     mockCharacterService.getCharacter.and.returnValue(throwError(() => new Error('Not found')));
     spyOn(console, 'error');
 
     fixture.detectChanges();
 
     expect(console.error).toHaveBeenCalledWith('Failed to load character', jasmine.any(Error));
-    expect(mockToastService.error).toHaveBeenCalledWith('Failed to load character from server. Loading dummy data.');
-    // Check specific dummy values to kill StringLiteral mutations
-    expect(component.characterForm.get('info.name')?.value).toBe('Tonny Ballony');
-    expect(component.characterForm.get('info.profession')?.value).toBe('Kanciarz');
-    expect(component.characterForm.get('info.ambition')?.value).toBe('To dobry interes');
-    expect(component.characterForm.get('info.nemesis')?.value).toBe('Interes ponad wszystko');
-    
-    expect(component.characterForm.get('attributes.strength')?.get('value')?.value).toBe(12);
-    
-    const strengthSkills = component.characterForm.get('attributes.strength.skills') as any;
-    expect(strengthSkills.length).toBe(3);
-    expect(strengthSkills.at(0).get('name').value).toBe('Broń biała');
-    expect(strengthSkills.at(1).get('name').value).toBe('Bijatyka');
-    expect(strengthSkills.at(2).get('name').value).toBe('Zastraszanie');
-
+    expect(component.characterForm.get('info.name')?.value).toBe('');
     expect(component.isLoading).toBeFalse();
   });
 
@@ -253,15 +156,15 @@ describe('CharacterSheetPageComponent', () => {
     const charWithNoStats = { ...dummyCharacter, stats: '' };
     mockCharacterService.getCharacter.and.returnValue(of(charWithNoStats));
     spyOn(console, 'error');
-    
+
     fixture.detectChanges();
-    
+
     expect(console.error).not.toHaveBeenCalled();
     expect(component.isLoading).toBeFalse();
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
     expect(component.characterForm.get('info.ambition')?.value).toBe('Z bazy danych');
     expect(component.characterForm.get('info.nemesis')?.value).toBe('Brak danych');
-    
+
     // attributes group should be empty
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBe(0);
@@ -271,9 +174,9 @@ describe('CharacterSheetPageComponent', () => {
     const charWithNullStats = { ...dummyCharacter, stats: null as any };
     mockCharacterService.getCharacter.and.returnValue(of(charWithNullStats));
     spyOn(console, 'error');
-    
+
     fixture.detectChanges();
-    
+
     expect(console.error).not.toHaveBeenCalled();
     expect(component.isLoading).toBeFalse();
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
@@ -283,9 +186,9 @@ describe('CharacterSheetPageComponent', () => {
     const charWithUndefinedStats = { ...dummyCharacter, stats: undefined as any };
     mockCharacterService.getCharacter.and.returnValue(of(charWithUndefinedStats));
     spyOn(console, 'error');
-    
+
     fixture.detectChanges();
-    
+
     expect(console.error).not.toHaveBeenCalled();
     expect(component.isLoading).toBeFalse();
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
@@ -295,9 +198,9 @@ describe('CharacterSheetPageComponent', () => {
     const charWithJsonNull = { ...dummyCharacter, stats: 'null' };
     mockCharacterService.getCharacter.and.returnValue(of(charWithJsonNull));
     spyOn(console, 'error');
-    
+
     fixture.detectChanges();
-    
+
     expect(console.error).not.toHaveBeenCalled();
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBe(0);
@@ -307,9 +210,9 @@ describe('CharacterSheetPageComponent', () => {
     const charWithNumberStats = { ...dummyCharacter, stats: '123' };
     mockCharacterService.getCharacter.and.returnValue(of(charWithNumberStats));
     spyOn(console, 'error');
-    
+
     fixture.detectChanges();
-    
+
     expect(console.error).toHaveBeenCalledWith('Character stats is not an object', 123);
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBe(0);
@@ -322,15 +225,15 @@ describe('CharacterSheetPageComponent', () => {
     });
     const charWithValidStats = { ...dummyCharacter, stats: validStats };
     mockCharacterService.getCharacter.and.returnValue(of(charWithValidStats));
-    
+
     fixture.detectChanges(); // calls ngOnInit -> loadCharacterData
     tick();
-    
+
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBe(1);
     expect(attrsGroup.get('testAttr')).toBeTruthy();
     expect(attrsGroup.get('testAttr')?.get('value')?.value).toBe(15);
-    
+
     const skills = attrsGroup.get('testAttr')?.get('skills') as any;
     expect(skills.length).toBe(1);
     expect(skills.at(0).get('name').value).toBe('Skill 1');
@@ -347,9 +250,9 @@ describe('CharacterSheetPageComponent', () => {
     });
     const charWithWeirdStats = { ...dummyCharacter, stats: weirdStats };
     mockCharacterService.getCharacter.and.returnValue(of(charWithWeirdStats));
-    
+
     fixture.detectChanges();
-    
+
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBe(1);
     expect(attrsGroup.get('valid')).toBeTruthy();
