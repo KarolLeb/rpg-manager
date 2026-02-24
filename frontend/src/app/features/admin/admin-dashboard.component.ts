@@ -94,12 +94,8 @@ export class AdminDashboardComponent implements OnInit {
       },
       error: () => {
         this.isLoadingUsers = false;
-        // In case of error (e.g. mock server doesn't have it yet), use mock data
-        this.users = [
-          { username: 'admin', role: 'ADMIN' },
-          { username: 'testuser', role: 'PLAYER' }
-        ];
-        this.usersCount = this.users.length;
+        this.users = [];
+        this.usersCount = 0;
       }
     });
   }

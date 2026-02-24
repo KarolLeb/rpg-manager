@@ -13,7 +13,7 @@ describe('AdminDashboardComponent', () => {
       imports: [AdminDashboardComponent, HttpClientTestingModule],
       providers: [provideRouter([])]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(AdminDashboardComponent);
     component = fixture.componentInstance;
@@ -27,9 +27,9 @@ describe('AdminDashboardComponent', () => {
   it('should create', () => {
     // Initial expectation
     expect(component.isLoadingUsers).toBeTrue();
-    
+
     fixture.detectChanges(); // calls ngOnInit
-    
+
     const req = httpMock.expectOne('/api/admin/users');
     expect(req.request.method).toBe('GET');
     req.flush([]); // Flush empty to satisfy initial call
@@ -53,16 +53,14 @@ describe('AdminDashboardComponent', () => {
     expect(component.isLoadingUsers).toBeFalse();
   });
 
-  it('should handle API error and load fallback dummy data', () => {
+  it('should handle API error and return empty list', () => {
     fixture.detectChanges(); // ngOnInit -> loadUsers
 
     const req = httpMock.expectOne('/api/admin/users');
     req.error(new ProgressEvent('Network error'));
 
-    expect(component.users.length).toBe(2);
-    expect(component.users[0].username).toBe('admin');
-    expect(component.users[1].username).toBe('testuser');
-    expect(component.usersCount).toBe(2);
+    expect(component.users.length).toBe(0);
+    expect(component.usersCount).toBe(0);
     expect(component.isLoadingUsers).toBeFalse();
   });
 });
