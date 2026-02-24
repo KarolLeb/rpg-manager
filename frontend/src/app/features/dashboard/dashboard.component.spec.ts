@@ -35,7 +35,7 @@ describe('DashboardComponent', () => {
         { provide: CampaignService, useValue: mockCampaignService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
@@ -44,7 +44,7 @@ describe('DashboardComponent', () => {
   it('should create', () => {
     // Before first detectChanges, isLoading should be true
     expect(component.isLoading).toBeTrue();
-    
+
     userSubject.next(null);
     fixture.detectChanges();
     expect(component).toBeTruthy();
@@ -56,11 +56,11 @@ describe('DashboardComponent', () => {
     // Setup delayed response to catch isLoading = true
     mockCampaignService.getCampaigns.and.returnValue(of([]).pipe(delay(10)));
 
-    userSubject.next({ id: 1, username: 'gm', role: 'GM' });
+    userSubject.next({ id: 1, username: 'gm', roles: ['GM'] });
     fixture.detectChanges(); // calls ngOnInit -> subscribe -> loadCampaigns -> sets isLoading = true
 
     expect(component.isLoading).toBeTrue();
-    expect(component.userRole).toBe('GM');
+    expect(component.userRoles).toContain('GM');
     expect(mockCampaignService.getCampaigns).toHaveBeenCalled();
 
     tick(10); // Finish loading -> sets isLoading = false
@@ -72,11 +72,11 @@ describe('DashboardComponent', () => {
   }));
 
   it('should show Player dashboard when user role is PLAYER and stop loading', () => {
-    userSubject.next({ id: 2, username: 'player', role: 'PLAYER' });
+    userSubject.next({ id: 2, username: 'player', roles: ['PLAYER'] });
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.player-dashboard')).toBeTruthy();
-    expect(component.userRole).toBe('PLAYER');
+    expect(component.userRoles).toContain('PLAYER');
     expect(component.isLoading).toBeFalse();
     expect(mockCampaignService.getCampaigns).not.toHaveBeenCalled();
   });
@@ -85,7 +85,7 @@ describe('DashboardComponent', () => {
     // Setup error response with delay
     mockCampaignService.getCampaigns.and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => new Error('Error')))));
 
-    userSubject.next({ id: 1, username: 'gm', role: 'GM' });
+    userSubject.next({ id: 1, username: 'gm', roles: ['GM'] });
     fixture.detectChanges();
 
     expect(component.isLoading).toBeTrue();
@@ -97,7 +97,7 @@ describe('DashboardComponent', () => {
   }));
 
   it('should not load campaigns for non-GM users and stop loading', () => {
-    userSubject.next({ id: 2, username: 'player', role: 'PLAYER' });
+    userSubject.next({ id: 2, username: 'player', roles: ['PLAYER'] });
     fixture.detectChanges();
 
     expect(component.isLoading).toBeFalse();
@@ -107,8 +107,8 @@ describe('DashboardComponent', () => {
   it('should handle user without role correctly', () => {
     userSubject.next({ id: 3, username: 'norole' } as any);
     fixture.detectChanges();
-    
-    expect(component.userRole).toBeNull();
+
+    expect(component.userRoles).toEqual([]);
     expect(component.isLoading).toBeFalse();
     expect(mockCampaignService.getCampaigns).not.toHaveBeenCalled();
   });

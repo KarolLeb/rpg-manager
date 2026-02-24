@@ -28,8 +28,8 @@ describe('LoginComponent', () => {
         { provide: ToastService, useValue: toastServiceSpy }
       ]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     authService = TestBed.inject(AuthService);
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(LoginComponent);
@@ -69,17 +69,17 @@ describe('LoginComponent', () => {
   });
 
   it('should call login and navigate on success and manage isLoading correctly', fakeAsync(() => {
-    const loginSpy = spyOn(authService, 'login').and.returnValue(of({ token: 't', username: 'u', role: 'R', id: 1 }).pipe(delay(10)));
+    const loginSpy = spyOn(authService, 'login').and.returnValue(of({ token: 't', username: 'u', roles: ['R'], id: 1 }).pipe(delay(10)));
     const navigateSpy = spyOn(router, 'navigate');
 
     component.loginForm.controls['username'].setValue('testuser');
     component.loginForm.controls['password'].setValue('password123');
-    
+
     expect(component.isLoading).toBeFalse();
     component.onSubmit();
     expect(component.isLoading).toBeTrue();
     expect(component.error).toBeNull();
-    
+
     tick(10);
 
     expect(loginSpy).toHaveBeenCalled();
@@ -94,10 +94,10 @@ describe('LoginComponent', () => {
 
     component.loginForm.controls['username'].setValue('testuser');
     component.loginForm.controls['password'].setValue('password123');
-    
+
     component.onSubmit();
     expect(component.isLoading).toBeTrue();
-    
+
     tick(10);
 
     expect(component.error).toBe('Custom error');
@@ -111,7 +111,7 @@ describe('LoginComponent', () => {
 
     component.loginForm.controls['username'].setValue('testuser');
     component.loginForm.controls['password'].setValue('password123');
-    
+
     component.onSubmit();
     tick(10);
 
@@ -126,7 +126,7 @@ describe('LoginComponent', () => {
 
     component.loginForm.controls['username'].setValue('testuser');
     component.loginForm.controls['password'].setValue('password123');
-    
+
     component.onSubmit();
     tick(10);
 
@@ -140,7 +140,7 @@ describe('LoginComponent', () => {
 
     component.loginForm.controls['username'].setValue('testuser');
     component.loginForm.controls['password'].setValue('password123');
-    
+
     component.onSubmit();
     tick(10);
 
@@ -149,7 +149,7 @@ describe('LoginComponent', () => {
   }));
 
   it('should kill mutation on success message by checking exact string', fakeAsync(() => {
-    const user = { token: 't', username: 'specific_user', role: 'R', id: 1 };
+    const user = { token: 't', username: 'specific_user', roles: ['R'], id: 1 };
     spyOn(authService, 'login').and.returnValue(of(user).pipe(delay(10)));
     spyOn(router, 'navigate');
 
@@ -164,10 +164,10 @@ describe('LoginComponent', () => {
   it('should not submit if form is invalid and should NOT set isLoading to true', () => {
     const loginSpy = spyOn(authService, 'login');
     component.loginForm.controls['username'].setValue('');
-    
+
     expect(component.isLoading).toBeFalse();
     component.onSubmit();
-    
+
     expect(loginSpy).not.toHaveBeenCalled();
     expect(component.isLoading).toBeFalse();
   });

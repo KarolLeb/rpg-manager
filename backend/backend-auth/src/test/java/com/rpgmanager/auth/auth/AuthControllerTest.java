@@ -24,27 +24,32 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(AuthController.class)
 @Import({
-  SecurityConfig.class,
-  SecurityProperties.class,
-  JwtFilter.class,
-  BrowserNavigationFilter.class
+    SecurityConfig.class,
+    SecurityProperties.class,
+    JwtFilter.class,
+    BrowserNavigationFilter.class
 })
 class AuthControllerTest {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @MockitoBean private AuthService authService;
+  @MockitoBean
+  private AuthService authService;
 
-  @MockitoBean private JwtUtil jwtUtil;
+  @MockitoBean
+  private JwtUtil jwtUtil;
 
-  @MockitoBean private UserDetailsService userDetailsService;
+  @MockitoBean
+  private UserDetailsService userDetailsService;
 
-  @Autowired private ObjectMapper objectMapper;
+  @Autowired
+  private ObjectMapper objectMapper;
 
   @Test
   void shouldLogin() throws Exception {
     LoginRequest request = new LoginRequest("testuser", "password");
-    AuthResponse response = new AuthResponse("token", "testuser", "USER", 1L);
+    AuthResponse response = new AuthResponse("token", "testuser", java.util.List.of("USER"), 1L);
     given(authService.login(any(LoginRequest.class))).willReturn(response);
 
     mockMvc

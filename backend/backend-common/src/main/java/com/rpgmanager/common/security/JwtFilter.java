@@ -30,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
     final String jwt;
     final String username;
     final Long userId;
-    final String role;
+    final java.util.List<String> roles;
 
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
       filterChain.doFilter(request, response);
@@ -41,19 +41,18 @@ public class JwtFilter extends OncePerRequestFilter {
       jwt = authHeader.substring(7);
       username = jwtUtil.extractUsername(jwt);
       userId = jwtUtil.extractUserId(jwt);
-      role = jwtUtil.extractRole(jwt);
+      roles = jwtUtil.extractRoles(jwt);
 
       if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-        UserContext userContext =
-            new UserContext(
-                username,
-                "", // No password needed for stateless JWT
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)),
-                userId);
+        UserContext userContext = new UserContext(
+            username,
+            "", // No password needed for stateless JWT
+            roles.stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r))
+                .collect(java.util.stream.Collectors.toList()),
+            userId);
 
-        UsernamePasswordAuthenticationToken authToken =
-            new UsernamePasswordAuthenticationToken(
-                userContext, null, userContext.getAuthorities());
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+            userContext, null, userContext.getAuthorities());
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);
       }

@@ -28,15 +28,15 @@ public class JwtUtil {
    * Generates a JWT token for a given user.
    *
    * @param username the username
-   * @param userId the user ID
-   * @param role the user role
+   * @param userId   the user ID
+   * @param roles    the user roles
    * @return the generated token
    */
-  public String generateToken(String username, Long userId, String role) {
+  public String generateToken(String username, Long userId, java.util.List<String> roles) {
     return Jwts.builder()
         .subject(username)
         .claim("userId", userId)
-        .claim("role", role)
+        .claim("roles", roles)
         .issuedAt(new Date(System.currentTimeMillis()))
         .expiration(new Date(System.currentTimeMillis() + expiration))
         .signWith(getSigningKey())
@@ -54,13 +54,14 @@ public class JwtUtil {
   }
 
   /**
-   * Extracts the role from a JWT token.
+   * Extracts the roles from a JWT token.
    *
    * @param token the JWT token
-   * @return the role
+   * @return the roles
    */
-  public String extractRole(String token) {
-    return extractClaim(token, claims -> claims.get("role", String.class));
+  @SuppressWarnings("unchecked")
+  public java.util.List<String> extractRoles(String token) {
+    return extractClaim(token, claims -> claims.get("roles", java.util.List.class));
   }
 
   /**
@@ -76,9 +77,9 @@ public class JwtUtil {
   /**
    * Extracts a specific claim from a JWT token.
    *
-   * @param token the JWT token
+   * @param token          the JWT token
    * @param claimsResolver the function to resolve the claim
-   * @param <T> the type of the claim
+   * @param <T>            the type of the claim
    * @return the claim value
    */
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -93,7 +94,7 @@ public class JwtUtil {
   /**
    * Validates a JWT token against a username.
    *
-   * @param token the JWT token
+   * @param token    the JWT token
    * @param username the username to validate against
    * @return true if the token is valid, false otherwise
    */

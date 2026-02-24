@@ -15,7 +15,7 @@ public class UserDomain {
   private String username;
   private String password;
   private String email;
-  private Role role;
+  private java.util.Set<Role> roles;
 
   /** User role. */
   public enum Role {

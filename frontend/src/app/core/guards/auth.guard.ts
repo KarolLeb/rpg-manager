@@ -17,9 +17,9 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   // 2. Jeśli zalogowany, sprawdź czy trasa wymaga konkretnych ról (RBAC)
   const requiredRoles = route.data['roles'] as string[];
-  if (requiredRoles && user && !requiredRoles.includes(user.role)) {
+  if (requiredRoles && user && !user.roles.some((r: string) => requiredRoles.includes(r))) {
     // Użytkownik jest zalogowany, ale nie ma wymaganej roli
-    console.warn(`Access denied for role: ${user.role}. Required: ${requiredRoles.join(',')}`);
+    console.warn(`Access denied for roles: ${user.roles.join(', ')}. Required: ${requiredRoles.join(',')}`);
     toastService.error(`Access Denied. Required roles: ${requiredRoles.join(', ')}`);
     router.navigate(['/dashboard']);
     return false;

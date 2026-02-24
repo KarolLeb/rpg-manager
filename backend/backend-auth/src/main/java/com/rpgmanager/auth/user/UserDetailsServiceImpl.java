@@ -23,14 +23,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     if (!StringUtils.hasText(username)) {
       throw new UsernameNotFoundException("Username cannot be empty");
     }
-    UserDomain user =
-        userRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    UserDomain user = userRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
     return new org.springframework.security.core.userdetails.User(
         user.getUsername(),
         user.getPassword(),
-        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
+        user.getRoles().stream()
+            .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
+            .collect(java.util.stream.Collectors.toList()));
   }
 }

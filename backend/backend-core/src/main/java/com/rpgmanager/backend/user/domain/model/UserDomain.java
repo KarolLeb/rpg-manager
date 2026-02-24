@@ -14,7 +14,7 @@ public class UserDomain {
   private Long id;
   private String username;
   private String email;
-  private String role;
+  private java.util.Set<String> roles;
 
   public Long getId() {
     return id;
@@ -28,7 +28,7 @@ public class UserDomain {
     return email;
   }
 
-  public String getRole() {
-    return role;
+  public java.util.Set<String> getRoles() {
+    return roles;
   }
 }

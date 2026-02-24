@@ -18,15 +18,15 @@ export class DashboardComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly campaignService = inject(CampaignService);
 
-  userRole: string | null = null;
+  userRoles: string[] = [];
   campaigns: Campaign[] = [];
   isLoading = true;
   error: string | null = null;
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
-      this.userRole = user?.role || null;
-      if (this.userRole === 'GM') {
+      this.userRoles = user?.roles || [];
+      if (this.userRoles.includes('GM')) {
         this.loadCampaigns();
       } else {
         this.isLoading = false;

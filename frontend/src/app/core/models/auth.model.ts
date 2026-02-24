@@ -12,12 +12,12 @@ export interface RegisterRequest {
 export interface AuthResponse {
   token: string;
   username: string;
-  role: string;
+  roles: string[];
   id: number;
 }
 
 export interface User {
   id: number;
   username: string;
-  role: string;
+  roles: string[];
 }

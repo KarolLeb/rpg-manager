@@ -35,7 +35,7 @@ export class AuthService {
         const user: User = {
           id: response.id,
           username: response.username,
-          role: response.role
+          roles: response.roles
         };
         localStorage.setItem('token', response.token);
         localStorage.setItem('currentUser', JSON.stringify(user));

@@ -49,7 +49,7 @@ import { RouterLink } from '@angular/router';
                   @for (user of users; track user) {
                     <tr>
                       <td>{{ user.username }}</td>
-                      <td>{{ user.role }}</td>
+                      <td>{{ user.roles ? user.roles.join(', ') : user.role }}</td>
                     </tr>
                   }
                 </tbody>

@@ -20,14 +20,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    UserDomain user =
-        userRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    UserDomain user = userRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
     return new User(
         user.getUsername(),
         user.getPassword(),
-        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
+        user.getRoles().stream()
+            .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
+            .collect(java.util.stream.Collectors.toList()));
   }
 }

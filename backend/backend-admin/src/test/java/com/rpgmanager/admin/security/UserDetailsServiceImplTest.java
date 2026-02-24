@@ -18,7 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @ExtendWith(MockitoExtension.class)
 class UserDetailsServiceImplTest {
 
-  @Mock private UserRepositoryPort userRepository;
+  @Mock
+  private UserRepositoryPort userRepository;
 
   private UserDetailsServiceImpl userDetailsService;
 
@@ -32,7 +33,7 @@ class UserDetailsServiceImplTest {
     UserDomain user = new UserDomain();
     user.setUsername("admin");
     user.setPassword("password");
-    user.setRole(UserDomain.Role.ADMIN);
+    user.setRoles(java.util.Collections.singleton(UserDomain.Role.ADMIN));
 
     given(userRepository.findByUsername("admin")).willReturn(Optional.of(user));
 

@@ -44,19 +44,21 @@ public class AuthService {
       throw e;
     }
 
-    UserDomain user =
-        userRepository
-            .findByUsername(username)
-            .orElseThrow(
-                () -> {
-                  log.error("User not found after authentication: {}", username);
-                  return new UsernameNotFoundException("User not found");
-                });
+    UserDomain user = userRepository
+        .findByUsername(username)
+        .orElseThrow(
+            () -> {
+              log.error("User not found after authentication: {}", username);
+              return new UsernameNotFoundException("User not found");
+            });
 
-    String token = jwtUtil.generateToken(user.getUsername(), user.getId(), user.getRole().name());
+    java.util.List<String> roleNames = user.getRoles().stream()
+        .map(Enum::name)
+        .collect(java.util.stream.Collectors.toList());
+    String token = jwtUtil.generateToken(user.getUsername(), user.getId(), roleNames);
     log.info("Login successful for user: {}", username);
 
-    return new AuthResponse(token, user.getUsername(), user.getRole().name(), user.getId());
+    return new AuthResponse(token, user.getUsername(), roleNames, user.getId());
   }
 
   /**
@@ -80,7 +82,7 @@ public class AuthService {
     user.setUsername(username);
     user.setPassword(passwordEncoder.encode(request.getPassword()));
     user.setEmail(request.getEmail());
-    user.setRole(UserDomain.Role.PLAYER);
+    user.setRoles(java.util.Collections.singleton(UserDomain.Role.PLAYER));
 
     userRepository.save(user);
     log.info("User registered successfully: {}", username);

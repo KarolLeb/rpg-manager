@@ -33,7 +33,7 @@ describe('authGuard', () => {
 
   it('should return true if user is logged in and has required role', () => {
     authServiceSpy.isLoggedIn.and.returnValue(true);
-    Object.defineProperty(authServiceSpy, 'currentUserValue', { get: () => ({ role: 'ADMIN' }) });
+    Object.defineProperty(authServiceSpy, 'currentUserValue', { get: () => ({ roles: ['ADMIN'] }) });
     const mockRoute = { data: { roles: ['ADMIN'] } } as unknown as ActivatedRouteSnapshot;
     const result = TestBed.runInInjectionContext(() => authGuard(mockRoute, { url: '/test' } as RouterStateSnapshot));
     expect(result).toBeTrue();
@@ -43,12 +43,12 @@ describe('authGuard', () => {
   it('should return false and navigate to dashboard if user has wrong role', () => {
     spyOn(console, 'warn');
     authServiceSpy.isLoggedIn.and.returnValue(true);
-    Object.defineProperty(authServiceSpy, 'currentUserValue', { get: () => ({ role: 'PLAYER' }) });
+    Object.defineProperty(authServiceSpy, 'currentUserValue', { get: () => ({ roles: ['PLAYER'] }) });
     const mockRoute = { data: { roles: ['ADMIN', 'GM'] } } as unknown as ActivatedRouteSnapshot;
     const result = TestBed.runInInjectionContext(() => authGuard(mockRoute, { url: '/test' } as RouterStateSnapshot));
-    
+
     expect(result).toBeFalse();
-    expect(console.warn).toHaveBeenCalledWith('Access denied for role: PLAYER. Required: ADMIN,GM');
+    expect(console.warn).toHaveBeenCalledWith('Access denied for roles: PLAYER. Required: ADMIN,GM');
     expect(toastServiceSpy.error).toHaveBeenCalledWith('Access Denied. Required roles: ADMIN, GM');
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
@@ -59,7 +59,7 @@ describe('authGuard', () => {
     const result = TestBed.runInInjectionContext(() => authGuard(mockRoute, { url: '/test' } as RouterStateSnapshot));
     expect(result).toBeFalse();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { returnUrl: '/test' } });
-    
+
     const args = (routerSpy.navigate as jasmine.Spy).calls.argsFor(0);
     expect(args[0]).toEqual(['/login']);
     expect(args[1].queryParams).toEqual({ returnUrl: '/test' });

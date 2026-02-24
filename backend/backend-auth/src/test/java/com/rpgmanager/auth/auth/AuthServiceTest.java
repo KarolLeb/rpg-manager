@@ -24,10 +24,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-  @Mock private AuthenticationManager authenticationManager;
-  @Mock private JwtUtil jwtUtil;
-  @Mock private UserRepositoryPort userRepository;
-  @Mock private PasswordEncoder passwordEncoder;
+  @Mock
+  private AuthenticationManager authenticationManager;
+  @Mock
+  private JwtUtil jwtUtil;
+  @Mock
+  private UserRepositoryPort userRepository;
+  @Mock
+  private PasswordEncoder passwordEncoder;
 
   private AuthService authService;
 
@@ -42,10 +46,10 @@ class AuthServiceTest {
     UserDomain user = new UserDomain();
     user.setId(1L);
     user.setUsername("testuser");
-    user.setRole(UserDomain.Role.PLAYER);
+    user.setRoles(java.util.Collections.singleton(UserDomain.Role.PLAYER));
 
     given(userRepository.findByUsername("testuser")).willReturn(Optional.of(user));
-    given(jwtUtil.generateToken("testuser", 1L, "PLAYER")).willReturn("token");
+    given(jwtUtil.generateToken("testuser", 1L, java.util.List.of("PLAYER"))).willReturn("token");
 
     AuthResponse response = authService.login(request);
 
@@ -82,14 +86,13 @@ class AuthServiceTest {
 
     authService.register(request);
 
-    org.mockito.ArgumentCaptor<UserDomain> userCaptor =
-        org.mockito.ArgumentCaptor.forClass(UserDomain.class);
+    org.mockito.ArgumentCaptor<UserDomain> userCaptor = org.mockito.ArgumentCaptor.forClass(UserDomain.class);
     verify(userRepository).save(userCaptor.capture());
     UserDomain savedUser = userCaptor.getValue();
     assertThat(savedUser.getUsername()).isEqualTo("newuser");
     assertThat(savedUser.getPassword()).isEqualTo("encoded");
     assertThat(savedUser.getEmail()).isEqualTo("test@example.com");
-    assertThat(savedUser.getRole()).isEqualTo(UserDomain.Role.PLAYER);
+    assertThat(savedUser.getRoles()).containsExactly(UserDomain.Role.PLAYER);
   }
 
   @Test
