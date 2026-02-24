@@ -1,8 +1,7 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
-import { AuthResponse, User } from '../models/auth.model';
-import { of } from 'rxjs';
+import { AuthResponse } from '../models/auth.model';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -161,7 +160,7 @@ describe('AuthService', () => {
     localStorage.setItem('currentUser', 'invalid-json{');
     spyOn(console, 'error');
 
-    const newService = TestBed.runInInjectionContext(() => new AuthService());
+    TestBed.runInInjectionContext(() => new AuthService());
 
     expect(console.error).toHaveBeenCalledWith('Failed to parse user from local storage', jasmine.any(Error));
     expect(localStorage.removeItem).toHaveBeenCalledWith('currentUser');

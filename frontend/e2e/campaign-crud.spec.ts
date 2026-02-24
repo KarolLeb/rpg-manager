@@ -12,8 +12,8 @@ test.describe('Campaign CRUD', () => {
 
     // Mock Authentication
     await page.addInitScript(() => {
-      window.localStorage.setItem('token', 'fake-jwt-token');
-      window.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', role: 'GM' }));
+      globalThis.localStorage.setItem('token', 'fake-jwt-token');
+      globalThis.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', role: 'GM' }));
     });
 
     // --- Mock API: Collection Resource ---
@@ -41,7 +41,7 @@ test.describe('Campaign CRUD', () => {
     await page.route(/.*\/api\/campaigns\/\d+$/, async route => {
       const method = route.request().method();
       const url = route.request().url();
-      const id = parseInt(url.split('/').pop() || '0', 10);
+      const id = Number.parseInt(url.split('/').pop() || '0', 10);
 
       if (method === 'DELETE') {
         db = db.filter(c => c.id !== id);
@@ -49,11 +49,11 @@ test.describe('Campaign CRUD', () => {
       } else if (method === 'PUT') {
         const data = route.request().postDataJSON();
         const idx = db.findIndex(c => c.id === id);
-        if (idx !== -1) {
+        if (idx === -1) {
+          await route.fulfill({ status: 404 });
+        } else {
           db[idx] = { ...db[idx], ...data };
           await route.fulfill({ json: db[idx] });
-        } else {
-          await route.fulfill({ status: 404 });
         }
       } else if (method === 'GET') {
         const campaign = db.find(c => c.id === id);

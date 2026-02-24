@@ -1,5 +1,4 @@
 import { routes } from './app.routes';
-import { LoadChildrenCallback } from '@angular/router';
 
 describe('appRoutes', () => {
   it('should have routes defined', () => {

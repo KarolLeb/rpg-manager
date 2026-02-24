@@ -53,7 +53,7 @@ describe('CampaignListComponent', () => {
   });
 
   it('should call deleteCampaign when delete button is clicked and confirmed', () => {
-    spyOn(window, 'confirm').and.returnValue(true);
+    spyOn(globalThis, 'confirm').and.returnValue(true);
     const deleteButtons = fixture.debugElement.queryAll(By.css('.delete-btn'));
 
     // Check if buttons exist. If using *ngFor, we expect 2.
@@ -61,18 +61,18 @@ describe('CampaignListComponent', () => {
 
     deleteButtons[0].nativeElement.click();
 
-    expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to delete this campaign?');
+    expect(globalThis.confirm).toHaveBeenCalledWith('Are you sure you want to delete this campaign?');
     expect(mockCampaignService.deleteCampaign).toHaveBeenCalledWith(1);
     expect(mockCampaignService.getCampaigns).toHaveBeenCalledTimes(2); // Once on init, once after delete
   });
 
   it('should NOT call deleteCampaign when delete button is clicked and NOT confirmed', () => {
-    spyOn(window, 'confirm').and.returnValue(false);
+    spyOn(globalThis, 'confirm').and.returnValue(false);
     const deleteButtons = fixture.debugElement.queryAll(By.css('.delete-btn'));
 
     deleteButtons[0].nativeElement.click();
 
-    expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to delete this campaign?');
+    expect(globalThis.confirm).toHaveBeenCalledWith('Are you sure you want to delete this campaign?');
     expect(mockCampaignService.deleteCampaign).not.toHaveBeenCalled();
   });
 
@@ -86,7 +86,7 @@ describe('CampaignListComponent', () => {
   });
 
   it('should log error when deleting campaign fails', () => {
-    spyOn(window, 'confirm').and.returnValue(true);
+    spyOn(globalThis, 'confirm').and.returnValue(true);
     mockCampaignService.deleteCampaign.and.returnValue(throwError(() => new Error('Delete failed')));
     spyOn(console, 'error');
 

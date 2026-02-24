@@ -23,8 +23,8 @@ test.describe('Character Sheet Feature', () => {
   test.beforeEach(async ({ page }) => {
     // Mock Authentication
     await page.addInitScript(() => {
-      window.localStorage.setItem('token', 'fake-jwt-token');
-      window.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', role: 'GM' }));
+      globalThis.localStorage.setItem('token', 'fake-jwt-token');
+      globalThis.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', role: 'GM' }));
     });
 
     // Mock the GET request to return our mock character

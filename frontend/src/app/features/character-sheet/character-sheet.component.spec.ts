@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { CharacterSheetPageComponent } from './character-sheet.component';
 import { CharacterService } from '../../core/services/character.service';
-import { of, throwError, delay, switchMap } from 'rxjs';
+import { of, throwError, delay } from 'rxjs';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { Character } from '../../core/models/character.model';
-import { provideRouter } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter, ActivatedRoute } from '@angular/router';
 import { ToastService } from '../../core/services/toast.service';
 
 describe('CharacterSheetPageComponent', () => {
