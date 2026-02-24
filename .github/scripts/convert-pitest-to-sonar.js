@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const PIT_REPORT_PATH = path.join(__dirname, '../backend/target/pit-reports/mutations.xml');
-const SONAR_REPORT_PATH = path.join(__dirname, '../backend/target/sonar-pitest.json');
+const PIT_REPORT_PATH = path.join(__dirname, '../../backend/target/pit-reports/mutations.xml');
+const SONAR_REPORT_PATH = path.join(__dirname, '../../backend/target/sonar-pitest.json');
 
 async function convert() {
     if (!fs.existsSync(PIT_REPORT_PATH)) {
