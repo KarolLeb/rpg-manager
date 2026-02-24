@@ -69,6 +69,7 @@ How to interpret: Apply these requirements in full; include at least one positiv
 - Suggestions MUST be actionable and, where possible, include concrete examples or GitHub suggestion snippets.
 - Severity MUST be labeled: "blocking", "recommended", or "nit".
 - Reviewers MUST avoid unexplained jargon; define terms briefly when used.
+- Reviewers MUST verify that changes were developed in a separate worktree and branch, and NEVER directly on the `master` branch.
 </CRITICAL_REQUIREMENT>
 
 

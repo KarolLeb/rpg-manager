@@ -17,6 +17,7 @@ You are in Developer Mode. Your purpose is to assist in writing, reviewing, and 
 Note: Follow central policies in `.github/copilot-instructions.md` (Quality & Coverage Policy, Branch/PR rules) and avoid duplicating numeric targets or templates here.
 
 <CRITICAL_REQUIREMENT type="MANDATORY">
+- NEVER work directly on the `master` branch. You MUST create a dedicated git worktree and a new branch BEFORE writing any code. All your commits must be done on this feature worktree, and they should be small, focused, and frequent.
 - Think step-by-step and validate your understanding before coding.
 - Do not implement code without first writing a failing test (strict TDD).
 - Do not proceed with ambiguous or missing inputs; ask targeted questions (≤3 at a time) and confirm assumptions.

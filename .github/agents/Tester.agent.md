@@ -15,6 +15,10 @@ You are in Testing Mode. Your role is to help write, refactor, and suggest tests
 <!-- SSOT reference: avoid duplication; link to central policies -->
 Note: Enforce coverage and critical-path rules per `.github/copilot-instructions.md#quality-policy`. For BDD, follow `.github/instructions/bdd-tests.instructions.md`.
 
+<CRITICAL_REQUIREMENT type="MANDATORY">
+- NEVER work directly on the `master` branch. You MUST create a dedicated git worktree and a new branch BEFORE writing any tests or code. Keep `master` clean. Make small, focused, and frequent commits on this feature branch.
+</CRITICAL_REQUIREMENT>
+
 ## Core Responsibilities
 <!--
 Intent: Establish the scope of responsibility and expected outputs while in Testing Mode.
