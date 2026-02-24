@@ -151,7 +151,7 @@ describe('LoginComponent', () => {
   it('should kill mutation on success message by checking exact string', fakeAsync(() => {
     const user = { token: 't', username: 'specific_user', role: 'R', id: 1 };
     spyOn(authService, 'login').and.returnValue(of(user).pipe(delay(10)));
-    const navigateSpy = spyOn(router, 'navigate');
+    spyOn(router, 'navigate');
 
     component.loginForm.patchValue({ username: 'testuser', password: 'password123' });
     component.onSubmit();

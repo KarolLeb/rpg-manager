@@ -45,8 +45,8 @@ test.describe('Akceptacja: Gracz (PLAYER)', () => {
   test('Nie powinien mieć dostępu do formularza tworzenia kampanii', async ({ page }) => {
     // 1. Mockowanie zalogowanego Gracza i USTAWIENIE sesji (localStorage)
     await page.addInitScript(() => {
-      window.localStorage.setItem('token', 'fake-jwt-token');
-      window.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestPlayer', role: 'PLAYER' }));
+      globalThis.localStorage.setItem('token', 'fake-jwt-token');
+      globalThis.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestPlayer', role: 'PLAYER' }));
     });
     
     // 2. Próba bezpośredniego wejścia na URL dla GM
