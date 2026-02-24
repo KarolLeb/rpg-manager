@@ -16,10 +16,16 @@
     "e2e": "npm run test:e2e",
     "e2e:ui": "playwright test --ui",
     "e2e:cli": "playwright test --reporter=list",
-    "stryker": "stryker run config/stryker.config.json"
+    "stryker": "stryker run config/stryker.config.json",
+    "postinstall": "node config/patch-karma.js"
   },
   "private": true,
-  "overrides": {},
+  "overrides": {
+    "ajv": "^8.18.0",
+    "axios": "^1.13.5",
+    "minimatch": "^10.2.2",
+    "tar": "^7.5.9"
+  },
   "dependencies": {
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
