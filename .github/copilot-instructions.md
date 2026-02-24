@@ -101,18 +101,18 @@ AI assistants MUST follow trunk-based development with lightweight, short-lived 
 </CRITICAL_REQUIREMENT>
 
 **Core Principles:**
-- **Trunk-based Development**: Work directly from `main` branch with short-lived feature branches (max 2-3 days)
+- **Trunk-based Development**: Work directly from `master` branch with short-lived feature branches (max 2-3 days).
 - **Small, Frequent Commits**: Make numerous small commits rather than large, infrequent ones
 - **Continuous Integration**: Every branch should be integration-ready and tested
 - **Pull Request Mandatory**: ALL changes, no matter how small, MUST go through PR process
 
 **Workflow Requirements:**
-1. **Branch Creation**: Create feature branches from latest `main`
-2. **Development**: Make small, focused commits with clear messages
-3. **Integration**: Regularly rebase/merge from `main` to stay current
-4. **Review**: Submit PR when feature/fix is complete
-5. **Approval**: Obtain at least one approval before merging
-6. **Cleanup**: Delete feature branch after successful merge
+1. **Branch Creation**: Create a dedicated feature/fix branch from latest `master` BEFORE making any code changes.
+2. **Development**: Make small, focused commits with clear messages.
+3. **Integration**: Regularly rebase/merge from `master` to stay current.
+4. **Review**: Submit PR when feature/fix is complete.
+5. **Approval**: Obtain at least one approval before merging.
+6. **Cleanup**: Delete feature branch after successful merge.
 
 <WORKFLOW_ENFORCEMENT>
 - Branch lifetime: Maximum 3 days from creation to merge
@@ -261,22 +261,22 @@ AI assistants MUST follow this exact workflow for all code changes.
 </PROCESS_REQUIREMENTS>
 
 **Pre-Merge Requirements:**
-1. **Rebase Strategy**: Always rebase feature branch on latest `main` before creating PR
+1. **Rebase Strategy**: Always rebase feature branch on latest `master` before creating PR
 2. **Commit Organization**: Squash related commits into logical units
 3. **Testing**: Ensure all tests pass before requesting review
 4. **Documentation**: Update relevant documentation as part of the same PR
 
 **Merge Process:**
 - **Squash and Merge**: Use squash merge for feature branches to maintain clean history
-- **Linear History**: Maintain linear commit history on `main` branch
+- **Linear History**: Maintain linear commit history on `master` branch
 - **Branch Cleanup**: Delete feature branch immediately after successful merge
-- **Rollback Ready**: Each merge to `main` should be easily revertible
+- **Rollback Ready**: Each merge to `master` should be easily revertible
 
 ```mermaid
 flowchart TD
-    A[Start: Latest main] --> B[Create feature branch]
+    A[Start: Latest master] --> B[Create feature branch]
     B --> C[Make small commits]
-    C --> D[Rebase on main]
+    C --> D[Rebase on master]
     D --> E{Conflicts?}
     E -->|Yes| F[Resolve conflicts]
     F --> D
@@ -288,7 +288,7 @@ flowchart TD
     K --> C
     J -->|Yes| L[Squash & merge]
     L --> M[Delete branch]
-    M --> N[End: Clean main]
+    M --> N[End: Clean master]
     
     style A fill:#e1f5fe
     style N fill:#c8e6c9
