@@ -221,16 +221,41 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Backend
+      - name: Build and push Backend-Auth
         if: ${{ !env.ACT }}
         uses: docker/build-push-action@v5
         with:
           context: ./backend
+          file: ./backend/backend-auth/Dockerfile
           target: production
           push: true
           tags: |
-            ghcr.io/${{ env.IMAGE_NAME }}/backend:latest
-            ghcr.io/${{ env.IMAGE_NAME }}/backend:${{ github.sha }}
+            ghcr.io/${{ env.IMAGE_NAME }}/backend-auth:latest
+            ghcr.io/${{ env.IMAGE_NAME }}/backend-auth:${{ github.sha }}
+
+      - name: Build and push Backend-Admin
+        if: ${{ !env.ACT }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/backend-admin/Dockerfile
+          target: production
+          push: true
+          tags: |
+            ghcr.io/${{ env.IMAGE_NAME }}/backend-admin:latest
+            ghcr.io/${{ env.IMAGE_NAME }}/backend-admin:${{ github.sha }}
+
+      - name: Build and push Backend-Core
+        if: ${{ !env.ACT }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/backend-core/Dockerfile
+          target: production
+          push: true
+          tags: |
+            ghcr.io/${{ env.IMAGE_NAME }}/backend-core:latest
+            ghcr.io/${{ env.IMAGE_NAME }}/backend-core:${{ github.sha }}
 
       - name: Build and push Frontend
         if: ${{ !env.ACT }}
