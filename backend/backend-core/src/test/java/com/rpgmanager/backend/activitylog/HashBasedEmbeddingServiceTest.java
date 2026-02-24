@@ -53,6 +53,35 @@ class HashBasedEmbeddingServiceTest {
   }
 
   @Test
+  void shouldEmbedSingleTokenCorrectly() {
+    float[] result = embeddingService.embed("token");
+    assertThat(result).hasSize(384);
+    float norm = 0;
+    for (float v : result) {
+      norm += v * v;
+    }
+    assertThat((float) Math.sqrt(norm)).isBetween(0.99f, 1.01f);
+  }
+
+  @Test
+  void shouldHandleMultipleTokensCorrectly() {
+    float[] result = embeddingService.embed("multiple tokens in one string");
+    assertThat(result).hasSize(384);
+    float norm = 0;
+    for (float v : result) {
+      norm += v * v;
+    }
+    assertThat((float) Math.sqrt(norm)).isBetween(0.99f, 1.01f);
+  }
+
+  @Test
+  void shouldHandleTokensWithDifferentLengths() {
+    float[] res1 = embeddingService.embed("a");
+    float[] res2 = embeddingService.embed("verylongtokenthatshouldbehashedproperly");
+    assertThat(res1).isNotEqualTo(res2);
+  }
+
+  @Test
   void shouldReturnCorrectDimension() {
     assertThat(embeddingService.getDimension()).isEqualTo(384);
   }

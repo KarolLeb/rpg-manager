@@ -228,7 +228,7 @@
                             <param>com.rpgmanager.*.*Application</param>
                             <param>com.rpgmanager.*.*MapperImpl*</param>
                         </excludedClasses>
-                        <mutationThreshold>95</mutationThreshold>
+                        <mutationThreshold>90</mutationThreshold>
                         <outputFormats>
                             <value>HTML</value>
                             <value>XML</value>

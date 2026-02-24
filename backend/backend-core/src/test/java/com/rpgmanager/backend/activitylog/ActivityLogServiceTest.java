@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -277,6 +278,94 @@ class ActivityLogServiceTest {
   }
 
   @Test
+  void toOffsetDateTime_shouldHandleTimestamp() {
+    Object[] row = new Object[10];
+    row[0] = 100L;
+    row[1] = 1L;
+    row[2] = 2L;
+    row[3] = 3L;
+    row[4] = "DICE_ROLL";
+    row[5] = "Description";
+    row[6] = "{}";
+    row[7] = null;
+    row[8] = Timestamp.from(Instant.now()); 
+    row[9] = null;
+
+    when(activityLogRepository.findSimilar(any(), eq(5)))
+        .thenReturn(Collections.singletonList(row));
+
+    List<ActivityLogDto> results = activityLogService.searchActivities("query", 5);
+
+    assertThat(results.get(0).getCreatedAt()).isNotNull();
+  }
+
+  @Test
+  void toOffsetDateTime_shouldHandleOffsetDateTime() {
+    Object[] row = new Object[10];
+    row[0] = 100L;
+    row[1] = 1L;
+    row[2] = 2L;
+    row[3] = 3L;
+    row[4] = "DICE_ROLL";
+    row[5] = "Description";
+    row[6] = "{}";
+    row[7] = null;
+    row[8] = OffsetDateTime.now();
+    row[9] = null;
+
+    when(activityLogRepository.findSimilar(any(), eq(5)))
+        .thenReturn(Collections.singletonList(row));
+
+    List<ActivityLogDto> results = activityLogService.searchActivities("query", 5);
+
+    assertThat(results.get(0).getCreatedAt()).isNotNull();
+  }
+
+  @Test
+  void deserializeMetadata_shouldHandleEmptyJson() {
+    Object[] row = new Object[10];
+    row[0] = 100L;
+    row[1] = 1L;
+    row[2] = 2L;
+    row[3] = 3L;
+    row[4] = "DICE_ROLL";
+    row[5] = "Description";
+    row[6] = "";
+    row[7] = null;
+    row[8] = OffsetDateTime.now();
+    row[9] = null;
+
+    when(activityLogRepository.findSimilar(any(), eq(5)))
+        .thenReturn(Collections.singletonList(row));
+
+    List<ActivityLogDto> results = activityLogService.searchActivities("query", 5);
+
+    assertThat(results.get(0).getMetadata()).isEmpty();
+  }
+
+  @Test
+  void deserializeMetadata_shouldHandleBlankJson() {
+    Object[] row = new Object[10];
+    row[0] = 100L;
+    row[1] = 1L;
+    row[2] = 2L;
+    row[3] = 3L;
+    row[4] = "DICE_ROLL";
+    row[5] = "Description";
+    row[6] = "   ";
+    row[7] = null;
+    row[8] = OffsetDateTime.now();
+    row[9] = null;
+
+    when(activityLogRepository.findSimilar(any(), eq(5)))
+        .thenReturn(Collections.singletonList(row));
+
+    List<ActivityLogDto> results = activityLogService.searchActivities("query", 5);
+
+    assertThat(results.get(0).getMetadata()).isEmpty();
+  }
+
+  @Test
   void shouldHandleOtherTypesInToOffsetDateTime() {
     // given
     Object[] row = new Object[10];
@@ -300,5 +389,51 @@ class ActivityLogServiceTest {
     // then
     assertThat(results).hasSize(1);
     assertThat(results.get(0).getCreatedAt()).isNull();
+  }
+
+  @Test
+  void toOffsetDateTime_shouldHandleNull() {
+    Object[] row = new Object[10];
+    row[0] = 100L;
+    row[1] = 1L;
+    row[2] = 2L;
+    row[3] = 3L;
+    row[4] = "DICE_ROLL";
+    row[5] = "Description";
+    row[6] = "{}";
+    row[7] = null;
+    row[8] = null;
+    row[9] = null;
+
+    when(activityLogRepository.findSimilar(any(), eq(5)))
+        .thenReturn(Collections.singletonList(row));
+
+    List<ActivityLogDto> results = activityLogService.searchActivities("query", 5);
+
+    assertThat(results.get(0).getCreatedAt()).isNull();
+  }
+
+  @Test
+  void serializeMetadata_shouldHandleNull() {
+    CreateActivityLogRequest req = new CreateActivityLogRequest();
+    req.setMetadata(null);
+    when(embeddingService.embed(any())).thenReturn(new float[384]);
+    when(activityLogRepository.save(any())).thenReturn(entry);
+
+    activityLogService.logActivity(req);
+
+    verify(activityLogRepository).save(argThat(e -> e.getMetadata() == null));
+  }
+
+  @Test
+  void serializeMetadata_shouldHandleEmpty() {
+    CreateActivityLogRequest req = new CreateActivityLogRequest();
+    req.setMetadata(Collections.emptyMap());
+    when(embeddingService.embed(any())).thenReturn(new float[384]);
+    when(activityLogRepository.save(any())).thenReturn(entry);
+
+    activityLogService.logActivity(req);
+
+    verify(activityLogRepository).save(argThat(e -> e.getMetadata() == null));
   }
 }
