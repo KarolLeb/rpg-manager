@@ -8,8 +8,9 @@ COPY backend-admin/pom.xml ./backend-admin/
 COPY backend-common/pom.xml ./backend-common/
 COPY checkstyle.xml .
 RUN mvn dependency:go-offline -pl backend-core -am
+COPY backend-common/src ./backend-common/src
 COPY backend-core/src ./backend-core/src
-RUN mvn clean package -pl backend-core -DskipTests
+RUN mvn clean package -pl backend-core -am -DskipTests
 
 # Stage 2: Development
 FROM maven:3.9.6-eclipse-temurin-21 AS development
@@ -21,6 +22,7 @@ COPY backend-admin/pom.xml ./backend-admin/
 COPY backend-common/pom.xml ./backend-common/
 COPY checkstyle.xml .
 RUN mvn dependency:go-offline -pl backend-core -am
+COPY backend-common/src ./backend-common/src
 COPY backend-core/src ./backend-core/src
 WORKDIR /app/backend-core
 CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-Dserver.address=0.0.0.0'"]
