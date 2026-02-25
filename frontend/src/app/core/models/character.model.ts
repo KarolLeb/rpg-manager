@@ -6,4 +6,6 @@ export interface Character {
   level: number;
   stats: string;
   campaignId?: number;
+  ownerId?: number;
+  controllerId?: number;
 }

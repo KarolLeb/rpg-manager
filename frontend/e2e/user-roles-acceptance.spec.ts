@@ -26,7 +26,7 @@ test.describe('Akceptacja: Gracz (PLAYER)', () => {
     await page.click('button[type="submit"]');
 
     // 3. Weryfikacja widoku Dashboardu Gracza (zgodnie z sekcją 4.2 PRD)
-    await expect(page.locator('h1')).toHaveText('Player Dashboard');
+    await expect(page.locator('.player-dashboard h1')).toHaveText('Player Dashboard');
     // Note: Geralt is a seeded character for player1 in V2__insert_test_data.sql
     await expect(page.locator('.character-card', { hasText: 'Geralt' })).toBeVisible();
 
@@ -74,7 +74,7 @@ test.describe('Akceptacja: Mistrz Gry (GM)', () => {
     await page.click('button[type="submit"]');
 
     // 3. Weryfikacja widoku Dashboardu GM
-    await expect(page.locator('h1')).toHaveText('GM Dashboard');
+    await expect(page.locator('.gm-dashboard h1')).toHaveText('GM Dashboard');
     // Note: Kampania Smoczej Lancy is seeded for gamemaster
     await expect(page.locator('.campaign-card', { hasText: 'Kampania Smoczej Lancy' })).toBeVisible();
     await expect(page.locator('text=Create New Campaign')).toBeVisible();
@@ -91,7 +91,7 @@ test.describe('Akceptacja: Administrator (ADMIN)', () => {
 
     // 3. Weryfikacja sekcji ADMIN (sekcja 4.4 PRD)
     // Sprawdzamy czy nagłówek zawiera tekst Admin - test może zawieść jeśli widok nie istnieje
-    const header = page.locator('h1');
+    const header = page.locator('.admin-dashboard h1');
     await expect(header).toBeVisible();
     await expect(header).toContainText('Admin');
   });

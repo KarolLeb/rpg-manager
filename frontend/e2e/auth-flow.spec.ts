@@ -16,7 +16,7 @@ test.describe('Authentication & Dashboard Flow (No Mocks)', () => {
     await expect(page).toHaveURL('/dashboard');
 
     // Verify GM specific content
-    await expect(page.locator('h1')).toHaveText('GM Dashboard');
+    await expect(page.locator('.gm-dashboard h1')).toHaveText('GM Dashboard');
     await expect(page.locator('.campaign-card h3')).toContainText('Kampania Smoczej Lancy');
 
     // Verify Navbar User Info

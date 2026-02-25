@@ -1,11 +1,12 @@
 <div class="dashboard-wrapper">
-  @if (userRoles.includes('GM')) {
   <div class="gm-dashboard">
     <h1>GM Dashboard</h1>
     <section class="campaigns-section">
       <div class="header">
         <h2>My Campaigns</h2>
+        @if (canCreateCampaign) {
         <a routerLink="/campaigns/new" class="btn btn-primary">Create New Campaign</a>
+        }
       </div>
       @if (isLoading) {
       <div class="loading">Loading campaigns...</div>
@@ -20,7 +21,9 @@
           <h3>{{ campaign.name }}</h3>
           <p>{{ campaign.description }}</p>
           <div class="actions">
+            @if (canEditCampaign(campaign)) {
             <a [routerLink]="['/campaigns', campaign.id, 'edit']" class="btn btn-secondary">Edit</a>
+            }
           </div>
         </div>
         }
@@ -33,19 +36,14 @@
       }
     </section>
   </div>
-  }
 
-  @if (userRoles.includes('PLAYER')) {
   <div class="player-dashboard">
     <app-player-dashboard></app-player-dashboard>
   </div>
-  }
 
-  @if (userRoles.includes('ADMIN')) {
   <div class="admin-dashboard">
     <app-admin-dashboard></app-admin-dashboard>
   </div>
-  }
 
   @if (userRoles.length === 0) {
   <div class="error">

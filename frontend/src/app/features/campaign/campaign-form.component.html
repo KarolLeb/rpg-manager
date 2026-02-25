@@ -6,9 +6,9 @@
       <label for="name">Campaign Name</label>
       <input id="name" type="text" formControlName="name" placeholder="Enter campaign name">
       @if (campaignForm.get('name')?.invalid && campaignForm.get('name')?.touched) {
-        <div style="color: red; font-size: 0.8em;">
-          Name is required.
-        </div>
+      <div style="color: red; font-size: 0.8em;">
+        Name is required.
+      </div>
       }
     </div>
 
@@ -17,9 +17,11 @@
       <textarea id="description" formControlName="description" placeholder="Enter campaign description"></textarea>
     </div>
 
+    @if (canEdit) {
     <button type="submit" [disabled]="campaignForm.invalid || isLoading">
       {{ isLoading ? 'Saving...' : 'Save' }}
     </button>
+    }
     <a routerLink="/campaigns" class="cancel-btn button">Cancel</a>
   </form>
 </div>

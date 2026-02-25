@@ -36,26 +36,26 @@ public class SecurityConfig {
         .addFilterBefore(browserNavigationFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling(
-            exception ->
-                exception.authenticationEntryPoint(
-                    (request, response, authException) ->
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")))
+            exception -> exception.authenticationEntryPoint(
+                (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "Unauthorized")))
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers("/api/admin/**")
-                    .hasRole("ADMIN")
-                    .requestMatchers(
-                        "/actuator/health/**",
-                        "/actuator/info/**",
-                        "/actuator/prometheus",
-                        "/error")
-                    .permitAll()
-                    .requestMatchers("/actuator/**")
-                    .hasRole("ADMIN")
-                    .anyRequest()
-                    .authenticated());
+            auth -> auth.requestMatchers(org.springframework.http.HttpMethod.GET, "/api/admin/**")
+                .authenticated()
+                .requestMatchers("/api/admin/**")
+                .hasRole("ADMIN")
+                .requestMatchers(
+                    "/actuator/health/**",
+                    "/actuator/info/**",
+                    "/actuator/prometheus",
+                    "/error")
+                .permitAll()
+                .requestMatchers("/actuator/**")
+                .hasRole("ADMIN")
+                .anyRequest()
+                .authenticated());
 
     return http.build();
   }

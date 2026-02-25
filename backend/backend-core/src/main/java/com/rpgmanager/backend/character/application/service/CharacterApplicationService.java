@@ -9,10 +9,13 @@ import com.rpgmanager.backend.character.application.port.in.JoinCampaignUseCase;
 import com.rpgmanager.backend.character.application.port.in.UpdateCharacterUseCase;
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import com.rpgmanager.backend.character.domain.repository.CharacterRepository;
+import com.rpgmanager.common.security.UserContext;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,27 +52,27 @@ public class CharacterApplicationService
   @Override
   @Transactional(readOnly = true)
   public CharacterResponse getCharacter(Long id) {
-    CharacterDomain character =
-        characterRepository
-            .findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
+    CharacterDomain character = characterRepository
+        .findById(id)
+        .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
     return characterApplicationMapper.toResponse(character);
   }
 
   /**
    * Updates an existing character.
    *
-   * @param id the ID of the character to update
+   * @param id               the ID of the character to update
    * @param characterDetails the new character details
    * @return the updated character response
    */
   @Override
   @Transactional
   public CharacterResponse updateCharacter(Long id, CharacterDomain characterDetails) {
-    CharacterDomain character =
-        characterRepository
-            .findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
+    CharacterDomain character = characterRepository
+        .findById(id)
+        .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
+
+    checkCharacterAccess(character);
 
     character.setName(characterDetails.getName());
     character.setCharacterClass(characterDetails.getCharacterClass());
@@ -93,16 +96,17 @@ public class CharacterApplicationService
    * Allows a character to join a campaign.
    *
    * @param characterId the ID of the character
-   * @param campaignId the ID of the campaign
+   * @param campaignId  the ID of the campaign
    * @return the updated character response
    */
   @Override
   @Transactional
   public CharacterResponse joinCampaign(Long characterId, Long campaignId) {
-    CharacterDomain character =
-        characterRepository
-            .findById(characterId)
-            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + characterId));
+    CharacterDomain character = characterRepository
+        .findById(characterId)
+        .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + characterId));
+
+    checkCharacterAccess(character);
 
     // Note: Campaign verification should ideally happen here via a CampaignPort
     // For now, we trust the ID or handle it in the persistence adapter
@@ -119,5 +123,22 @@ public class CharacterApplicationService
             null,
             Map.of("characterId", savedCharacter.getId(), "campaignId", campaignId)));
     return characterApplicationMapper.toResponse(savedCharacter);
+  }
+
+  private void checkCharacterAccess(CharacterDomain character) {
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserContext userContext) {
+      boolean isAdmin = userContext.getAuthorities().stream()
+          .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+      boolean isOwner = userContext.getUserId().equals(character.getOwnerId());
+      boolean isController = userContext.getUserId().equals(character.getControllerId());
+
+      if (!isAdmin && !isOwner && !isController) {
+        throw new AccessDeniedException("You do not have permission to modify this character.");
+      }
+    } else {
+      throw new AccessDeniedException("User not authenticated.");
+    }
   }
 }

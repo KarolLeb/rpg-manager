@@ -36,113 +36,116 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(CharacterController.class)
 @Import({
-  SecurityConfig.class,
-  SecurityProperties.class,
-  JwtFilter.class,
-  BrowserNavigationFilter.class
+        SecurityConfig.class,
+        SecurityProperties.class,
+        JwtFilter.class,
+        BrowserNavigationFilter.class
 })
 class CharacterControllerTest {
 
-  @Autowired private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-  @MockitoBean private GetCharacterUseCase getCharacterUseCase;
+    @MockitoBean
+    private GetCharacterUseCase getCharacterUseCase;
 
-  @MockitoBean private UpdateCharacterUseCase updateCharacterUseCase;
+    @MockitoBean
+    private UpdateCharacterUseCase updateCharacterUseCase;
 
-  @MockitoBean private JoinCampaignUseCase joinCampaignUseCase;
+    @MockitoBean
+    private JoinCampaignUseCase joinCampaignUseCase;
 
-  @MockitoBean private ErrorLogService errorLogService;
+    @MockitoBean
+    private ErrorLogService errorLogService;
 
-  @MockitoBean private JwtUtil jwtUtil;
+    @MockitoBean
+    private JwtUtil jwtUtil;
 
-  @MockitoBean private UserDetailsService userDetailsService;
+    @MockitoBean
+    private UserDetailsService userDetailsService;
 
-  @Autowired private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-  @Test
-  void shouldReturnAllCharactersAsResponses() throws Exception {
-    CharacterResponse response =
-        new CharacterResponse(
-            1L, "Test Char", "Warrior", 5, "Str: 10", "Owner", "Campaign", "PERMANENT");
+    @Test
+    void shouldReturnAllCharactersAsResponses() throws Exception {
+        CharacterResponse response = new CharacterResponse(
+                1L, "Test Char", "Warrior", 5, "Str: 10", "Owner", 100L, 101L, "Campaign", "PERMANENT");
 
-    given(getCharacterUseCase.getAllCharacters()).willReturn(List.of(response));
+        given(getCharacterUseCase.getAllCharacters()).willReturn(List.of(response));
 
-    mockMvc
-        .perform(get("/api/characters").with(user("user")))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].name").value("Test Char"))
-        .andExpect(jsonPath("$[0].characterClass").value("Warrior"));
-  }
+        mockMvc
+                .perform(get("/api/characters").with(user("user")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Test Char"))
+                .andExpect(jsonPath("$[0].characterClass").value("Warrior"));
+    }
 
-  @Test
-  void shouldReturnCharacterById() throws Exception {
-    CharacterResponse response =
-        new CharacterResponse(
-            1L, "Test Char", "Warrior", 5, "Str: 10", "Owner", "Campaign", "PERMANENT");
+    @Test
+    void shouldReturnCharacterById() throws Exception {
+        CharacterResponse response = new CharacterResponse(
+                1L, "Test Char", "Warrior", 5, "Str: 10", "Owner", 100L, 101L, "Campaign", "PERMANENT");
 
-    given(getCharacterUseCase.getCharacter(1L)).willReturn(response);
+        given(getCharacterUseCase.getCharacter(1L)).willReturn(response);
 
-    mockMvc
-        .perform(get("/api/characters/1").with(user("user")))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.name").value("Test Char"));
-  }
+        mockMvc
+                .perform(get("/api/characters/1").with(user("user")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Test Char"));
+    }
 
-  @Test
-  void shouldUpdateCharacterAndReturnResponse() throws Exception {
-    Long charId = 1L;
-    CharacterDomain updateRequest =
-        CharacterDomain.builder().name("New Name").level(2).stats("Str: 12").build();
+    @Test
+    void shouldUpdateCharacterAndReturnResponse() throws Exception {
+        Long charId = 1L;
+        CharacterDomain updateRequest = CharacterDomain.builder().name("New Name").level(2).stats("Str: 12").build();
 
-    CharacterResponse response =
-        new CharacterResponse(
-            charId, "New Name", "Warrior", 2, "Str: 12", "Owner", "Campaign", "PERMANENT");
+        CharacterResponse response = new CharacterResponse(
+                charId, "New Name", "Warrior", 2, "Str: 12", "Owner", 100L, 101L, "Campaign", "PERMANENT");
 
-    given(updateCharacterUseCase.updateCharacter(eq(charId), any(CharacterDomain.class)))
-        .willReturn(response);
+        given(updateCharacterUseCase.updateCharacter(eq(charId), any(CharacterDomain.class)))
+                .willReturn(response);
 
-    mockMvc
-        .perform(
-            put("/api/characters/{id}", charId)
-                .with(csrf())
-                .with(user("user"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateRequest)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.name").value("New Name"))
-        .andExpect(jsonPath("$.level").value(2));
-  }
+        mockMvc
+                .perform(
+                        put("/api/characters/{id}", charId)
+                                .with(csrf())
+                                .with(user("user"))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("New Name"))
+                .andExpect(jsonPath("$.level").value(2));
+    }
 
-  @Test
-  void shouldThrowExceptionWhenUpdatingNonExistentCharacter() throws Exception {
-    Long charId = 1L;
-    CharacterDomain updateRequest = CharacterDomain.builder().name("Ghost").build();
+    @Test
+    void shouldThrowExceptionWhenUpdatingNonExistentCharacter() throws Exception {
+        Long charId = 1L;
+        CharacterDomain updateRequest = CharacterDomain.builder().name("Ghost").build();
 
-    given(updateCharacterUseCase.updateCharacter(eq(charId), any(CharacterDomain.class)))
-        .willThrow(new RuntimeException("Character not found"));
+        given(updateCharacterUseCase.updateCharacter(eq(charId), any(CharacterDomain.class)))
+                .willThrow(new RuntimeException("Character not found"));
 
-    String content = objectMapper.writeValueAsString(updateRequest);
-    mockMvc
-        .perform(
-            put("/api/characters/{id}", charId)
-                .with(csrf())
-                .with(user("user"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content))
-        .andExpect(status().isInternalServerError());
-  }
+        String content = objectMapper.writeValueAsString(updateRequest);
+        mockMvc
+                .perform(
+                        put("/api/characters/{id}", charId)
+                                .with(csrf())
+                                .with(user("user"))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
+                .andExpect(status().isInternalServerError());
+    }
 
-  @Test
-  void shouldJoinCampaign() throws Exception {
-    CharacterResponse response =
-        new CharacterResponse(
-            1L, "Test Char", "Warrior", 5, "Str: 10", "Owner", "Campaign", "PERMANENT");
+    @Test
+    void shouldJoinCampaign() throws Exception {
+        CharacterResponse response = new CharacterResponse(
+                1L, "Test Char", "Warrior", 5, "Str: 10", "Owner", 100L, 101L, "Campaign", "PERMANENT");
 
-    given(joinCampaignUseCase.joinCampaign(1L, 1L)).willReturn(response);
+        given(joinCampaignUseCase.joinCampaign(1L, 1L)).willReturn(response);
 
-    mockMvc
-        .perform(post("/api/characters/1/join-campaign/1").with(csrf()).with(user("user")))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.campaignName").value("Campaign"));
-  }
+        mockMvc
+                .perform(post("/api/characters/1/join-campaign/1").with(csrf()).with(user("user")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.campaignName").value("Campaign"));
+    }
 }

@@ -41,7 +41,7 @@ test.describe('Authentication Flow', () => {
 
     // Should eventually redirect to dashboard
     await expect(page).toHaveURL('/dashboard', { timeout: 10000 });
-    await expect(page.locator('h1')).toHaveText('GM Dashboard');
+    await expect(page.locator('.gm-dashboard h1')).toHaveText('GM Dashboard');
   });
 
   test('should register successfully (no mocks)', async ({ page }) => {
@@ -69,7 +69,7 @@ test.describe('Authentication Flow', () => {
     await page.click('button[type="submit"]');
 
     await expect(page).toHaveURL('/dashboard', { timeout: 10000 });
-    await expect(page.locator('h1')).toHaveText('Player Dashboard');
+    await expect(page.locator('.player-dashboard h1')).toHaveText('Player Dashboard');
   });
 
   test('should show password mismatch error on register', async ({ page }) => {

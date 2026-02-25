@@ -13,7 +13,9 @@
               postaci</span>
             <input formControlName="name" class="header-input" placeholder="Imię">
           </h1>
+          @if (canEditCharacter) {
           <button (click)="onSave()" class="save-btn">ZAPISZ</button>
+          }
         </div>
         <div class="sub-info">
           <label>

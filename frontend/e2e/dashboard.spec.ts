@@ -11,7 +11,7 @@ test.describe('Dashboard Feature', () => {
     await expect(page).toHaveURL('/dashboard');
 
     // Check for GM Dashboard title
-    await expect(page.locator('h1')).toHaveText('GM Dashboard');
+    await expect(page.locator('.gm-dashboard h1')).toHaveText('GM Dashboard');
 
     // Verify seeded campaign is visible
     await expect(page.locator('.campaign-card h3')).toContainText('Kampania Smoczej Lancy');

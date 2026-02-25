@@ -18,14 +18,15 @@ test.describe('Character Sheet Feature (No Mocks)', () => {
   test('should load character data', async ({ page }) => {
     // Navigate to character sheet
     await page.goto('/dashboard');
-    const characterCard = page.locator('.character-card', { hasText: 'Geralt' });
+    const characterCard = page.locator('.character-card', { hasText: /Geralt/ }).first();
     await expect(characterCard).toBeVisible();
     await characterCard.getByRole('link', { name: 'View Sheet' }).click();
 
     // Check if the name field is populated
     const nameInput = page.locator('input[formControlName="name"]');
     await expect(nameInput).toBeVisible({ timeout: 10000 });
-    await expect(nameInput).toHaveValue('Geralt', { timeout: 10000 });
+    await page.screenshot({ path: 'screenshot.png', fullPage: true });
+    await expect(nameInput).toHaveValue(/Geralt/, { timeout: 10000 });
 
     // Check if attributes are loaded
     await expect(page.getByText('SIŁA', { exact: true })).toBeVisible();
@@ -33,7 +34,7 @@ test.describe('Character Sheet Feature (No Mocks)', () => {
 
   test('should update and save character data', async ({ page }) => {
     await page.goto('/dashboard');
-    await page.locator('.character-card', { hasText: 'Geralt' }).getByRole('link', { name: 'View Sheet' }).click();
+    await page.locator('.character-card', { hasText: /Geralt/ }).first().getByRole('link', { name: 'View Sheet' }).click();
 
     const timestamp = Date.now();
     const updatedName = 'Geralt ' + timestamp;

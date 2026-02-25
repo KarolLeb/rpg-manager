@@ -59,6 +59,6 @@ test.describe('Real Authentication Flow (No Mocks)', () => {
     await expect(page).toHaveURL('/dashboard', { timeout: 20000 });
 
     // Use specific locator to avoid strict mode violation (multiple headings)
-    await expect(page.locator('h1')).toContainText('Dashboard', { timeout: 10000 });
+    await expect(page.locator('.player-dashboard h1')).toContainText('Player Dashboard', { timeout: 10000 });
   });
 });

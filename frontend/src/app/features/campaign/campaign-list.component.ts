@@ -1,13 +1,16 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 
 import { RouterModule } from '@angular/router';
 import { CampaignService } from '../../core/services/campaign.service';
 import { Campaign } from '../../core/models/campaign.model';
+import { AuthService } from '../../core/services/auth.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-campaign-list',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, AsyncPipe],
   templateUrl: './campaign-list.component.html',
   styles: [`
     .campaign-container { padding: 20px; }
@@ -21,8 +24,10 @@ import { Campaign } from '../../core/models/campaign.model';
 })
 export class CampaignListComponent implements OnInit {
   private readonly campaignService = inject(CampaignService);
+  private readonly authService = inject(AuthService);
 
   campaigns: Campaign[] = [];
+  currentUser$ = this.authService.currentUser$;
 
   ngOnInit(): void {
     this.loadCampaigns();
@@ -42,5 +47,10 @@ export class CampaignListComponent implements OnInit {
         error: (err: any) => console.error('Error deleting campaign', err)
       });
     }
+  }
+
+  canEdit(campaign: Campaign, user: any): boolean {
+    if (!user) return false;
+    return user.roles?.includes('ADMIN') || campaign.gameMasterId === user.id;
   }
 }

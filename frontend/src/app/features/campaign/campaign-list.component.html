@@ -3,21 +3,25 @@
   <a routerLink="/campaigns/new" class="create-btn">Create New Campaign</a>
 
   @if (campaigns.length === 0) {
-    <div>
-      <p>No campaigns found.</p>
-    </div>
+  <div>
+    <p>No campaigns found.</p>
+  </div>
   }
 
   @for (campaign of campaigns; track campaign) {
-    <div class="campaign-card">
-      <h3>{{ campaign.name }}</h3>
-      <p>{{ campaign.description }}</p>
-      <p><strong>Status:</strong> {{ campaign.status }}</p>
-      <p><strong>GM:</strong> {{ campaign.gameMasterName }}</p>
-      <div class="actions">
-        <a [routerLink]="['/campaigns', campaign.id, 'edit']" class="edit-btn">Edit</a>
-        <button (click)="deleteCampaign(campaign.id)" class="delete-btn">Delete</button>
-      </div>
+  <div class="campaign-card">
+    <h3>{{ campaign.name }}</h3>
+    <p>{{ campaign.description }}</p>
+    <p><strong>Status:</strong> {{ campaign.status }}</p>
+    <p><strong>GM:</strong> {{ campaign.gameMasterName }}</p>
+    <div class="actions">
+      @if (currentUser$ | async; as user) {
+      @if (canEdit(campaign, user)) {
+      <a [routerLink]="['/campaigns', campaign.id, 'edit']" class="edit-btn">Edit</a>
+      <button (click)="deleteCampaign(campaign.id)" class="delete-btn">Delete</button>
+      }
+      }
     </div>
+  </div>
   }
 </div>

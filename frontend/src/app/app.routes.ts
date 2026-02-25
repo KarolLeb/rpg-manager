@@ -24,7 +24,7 @@ export const routes: Routes = [
       .then(m => m.DashboardComponent)
   },
   {
-    path: 'character/:id', 
+    path: 'character/:id',
     canActivate: [authGuard],
     loadComponent: () => import('./features/character-sheet/character-sheet.component')
       .then(m => m.CharacterSheetPageComponent)
@@ -32,21 +32,19 @@ export const routes: Routes = [
   {
     path: 'campaigns',
     canActivate: [authGuard],
-    data: { roles: ['GM', 'ADMIN'] },
     loadComponent: () => import('./features/campaign/campaign-list.component')
       .then(m => m.CampaignListComponent)
   },
   {
     path: 'campaigns/new',
     canActivate: [authGuard],
-    data: { roles: ['GM', 'ADMIN'] },
+    data: { roles: ['ADMIN', 'GM'] },
     loadComponent: () => import('./features/campaign/campaign-form.component')
       .then(m => m.CampaignFormComponent)
   },
   {
     path: 'campaigns/:id/edit',
     canActivate: [authGuard],
-    data: { roles: ['GM', 'ADMIN'] },
     loadComponent: () => import('./features/campaign/campaign-form.component')
       .then(m => m.CampaignFormComponent)
   },

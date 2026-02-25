@@ -8,6 +8,8 @@ import { StyleService } from '../../core/services/style.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Character } from '../../core/models/character.model';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-character-sheet',
@@ -22,10 +24,12 @@ export class CharacterSheetPageComponent implements OnInit, OnDestroy {
   private readonly styleService = inject(StyleService);
   private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
+  private readonly authService = inject(AuthService);
 
   characterForm: FormGroup;
   currentCharacterId?: number;
   isLoading = true;
+  canEditCharacter = false;
 
   physicalAttributes: AttributeConfig[] = [
     { key: 'strength', label: 'Siła' },
@@ -63,6 +67,7 @@ export class CharacterSheetPageComponent implements OnInit, OnDestroy {
       this.currentCharacterId = +id;
       this.characterService.getCharacter(this.currentCharacterId).subscribe({
         next: (character: Character) => {
+          this.checkPermissions(character);
           this.loadCharacterData(character);
 
           // Request dynamic styles. Assuming race/campaign could be derived or aren't set yet.
@@ -120,6 +125,23 @@ export class CharacterSheetPageComponent implements OnInit, OnDestroy {
       error: (err: any) => {
         console.error('Save failed', err);
         this.toastService.error('Error saving character. Please try again.');
+      }
+    });
+  }
+
+  private checkPermissions(character: Character) {
+    this.authService.currentUser$.pipe(take(1)).subscribe(user => {
+      if (!user) {
+        this.canEditCharacter = false;
+      } else {
+        const isAdmin = user.roles?.includes('ADMIN');
+        const isOwner = user.id === character.ownerId;
+        const isController = user.id === character.controllerId;
+        this.canEditCharacter = isAdmin || isOwner || isController;
+      }
+
+      if (!this.canEditCharacter) {
+        this.characterForm.disable();
       }
     });
   }

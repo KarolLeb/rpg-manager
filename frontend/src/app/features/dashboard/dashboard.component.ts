@@ -22,11 +22,22 @@ export class DashboardComponent implements OnInit {
   campaigns: Campaign[] = [];
   isLoading = true;
   error: string | null = null;
+  currentUser: any = null;
+
+  get canCreateCampaign(): boolean {
+    return this.currentUser && (this.userRoles.includes('GM') || this.userRoles.includes('ADMIN'));
+  }
+
+  canEditCampaign(campaign: Campaign): boolean {
+    if (!this.currentUser) return false;
+    return this.userRoles.includes('ADMIN') || campaign.gameMasterId === this.currentUser.id;
+  }
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
       this.userRoles = user?.roles || [];
-      if (this.userRoles.includes('GM')) {
+      if (user) {
         this.loadCampaigns();
       } else {
         this.isLoading = false;

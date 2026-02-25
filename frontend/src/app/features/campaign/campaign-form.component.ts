@@ -36,6 +36,7 @@ export class CampaignFormComponent implements OnInit {
   campaignId: number | null = null;
   error: string | null = null;
   isLoading = false;
+  canEdit = true;
 
   constructor() {
     this.campaignForm = this.fb.group({
@@ -64,6 +65,7 @@ export class CampaignFormComponent implements OnInit {
             name: campaign.name,
             description: campaign.description
           });
+          this.checkPermissions(campaign);
         }
       },
       error: (err: any) => {
@@ -121,6 +123,21 @@ export class CampaignFormComponent implements OnInit {
           console.error('Error creating campaign', err);
         }
       });
+    }
+  }
+
+  private checkPermissions(campaign: Campaign): void {
+    const user = this.authService.currentUserValue;
+    if (!user) {
+      this.canEdit = false;
+    } else {
+      this.canEdit = user.roles?.includes('ADMIN') || campaign.gameMasterId === user.id;
+    }
+
+    if (!this.canEdit) {
+      this.campaignForm.disable();
+    } else {
+      this.canEdit = true; // In case it's create mode
     }
   }
 }
