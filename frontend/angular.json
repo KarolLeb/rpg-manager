@@ -32,7 +32,6 @@
               }
             ],
             "styles": [
-              "material-icons/iconfont/material-icons.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -104,7 +103,6 @@
               }
             ],
             "styles": [
-              "material-icons/iconfont/material-icons.css",
               "src/styles.scss"
             ],
             "scripts": []
