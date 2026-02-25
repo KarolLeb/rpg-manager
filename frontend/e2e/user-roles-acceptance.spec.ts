@@ -82,17 +82,25 @@ test.describe('Akceptacja: Mistrz Gry (GM)', () => {
 });
 
 test.describe('Akceptacja: Administrator (ADMIN)', () => {
-  test('Powinien widzieć opcje monitoringu i zarządzania (BETA - może wymagać implementacji)', async ({ page }) => {
+  test('Powinien widzieć opcje monitoringu i zarządzania na dedykowanej zakładce Admin', async ({ page }) => {
     // 2. Logowanie jako Admin
     await page.goto('/login');
     await page.fill('#username', 'admin');
     await page.fill('#password', 'password');
     await page.click('button[type="submit"]');
 
-    // 3. Weryfikacja sekcji ADMIN (sekcja 4.4 PRD)
-    // Sprawdzamy czy nagłówek zawiera tekst Admin - test może zawieść jeśli widok nie istnieje
-    const header = page.locator('.admin-dashboard h1');
+    // 3. Powinien być na Dashboardzie, ale mieć link do Admina
+    await expect(page).toHaveURL(/\/dashboard/);
+    const adminLink = page.locator('nav.main-nav a[routerLink="/admin"]');
+    await expect(adminLink).toBeVisible();
+
+    // 4. Przejście do zakładki Admin
+    await adminLink.click();
+    await expect(page).toHaveURL(/\/admin/);
+
+    // 5. Weryfikacja sekcji ADMIN (sekcja 4.4 PRD)
+    const header = page.locator('.admin-dashboard-container h1');
     await expect(header).toBeVisible();
-    await expect(header).toContainText('Admin');
+    await expect(header).toContainText('Admin Dashboard');
   });
 });

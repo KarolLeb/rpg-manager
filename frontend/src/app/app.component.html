@@ -10,6 +10,11 @@
       <li>
         <a routerLink="/campaigns" routerLinkActive="active">Campaigns</a>
       </li>
+      @if (user.roles?.includes('ADMIN')) {
+      <li>
+        <a routerLink="/admin" routerLinkActive="active">Admin</a>
+      </li>
+      }
     </ul>
     <div class="user-info">
       <span class="username">{{ user.username }} ({{ user.roles?.join(', ') || 'PLAYER' }})</span>

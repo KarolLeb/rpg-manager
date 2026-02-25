@@ -5,12 +5,11 @@ import { CampaignService } from '../../core/services/campaign.service';
 import { Campaign } from '../../core/models/campaign.model';
 import { RouterLink } from '@angular/router';
 import { PlayerDashboardComponent } from './player-dashboard/player-dashboard.component';
-import { AdminDashboardComponent } from '../admin/admin-dashboard.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, PlayerDashboardComponent, AdminDashboardComponent],
+  imports: [RouterLink, PlayerDashboardComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

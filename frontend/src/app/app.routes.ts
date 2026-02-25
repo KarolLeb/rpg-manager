@@ -49,6 +49,13 @@ export const routes: Routes = [
       .then(m => m.CampaignFormComponent)
   },
   {
+    path: 'admin',
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN'] },
+    loadComponent: () => import('./features/admin/admin-dashboard.component')
+      .then(m => m.AdminDashboardComponent)
+  },
+  {
     path: '**', // Wildcard (404)
     redirectTo: 'dashboard'
   }
