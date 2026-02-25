@@ -1,11 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterLink],
+  imports: [],
   template: `
     <div class="admin-dashboard-container">
       <h1>Admin Dashboard</h1>
