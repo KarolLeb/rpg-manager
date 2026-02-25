@@ -51,7 +51,6 @@ export const routes: Routes = [
   {
     path: 'admin',
     canActivate: [authGuard],
-    data: { roles: ['ADMIN'] },
     loadComponent: () => import('./features/admin/admin-dashboard.component')
       .then(m => m.AdminDashboardComponent)
   },
