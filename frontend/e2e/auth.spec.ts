@@ -25,29 +25,11 @@ test.describe('Authentication Flow', () => {
     await expect(submitBtn).toBeDisabled();
   });
 
-  test('should login successfully (mocked delay)', async ({ page }) => {
-    // Mock the Login API
-    await page.route('**/api/auth/login', async route => {
-      // simulate delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      await route.fulfill({
-        json: {
-          token: 'fake-jwt-token',
-          username: 'testuser',
-          roles: ['GM']
-        }
-      });
-    });
-
-    // Mock Campaign API (for GM Dashboard)
-    await page.route('**/api/campaigns', async route => {
-      await route.fulfill({ json: [] });
-    });
-
+  test('should login successfully (no mocks)', async ({ page }) => {
     await page.goto('/login');
 
-    await page.fill('#username', 'testuser');
-    await page.fill('#password', 'password123');
+    await page.fill('#username', 'gamemaster');
+    await page.fill('#password', 'password');
 
     const submitBtn = page.locator('button[type="submit"]');
     await expect(submitBtn).toBeEnabled();
@@ -62,21 +44,14 @@ test.describe('Authentication Flow', () => {
     await expect(page.locator('h1')).toHaveText('GM Dashboard');
   });
 
-  test('should register successfully (mocked delay)', async ({ page }) => {
-    // Mock the Register API
-    await page.route('**/api/auth/register', async route => {
-      // simulate delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      await route.fulfill({
-        status: 201,
-        json: { message: 'User registered successfully' }
-      });
-    });
+  test('should register successfully (no mocks)', async ({ page }) => {
+    const timestamp = Date.now();
+    const username = 'RegUser' + timestamp;
 
     await page.goto('/register');
 
-    await page.fill('#username', 'TestUser');
-    await page.fill('#email', 'newuser@example.com');
+    await page.fill('#username', username);
+    await page.fill('#email', `user${timestamp}@example.com`);
     await page.fill('#password', 'password123');
     await page.fill('#confirmPassword', 'password123');
 
@@ -87,6 +62,14 @@ test.describe('Authentication Flow', () => {
 
     // Should eventually redirect to login
     await expect(page).toHaveURL(/\/login(\?.*)?$/, { timeout: 10000 });
+
+    // Try to login with new user
+    await page.fill('#username', username);
+    await page.fill('#password', 'password123');
+    await page.click('button[type="submit"]');
+
+    await expect(page).toHaveURL('/dashboard', { timeout: 10000 });
+    await expect(page.locator('h1')).toHaveText('Player Dashboard');
   });
 
   test('should show password mismatch error on register', async ({ page }) => {

@@ -1,86 +1,25 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Campaign CRUD', () => {
-  // In-memory "database" for mocks
-  let db: any[] = [];
-  let nextId = 1;
+test.describe('Campaign CRUD (No Mocks)', () => {
 
   test.beforeEach(async ({ page }) => {
-    // Reset DB and ID for each test to ensure isolation
-    db = [];
-    nextId = 1;
+    // 1. Logowanie jako GM
+    await page.goto('/login');
+    await page.fill('#username', 'gamemaster');
+    await page.fill('#password', 'password');
+    await page.click('button[type="submit"]');
 
-    // Mock Authentication
-    await page.addInitScript(() => {
-      globalThis.localStorage.setItem('token', 'fake-jwt-token');
-      globalThis.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', roles: ['GM'] }));
-    });
+    // Wait for redirect to dashboard
+    await expect(page).toHaveURL('/dashboard');
 
-    // --- Mock API: Collection Resource ---
-    await page.route('**/api/campaigns', async route => {
-      const method = route.request().method();
-
-      if (method === 'GET') {
-        await route.fulfill({ json: db });
-      } else if (method === 'POST') {
-        const data = route.request().postDataJSON();
-        const newCampaign = {
-          id: nextId++,
-          ...data,
-          status: 'DRAFT',
-          gameMasterName: 'GM'
-        };
-        db.push(newCampaign);
-        await route.fulfill({ json: newCampaign });
-      } else {
-        await route.continue();
-      }
-    });
-
-    // --- Mock API: Item Resource ---
-    await page.route(/.*\/api\/campaigns\/\d+$/, async route => {
-      const method = route.request().method();
-      const url = route.request().url();
-      const id = Number.parseInt(url.split('/').pop() || '0', 10);
-
-      if (method === 'DELETE') {
-        db = db.filter(c => c.id !== id);
-        await route.fulfill({ status: 204 }); // No Content
-      } else if (method === 'PUT') {
-        const data = route.request().postDataJSON();
-        const idx = db.findIndex(c => c.id === id);
-        if (idx === -1) {
-          await route.fulfill({ status: 404 });
-        } else {
-          db[idx] = { ...db[idx], ...data };
-          await route.fulfill({ json: db[idx] });
-        }
-      } else if (method === 'GET') {
-        const campaign = db.find(c => c.id === id);
-        if (campaign) {
-          await route.fulfill({ json: campaign });
-        } else {
-          await route.fulfill({ status: 404 });
-        }
-      } else {
-        await route.continue();
-      }
-    });
-
-    // Start from the home page
-    await page.goto('/');
-
-    // Check if body is loaded
-    await expect(page.locator('app-root')).toBeVisible();
-
-    // Directly navigate to campaigns as a more robust alternative if menu click fails
-    // or just use direct navigation to save time/flakiness if the menu is problematic
+    // Go to campaigns
     await page.goto('/campaigns');
     await expect(page).toHaveURL('/campaigns');
   });
 
   test('should create, read, update, and delete a campaign', async ({ page }) => {
-    const campaignName = 'Test Campaign ' + Date.now();
+    const timestamp = Date.now();
+    const campaignName = 'Integrational Campaign ' + timestamp;
     const campaignDesc = 'Description for ' + campaignName;
     const updatedName = campaignName + ' Updated';
 
@@ -117,18 +56,16 @@ test.describe('Campaign CRUD', () => {
     await expect(page).toHaveURL('/campaigns');
     // Find the card that has the updated name in its h3
     const updatedCard = page.locator('.campaign-card').filter({
-      has: page.locator('h3', { hasText: new RegExp(`^${updatedName}$`) })
+      has: page.locator('h3', { hasText: new RegExp(`^${updatedName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`) })
     });
     await expect(updatedCard).toBeVisible();
 
     // Ensure the old name (as a title) is gone. 
-    // Use regex for exact match.
-    await expect(page.locator('.campaign-card h3', { hasText: new RegExp(`^${campaignName}$`) })).not.toBeVisible();
+    await expect(page.locator('.campaign-card h3', { hasText: new RegExp(`^${campaignName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`) })).not.toBeVisible();
 
     // --- DELETE ---
     // Setup dialog handler BEFORE the action that triggers it
     page.once('dialog', async dialog => {
-      // console.log(`Dialog message: ${dialog.message()}`);
       await dialog.accept();
     });
 
@@ -145,8 +82,7 @@ test.describe('Campaign CRUD', () => {
     await page.locator('input#name').focus();
     await page.locator('input#name').blur();
 
-    // Check for validation message. Matches loose text or exact content.
-    // HTML is: <div ...> Name is required. </div>
+    // Check for validation message.
     await expect(page.locator('text=Name is required')).toBeVisible();
 
     // Button should be disabled

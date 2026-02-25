@@ -139,16 +139,19 @@ npm test
 ```
 
 ### End-to-End (E2E)
-Run E2E tests using Playwright. 
+Run E2E tests using Playwright. The tests are configured to run against the real backend services running in Docker.
 
-> [!TIP]
-> **Port 4200:** Playwright is configured with `reuseExistingServer: true`. If the application is already running (e.g., via Docker or `ng serve`), Playwright will use that instance. If not, it will attempt to start a new one automatically.
+> [!IMPORTANT]
+> **Integrated Testing:** E2E tests are now "integrated" and require the full application stack (Backend and Frontend) to be running in Docker.
+
 ```powershell
-# 1. Stop main app
+# 1. Start the application stack
 cd infra/app
-docker compose down
+docker compose up -d --build
 
-# 2. Run E2E tests
-cd ../frontend
-npm run e2e:cli
+# 2. Run E2E tests from the frontend directory
+cd ../../frontend
+npx playwright test
 ```
+
+See the [E2E Testing Guide](e2e-testing-guide.md) for more details on debugging and test structure.

@@ -1,95 +1,64 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Character Sheet Feature', () => {
-  const mockCharacter = {
-    id: 1,
-    name: 'Test Character',
-    characterClass: 'Tester',
-    level: 1,
-    stats: JSON.stringify({
-      strength: { val: 10, skills: [['Skill1', 1, 11]] },
-      constitution: { val: 10, skills: [] },
-      dexterity: { val: 10, skills: [] },
-      agility: { val: 10, skills: [] },
-      perception: { val: 10, skills: [] },
-      empathy: { val: 10, skills: [] },
-      charisma: { val: 10, skills: [] },
-      intelligence: { val: 10, skills: [] },
-      knowledge: { val: 10, skills: [] },
-      willpower: { val: 10, skills: [] }
-    })
-  };
+test.describe('Character Sheet Feature (No Mocks)', () => {
+  test.describe.configure({ mode: 'serial' });
+
 
   test.beforeEach(async ({ page }) => {
-    // Mock Authentication
-    await page.addInitScript(() => {
-      globalThis.localStorage.setItem('token', 'fake-jwt-token');
-      globalThis.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', roles: ['GM'] }));
-    });
+    // 1. Logowanie jako Gracz (player1 owns Geralt)
+    await page.goto('/login');
+    await page.fill('#username', 'player1');
+    await page.fill('#password', 'password');
+    await page.click('button[type="submit"]');
 
-    // Mock the GET request to return our mock character
-    await page.route('**/api/characters/1', async route => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(mockCharacter)
-      });
-    });
+    // Wait for redirect to dashboard
+    await expect(page).toHaveURL('/dashboard');
   });
 
   test('should load character data', async ({ page }) => {
-    await page.goto('/character/1');
+    // Navigate to character sheet
+    await page.goto('/dashboard');
+    const characterCard = page.locator('.character-card', { hasText: 'Geralt' });
+    await expect(characterCard).toBeVisible();
+    await characterCard.getByRole('link', { name: 'View Sheet' }).click();
 
     // Check if the name field is populated
     const nameInput = page.locator('input[formControlName="name"]');
-    await expect(nameInput).toHaveValue('Test Character');
-
-    // Check if the profession field is populated
-    const professionInput = page.locator('input[formControlName="profession"]');
-    await expect(professionInput).toHaveValue('Tester');
+    await expect(nameInput).toBeVisible({ timeout: 10000 });
+    await expect(nameInput).toHaveValue('Geralt', { timeout: 10000 });
 
     // Check if attributes are loaded
     await expect(page.getByText('SIŁA', { exact: true })).toBeVisible();
   });
 
   test('should update and save character data', async ({ page }) => {
-    await page.goto('/character/1');
+    await page.goto('/dashboard');
+    await page.locator('.character-card', { hasText: 'Geralt' }).getByRole('link', { name: 'View Sheet' }).click();
 
-    // Mock the PUT request
-    let savedData: any;
-    await page.route('**/api/characters/1', async route => {
-      savedData = JSON.parse(route.request().postData() || '{}');
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(savedData)
-      });
-    });
+    const timestamp = Date.now();
+    const updatedName = 'Geralt ' + timestamp;
 
     // Change Name
     const nameInput = page.locator('input[formControlName="name"]');
-    await nameInput.fill('Updated Name');
+    await nameInput.fill(updatedName);
 
     // Click Save
     const saveButton = page.locator('.save-btn', { hasText: 'ZAPISZ' });
     await expect(saveButton).toBeVisible();
-
-    // Set up promises before the action that triggers them
-    const responsePromise = page.waitForResponse(response =>
-      response.url().includes('/api/characters/1') && response.request().method() === 'PUT',
-      { timeout: 10000 }
-    );
-
     await saveButton.click();
-
-    // Wait for response
-    await responsePromise;
 
     // Wait for Toast success message
     const toast = page.locator('app-toast .toast-item.success');
-    await expect(toast).toBeVisible();
+    await expect(toast).toBeVisible({ timeout: 10000 });
     await expect(toast).toContainText('Character saved successfully');
 
-    expect(savedData.name).toBe('Updated Name');
+    // Refresh and verify
+    await page.reload();
+    await expect(nameInput).toHaveValue(updatedName);
+
+    // Restore name for next runs (optional but good practice)
+    await nameInput.fill('Geralt');
+    await saveButton.click();
+    await expect(toast).toBeVisible();
   });
 });

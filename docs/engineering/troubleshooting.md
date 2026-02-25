@@ -32,9 +32,18 @@ private String stats;
 **Issue:** `Flyway validation failed: Checksum mismatch` persists even after running `docker-compose down -v`.
 **Cause:** File locking on Windows can prevent Docker from actually deleting volume data.
 **Solution:** 
-1.  Enable `spring.flyway.clean-on-validation-error: true` in `application.yaml` (Dev profile only).
-2.  Disable `spring.flyway.clean-disabled: false`.
-This forces Flyway to wipe the schema when it detects a mismatch, effectively resetting the DB state without relying on the filesystem.
+1.  Enable `SPRING_FLYWAY_CLEAN_ON_VALIDATION_ERROR=true` as an environment variable in `docker-compose.yml`.
+2.  Set `SPRING_FLYWAY_CLEAN_DISABLED=false`.
+This forces Flyway to wipe the schema when it detects a mismatch (e.g., when checksums change during development), effectively resetting the DB state automatically.
+
+### 5. Backend Multi-module Docker Builds
+**Issue:** Maven build failing inside Docker with `Could not find artifact com.rpgmanager:backend-common`.
+**Cause:** Running `mvn spring-boot:run` from a sub-directory prevents Maven from resolving local sibling modules that haven't been installed to a repository.
+**Solution:** 
+1. Set `WORKDIR` to the project root (`/app`).
+2. Run with project list and also-make flags: `mvn spring-boot:run -pl backend-auth -am`.
+3. Ensure sibling modules (like `backend-common`) are installed in the local Maven cache during the build stage using `mvn install -N -DskipTests` (for parent) and `mvn install -pl backend-common -DskipTests`.
+
 
 ## Frontend
 

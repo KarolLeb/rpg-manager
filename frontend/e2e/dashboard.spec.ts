@@ -1,22 +1,19 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Dashboard Feature', () => {
-  test('should load the dashboard', async ({ page }) => {
-    // Mock Authentication
-    await page.addInitScript(() => {
-      globalThis.localStorage.setItem('token', 'fake-jwt-token');
-      globalThis.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', roles: ['GM'] }));
-    });
+  test('should load the dashboard (no mocks)', async ({ page }) => {
+    // 1. Logowanie jako GM
+    await page.goto('/login');
+    await page.fill('#username', 'gamemaster');
+    await page.fill('#password', 'password');
+    await page.click('button[type="submit"]');
 
-    // Mock Campaign API (for GM Dashboard)
-    await page.route('**/api/campaigns', async route => {
-      await route.fulfill({ json: [] });
-    });
-
-    await page.goto('/dashboard');
     await expect(page).toHaveURL('/dashboard');
 
     // Check for GM Dashboard title
     await expect(page.locator('h1')).toHaveText('GM Dashboard');
+
+    // Verify seeded campaign is visible
+    await expect(page.locator('.campaign-card h3')).toContainText('Kampania Smoczej Lancy');
   });
 });

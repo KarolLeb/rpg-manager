@@ -18,6 +18,10 @@ export default defineConfig({
     ['html', { open: 'never' }],
     ['junit', { outputFile: 'test-results/e2e-junit.xml' }]
   ],
+  timeout: 60000,
+  expect: {
+    timeout: 10000
+  },
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -46,10 +50,12 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
+  /*
   webServer: {
     command: 'npm run start',
     url: 'http://localhost:4200',
     reuseExistingServer: true,
     timeout: 120 * 1000,
   },
+  */
 });
