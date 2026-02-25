@@ -24,7 +24,7 @@ test.describe('Character Sheet Feature', () => {
     // Mock Authentication
     await page.addInitScript(() => {
       globalThis.localStorage.setItem('token', 'fake-jwt-token');
-      globalThis.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', role: 'GM' }));
+      globalThis.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', roles: ['GM'] }));
     });
 
     // Mock the GET request to return our mock character
@@ -47,7 +47,7 @@ test.describe('Character Sheet Feature', () => {
     // Check if the profession field is populated
     const professionInput = page.locator('input[formControlName="profession"]');
     await expect(professionInput).toHaveValue('Tester');
-    
+
     // Check if attributes are loaded
     await expect(page.getByText('SIŁA', { exact: true })).toBeVisible();
   });
@@ -58,39 +58,38 @@ test.describe('Character Sheet Feature', () => {
     // Mock the PUT request
     let savedData: any;
     await page.route('**/api/characters/1', async route => {
-        savedData = JSON.parse(route.request().postData() || '{}');
-        await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify(savedData)
-        });
+      savedData = JSON.parse(route.request().postData() || '{}');
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(savedData)
+      });
     });
-    
+
     // Change Name
     const nameInput = page.locator('input[formControlName="name"]');
     await nameInput.fill('Updated Name');
 
-        // Click Save
-        const saveButton = page.locator('.save-btn', { hasText: 'ZAPISZ' });
-        await expect(saveButton).toBeVisible();
-    
-        // Set up promises before the action that triggers them
-        const responsePromise = page.waitForResponse(response => 
-            response.url().includes('/api/characters/1') && response.request().method() === 'PUT',
-            { timeout: 10000 }
-        );
-    
-        await saveButton.click();
-    
-        // Wait for response
-        await responsePromise;
-    
-        // Wait for Toast success message
-        const toast = page.locator('app-toast .toast-item.success');
-        await expect(toast).toBeVisible();
-        await expect(toast).toContainText('Character saved successfully');
-    
-        expect(savedData.name).toBe('Updated Name');
-      });
-    });
-    
+    // Click Save
+    const saveButton = page.locator('.save-btn', { hasText: 'ZAPISZ' });
+    await expect(saveButton).toBeVisible();
+
+    // Set up promises before the action that triggers them
+    const responsePromise = page.waitForResponse(response =>
+      response.url().includes('/api/characters/1') && response.request().method() === 'PUT',
+      { timeout: 10000 }
+    );
+
+    await saveButton.click();
+
+    // Wait for response
+    await responsePromise;
+
+    // Wait for Toast success message
+    const toast = page.locator('app-toast .toast-item.success');
+    await expect(toast).toBeVisible();
+    await expect(toast).toContainText('Character saved successfully');
+
+    expect(savedData.name).toBe('Updated Name');
+  });
+});

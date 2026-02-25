@@ -1,19 +1,19 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Authentication Flow', () => {
-  
+
   test('should navigate between login and register', async ({ page }) => {
     await page.goto('/login');
     await page.click('text=Register here');
     await expect(page).toHaveURL('/register');
-    
+
     await page.click('text=Login here');
     await expect(page).toHaveURL('/login');
   });
 
   test('should show validation errors on login', async ({ page }) => {
     await page.goto('/login');
-    
+
     const usernameInput = page.locator('#username');
     const submitBtn = page.locator('button[type="submit"]');
 
@@ -21,7 +21,7 @@ test.describe('Authentication Flow', () => {
     await usernameInput.focus();
     await usernameInput.blur();
     await expect(page.locator('text=Username is required.')).toBeVisible();
-    
+
     await expect(submitBtn).toBeDisabled();
   });
 
@@ -34,7 +34,7 @@ test.describe('Authentication Flow', () => {
         json: {
           token: 'fake-jwt-token',
           username: 'testuser',
-          role: 'GM'
+          roles: ['GM']
         }
       });
     });
@@ -45,18 +45,18 @@ test.describe('Authentication Flow', () => {
     });
 
     await page.goto('/login');
-    
+
     await page.fill('#username', 'testuser');
     await page.fill('#password', 'password123');
-    
+
     const submitBtn = page.locator('button[type="submit"]');
     await expect(submitBtn).toBeEnabled();
-    
+
     await submitBtn.click();
-    
+
     // Check for loading state text
     await expect(page.locator('text=Logging in...')).toBeVisible();
-    
+
     // Should eventually redirect to dashboard
     await expect(page).toHaveURL('/dashboard', { timeout: 10000 });
     await expect(page.locator('h1')).toHaveText('GM Dashboard');
@@ -74,28 +74,28 @@ test.describe('Authentication Flow', () => {
     });
 
     await page.goto('/register');
-    
+
     await page.fill('#username', 'TestUser');
     await page.fill('#email', 'newuser@example.com');
     await page.fill('#password', 'password123');
     await page.fill('#confirmPassword', 'password123');
-    
+
     const submitBtn = page.locator('button[type="submit"]');
     await expect(submitBtn).toBeEnabled();
-    
+
     await submitBtn.click();
-    
+
     // Should eventually redirect to login
     await expect(page).toHaveURL(/\/login(\?.*)?$/, { timeout: 10000 });
   });
 
   test('should show password mismatch error on register', async ({ page }) => {
     await page.goto('/register');
-    
+
     await page.fill('#password', 'password123');
     await page.fill('#confirmPassword', 'different');
     await page.locator('#confirmPassword').blur();
-    
+
     await expect(page.locator('text=Passwords do not match.')).toBeVisible();
     await expect(page.locator('button[type="submit"]')).toBeDisabled();
   });

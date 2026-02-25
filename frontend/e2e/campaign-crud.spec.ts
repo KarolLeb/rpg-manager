@@ -13,22 +13,22 @@ test.describe('Campaign CRUD', () => {
     // Mock Authentication
     await page.addInitScript(() => {
       globalThis.localStorage.setItem('token', 'fake-jwt-token');
-      globalThis.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', role: 'GM' }));
+      globalThis.localStorage.setItem('currentUser', JSON.stringify({ username: 'TestGM', roles: ['GM'] }));
     });
 
     // --- Mock API: Collection Resource ---
     await page.route('**/api/campaigns', async route => {
       const method = route.request().method();
-      
+
       if (method === 'GET') {
         await route.fulfill({ json: db });
       } else if (method === 'POST') {
         const data = route.request().postDataJSON();
-        const newCampaign = { 
-          id: nextId++, 
-          ...data, 
-          status: 'DRAFT', 
-          gameMasterName: 'GM' 
+        const newCampaign = {
+          id: nextId++,
+          ...data,
+          status: 'DRAFT',
+          gameMasterName: 'GM'
         };
         db.push(newCampaign);
         await route.fulfill({ json: newCampaign });
@@ -69,7 +69,7 @@ test.describe('Campaign CRUD', () => {
 
     // Start from the home page
     await page.goto('/');
-    
+
     // Check if body is loaded
     await expect(page.locator('app-root')).toBeVisible();
 
@@ -94,7 +94,7 @@ test.describe('Campaign CRUD', () => {
 
     // Verify redirection to list
     await expect(page).toHaveURL('/campaigns');
-    
+
     // --- READ ---
     // Check if the new campaign is in the list
     const campaignCard = page.locator('.campaign-card', { hasText: campaignName });
@@ -108,7 +108,7 @@ test.describe('Campaign CRUD', () => {
 
     // Check pre-filled values
     await expect(page.locator('input#name')).toHaveValue(campaignName);
-    
+
     // Modify
     await page.fill('input#name', updatedName);
     await page.click('button[type="submit"]');
@@ -116,11 +116,11 @@ test.describe('Campaign CRUD', () => {
     // Verify redirection and updated value
     await expect(page).toHaveURL('/campaigns');
     // Find the card that has the updated name in its h3
-    const updatedCard = page.locator('.campaign-card').filter({ 
-      has: page.locator('h3', { hasText: new RegExp(`^${updatedName}$`) }) 
+    const updatedCard = page.locator('.campaign-card').filter({
+      has: page.locator('h3', { hasText: new RegExp(`^${updatedName}$`) })
     });
     await expect(updatedCard).toBeVisible();
-    
+
     // Ensure the old name (as a title) is gone. 
     // Use regex for exact match.
     await expect(page.locator('.campaign-card h3', { hasText: new RegExp(`^${campaignName}$`) })).not.toBeVisible();
@@ -131,7 +131,7 @@ test.describe('Campaign CRUD', () => {
       // console.log(`Dialog message: ${dialog.message()}`);
       await dialog.accept();
     });
-    
+
     await updatedCard.locator('.delete-btn').click();
 
     // Verify removed
@@ -140,15 +140,15 @@ test.describe('Campaign CRUD', () => {
 
   test('should validate required fields', async ({ page }) => {
     await page.click('text=Create New Campaign');
-    
+
     // Touch the name field and leave it empty to trigger validation
     await page.locator('input#name').focus();
     await page.locator('input#name').blur();
-    
+
     // Check for validation message. Matches loose text or exact content.
     // HTML is: <div ...> Name is required. </div>
     await expect(page.locator('text=Name is required')).toBeVisible();
-    
+
     // Button should be disabled
     await expect(page.locator('button[type="submit"]')).toBeDisabled();
   });
