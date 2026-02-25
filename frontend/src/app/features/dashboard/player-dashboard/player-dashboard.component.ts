@@ -55,11 +55,11 @@ export class PlayerDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.characterService.getCharacters().subscribe({
-      next: (data) => {
+      next: (data: Character[]) => {
         this.characters = data;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: unknown) => {
         this.error = 'Failed to load characters.';
         this.isLoading = false;
       }

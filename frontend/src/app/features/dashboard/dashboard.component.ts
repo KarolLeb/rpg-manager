@@ -37,11 +37,11 @@ export class DashboardComponent implements OnInit {
   loadCampaigns(): void {
     this.isLoading = true;
     this.campaignService.getCampaigns().subscribe({
-      next: (data) => {
+      next: (data: Campaign[]) => {
         this.campaigns = data;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: unknown) => {
         this.error = 'Failed to load campaigns.';
         this.isLoading = false;
       }
