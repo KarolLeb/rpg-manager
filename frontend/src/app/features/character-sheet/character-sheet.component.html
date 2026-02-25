@@ -1,5 +1,5 @@
 <div class="sheet-container" [formGroup]="characterForm">
-  
+
   <header class="sheet-header" formGroupName="info">
     <div class="profile-block">
       <div class="avatar-placeholder">
@@ -8,12 +8,18 @@
       <div class="basic-info">
         <div class="title-row">
           <h1 class="char-name">
-            <span style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">Imię postaci</span>
+            <span
+              style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">Imię
+              postaci</span>
             <input formControlName="name" class="header-input" placeholder="Imię">
           </h1>
           <button (click)="onSave()" class="save-btn">ZAPISZ</button>
         </div>
         <div class="sub-info">
+          <label>
+            Rasa:
+            <input formControlName="race" class="header-input small">
+          </label>
           <label>
             Profesja:
             <input formControlName="profession" class="header-input small">
@@ -39,32 +45,26 @@
   </header>
 
   <main class="attributes-layout" formGroupName="attributes">
-    
+
     <section class="column">
       <h2 class="section-title">FIZYCZNE</h2>
       @for (attr of physicalAttributes; track attr.key) {
-        @if (getAttributeGroup(attr.key)) {
-          <app-attribute-card
-            [title]="attr.label"
-            [parentForm]="getAttributeGroup(attr.key)"
-            attributeControlName="value"
-            skillsArrayName="skills">
-          </app-attribute-card>
-        }
+      @if (getAttributeGroup(attr.key)) {
+      <app-attribute-card [title]="attr.label" [parentForm]="getAttributeGroup(attr.key)" attributeControlName="value"
+        skillsArrayName="skills">
+      </app-attribute-card>
+      }
       }
     </section>
 
     <section class="column">
       <h2 class="section-title">UMYSŁOWE</h2>
       @for (attr of mentalAttributes; track attr.key) {
-        @if (getAttributeGroup(attr.key)) {
-          <app-attribute-card
-            [title]="attr.label"
-            [parentForm]="getAttributeGroup(attr.key)"
-            attributeControlName="value"
-            skillsArrayName="skills">
-          </app-attribute-card>
-        }
+      @if (getAttributeGroup(attr.key)) {
+      <app-attribute-card [title]="attr.label" [parentForm]="getAttributeGroup(attr.key)" attributeControlName="value"
+        skillsArrayName="skills">
+      </app-attribute-card>
+      }
       }
     </section>
 

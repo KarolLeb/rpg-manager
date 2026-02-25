@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { CharacterSheetPageComponent } from './character-sheet.component';
 import { CharacterService } from '../../core/services/character.service';
+import { StyleService } from '../../core/services/style.service';
 import { of, throwError, delay } from 'rxjs';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { Character } from '../../core/models/character.model';
@@ -11,6 +12,7 @@ describe('CharacterSheetPageComponent', () => {
   let component: CharacterSheetPageComponent;
   let fixture: ComponentFixture<CharacterSheetPageComponent>;
   let mockCharacterService: jasmine.SpyObj<CharacterService>;
+  let mockStyleService: jasmine.SpyObj<StyleService>;
   let mockToastService: jasmine.SpyObj<ToastService>;
   let routeId: string | null = '1';
 
@@ -31,12 +33,17 @@ describe('CharacterSheetPageComponent', () => {
     mockCharacterService.getCharacter.and.returnValue(of(dummyCharacter));
     mockCharacterService.getCharacters.and.returnValue(of([dummyCharacter]));
     mockCharacterService.updateCharacter.and.returnValue(of(dummyCharacter));
+
+    mockStyleService = jasmine.createSpyObj('StyleService', ['fetchAggregatedCss', 'clearDynamicStyles']);
+    mockStyleService.fetchAggregatedCss.and.returnValue(of(''));
+
     mockToastService = jasmine.createSpyObj('ToastService', ['success', 'error', 'warning']);
 
     await TestBed.configureTestingModule({
       imports: [CharacterSheetPageComponent, ReactiveFormsModule],
       providers: [
         { provide: CharacterService, useValue: mockCharacterService },
+        { provide: StyleService, useValue: mockStyleService },
         { provide: ToastService, useValue: mockToastService },
         provideRouter([]),
         {
@@ -57,7 +64,7 @@ describe('CharacterSheetPageComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(component.isLoading).toBeFalse();
-    
+
     // Kill mutations in physicalAttributes and mentalAttributes arrays
     expect(component.physicalAttributes).toEqual([
       { key: 'strength', label: 'Siła' },
@@ -143,7 +150,7 @@ describe('CharacterSheetPageComponent', () => {
     expect(savedStats.strength.val).toBe(10);
     expect(savedStats.strength.skills.length).toBe(1);
     expect(savedStats.strength.skills[0]).toEqual(['Melee', 2, 12]);
-    
+
     // Verify mapping details to kill mutations in skills mapping
     expect(savedStats.strength.skills[0][0]).toBe('Melee');
     expect(savedStats.strength.skills[0][1]).toBe(2);
@@ -182,7 +189,7 @@ describe('CharacterSheetPageComponent', () => {
     expect(console.error).not.toHaveBeenCalled();
     expect(component.isLoading).toBeFalse();
     expect(component.characterForm.get('info.name')?.value).toBe('Test Char');
-    
+
     // attributes group should be empty
     const attrsGroup = component.characterForm.get('attributes') as FormGroup;
     expect(Object.keys(attrsGroup.controls).length).toBe(0);

@@ -28,6 +28,9 @@ public class CharacterEntity {
   @Column(nullable = false)
   private String name;
 
+  @Column
+  private String race;
+
   @Column(name = "character_class")
   private String characterClass;
 
@@ -51,42 +54,6 @@ public class CharacterEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "character_type", length = 20)
   private CharacterType characterType = CharacterType.PERMANENT;
-
-  public Long getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getCharacterClass() {
-    return characterClass;
-  }
-
-  public Integer getLevel() {
-    return level;
-  }
-
-  public String getStats() {
-    return stats;
-  }
-
-  public CampaignEntity getCampaign() {
-    return campaign;
-  }
-
-  public Long getUserId() {
-    return userId;
-  }
-
-  public Long getControllerId() {
-    return controllerId;
-  }
-
-  public CharacterType getCharacterType() {
-    return characterType;
-  }
 
   /** Type of the character (e.g., PERMANENT or TEMPORARY). */
   public enum CharacterType {

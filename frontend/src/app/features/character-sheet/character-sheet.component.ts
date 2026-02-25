@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AttributeCardComponent } from '../attribute-card/attribute-card.component';
 import { AttributeConfig } from './models/character-data.model';
 import { CharacterService } from '../../core/services/character.service';
+import { StyleService } from '../../core/services/style.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Character } from '../../core/models/character.model';
 import { ActivatedRoute } from '@angular/router';
@@ -15,9 +16,10 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './character-sheet.component.html',
   styleUrls: ['./character-sheet.component.scss']
 })
-export class CharacterSheetPageComponent implements OnInit {
+export class CharacterSheetPageComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly characterService = inject(CharacterService);
+  private readonly styleService = inject(StyleService);
   private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
 
@@ -45,6 +47,7 @@ export class CharacterSheetPageComponent implements OnInit {
     this.characterForm = this.fb.group({
       info: this.fb.group({
         name: [''],
+        race: [''],
         profession: [''],
         ambition: [''],
         nemesis: ['']
@@ -61,6 +64,10 @@ export class CharacterSheetPageComponent implements OnInit {
       this.characterService.getCharacter(this.currentCharacterId).subscribe({
         next: (character: Character) => {
           this.loadCharacterData(character);
+
+          // Request dynamic styles. Assuming race/campaign could be derived or aren't set yet.
+          this.styleService.fetchAggregatedCss(this.currentCharacterId!).subscribe();
+
           this.isLoading = false;
         },
         error: (err: any) => {
@@ -71,6 +78,10 @@ export class CharacterSheetPageComponent implements OnInit {
     } else {
       this.isLoading = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.styleService.clearDynamicStyles();
   }
 
   onSave() {
@@ -95,17 +106,18 @@ export class CharacterSheetPageComponent implements OnInit {
     const characterToSave: Character = {
       id: this.currentCharacterId,
       name: formVal.info.name,
+      race: formVal.info.race,
       characterClass: formVal.info.profession,
       level: 1,
       stats: JSON.stringify(attributesToSave)
     };
 
     this.characterService.updateCharacter(this.currentCharacterId, characterToSave).subscribe({
-      next: (res) => {
+      next: (res: Character) => {
         console.log('Character saved!', res);
         this.toastService.success('Character saved successfully!');
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Save failed', err);
         this.toastService.error('Error saving character. Please try again.');
       }
@@ -115,6 +127,7 @@ export class CharacterSheetPageComponent implements OnInit {
   private loadCharacterData(character: Character) {
     this.characterForm.get('info')?.patchValue({
       name: character.name,
+      race: character.race,
       profession: character.characterClass,
       ambition: 'Z bazy danych',
       nemesis: 'Brak danych'

@@ -24,30 +24,47 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(StyleController.class)
 @Import({
-  SecurityConfig.class,
-  SecurityProperties.class,
-  JwtFilter.class,
-  BrowserNavigationFilter.class
+    SecurityConfig.class,
+    SecurityProperties.class,
+    JwtFilter.class,
+    BrowserNavigationFilter.class
 })
 class StyleControllerTest {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @MockitoBean private StyleService styleService;
+  @MockitoBean
+  private StyleService styleService;
 
-  @MockitoBean private ErrorLogService errorLogService;
+  @MockitoBean
+  private ErrorLogService errorLogService;
 
-  @MockitoBean private JwtUtil jwtUtil;
+  @MockitoBean
+  private JwtUtil jwtUtil;
 
-  @MockitoBean private UserDetailsService userDetailsService;
+  @MockitoBean
+  private UserDetailsService userDetailsService;
+
+  @Test
+  @WithMockUser
+  void shouldGetAggregatedStyle() throws Exception {
+    given(styleService.getAggregatedCss(1L)).willReturn(":root { --test: #abc; }");
+
+    mockMvc
+        .perform(get("/api/styles/aggregated").param("characterId", "1"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("text/css;charset=UTF-8"))
+        .andExpect(content().string(":root { --test: #abc; }"));
+  }
 
   @Test
   @WithMockUser
   void shouldGetStyle() throws Exception {
-    given(styleService.getCssForRace("human")).willReturn("body { color: red; }");
+    given(styleService.getStyle(StyleLevel.CAMPAIGN, "1")).willReturn("body { color: red; }");
 
     mockMvc
-        .perform(get("/api/styles/human"))
+        .perform(get("/api/styles/CAMPAIGN/1"))
         .andExpect(status().isOk())
         .andExpect(content().contentType("text/css;charset=UTF-8"))
         .andExpect(content().string("body { color: red; }"));
@@ -58,8 +75,8 @@ class StyleControllerTest {
   void shouldUpdateStyle() throws Exception {
     String css = "body { color: blue; }";
 
-    mockMvc.perform(post("/api/styles/human").content(css)).andExpect(status().isOk());
+    mockMvc.perform(post("/api/styles/CAMPAIGN/1").content(css)).andExpect(status().isOk());
 
-    verify(styleService).saveStyle("human", css);
+    verify(styleService).saveStyle(StyleLevel.CAMPAIGN, "1", css);
   }
 }

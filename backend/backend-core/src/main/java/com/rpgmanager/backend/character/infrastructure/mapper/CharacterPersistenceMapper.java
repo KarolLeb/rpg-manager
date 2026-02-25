@@ -4,7 +4,10 @@ import com.rpgmanager.backend.campaign.infrastructure.adapter.outgoing.persist.C
 import com.rpgmanager.backend.character.domain.model.CharacterDomain;
 import com.rpgmanager.backend.character.infrastructure.adapter.outgoing.persistence.CharacterEntity;
 
-/** Mapper for converting between Character domain objects and persistence entities. */
+/**
+ * Mapper for converting between Character domain objects and persistence
+ * entities.
+ */
 public class CharacterPersistenceMapper {
 
   private CharacterPersistenceMapper() {
@@ -24,6 +27,7 @@ public class CharacterPersistenceMapper {
     return CharacterDomain.builder()
         .id(entity.getId())
         .name(entity.getName())
+        .race(entity.getRace())
         .characterClass(entity.getCharacterClass())
         .level(entity.getLevel())
         .stats(entity.getStats())
@@ -41,7 +45,7 @@ public class CharacterPersistenceMapper {
   /**
    * Converts a CharacterDomain object to a CharacterEntity.
    *
-   * @param domain the domain object
+   * @param domain   the domain object
    * @param campaign the associated campaign entity
    * @return the character entity
    */
@@ -51,6 +55,7 @@ public class CharacterPersistenceMapper {
     }
     CharacterEntity entity = new CharacterEntity();
     entity.setName(domain.getName());
+    entity.setRace(domain.getRace());
     entity.setCharacterClass(domain.getCharacterClass());
     entity.setLevel(domain.getLevel());
     entity.setStats(domain.getStats());
@@ -67,8 +72,8 @@ public class CharacterPersistenceMapper {
   /**
    * Updates an existing CharacterEntity with data from a CharacterDomain object.
    *
-   * @param entity the entity to update
-   * @param domain the source domain object
+   * @param entity   the entity to update
+   * @param domain   the source domain object
    * @param campaign the associated campaign entity
    */
   public static void updateEntity(
@@ -77,6 +82,7 @@ public class CharacterPersistenceMapper {
       return;
     }
     entity.setName(domain.getName());
+    entity.setRace(domain.getRace());
     entity.setCharacterClass(domain.getCharacterClass());
     entity.setLevel(domain.getLevel());
     entity.setStats(domain.getStats());

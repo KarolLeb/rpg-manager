@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Controller for managing race styles. */
+/** Controller for managing hierarchical CSS styles. */
 @RestController
 @RequestMapping("/api/styles")
 @RequiredArgsConstructor
@@ -17,24 +18,30 @@ public class StyleController {
   private final StyleService styleService;
 
   /**
-   * Retrieves the CSS for a specific race.
-   *
-   * @param raceName the name of the race
-   * @return the CSS content
+   * Retrieves aggregated CSS for a character across all matching levels.
    */
-  @GetMapping(value = "/{raceName}", produces = "text/css")
-  public String getStyle(@PathVariable String raceName) {
-    return styleService.getCssForRace(raceName);
+  @GetMapping(value = "/aggregated", produces = "text/css")
+  public String getAggregatedStyle(@RequestParam Long characterId) {
+    return styleService.getAggregatedCss(characterId);
   }
 
   /**
-   * Updates the style for a specific race.
-   *
-   * @param raceName the name of the race
-   * @param cssContent the new CSS content
+   * Retrieves the CSS for a specific level and reference.
    */
-  @PostMapping("/{raceName}")
-  public void updateStyle(@PathVariable String raceName, @RequestBody String cssContent) {
-    styleService.saveStyle(raceName, cssContent);
+  @GetMapping(value = "/{level}/{referenceId}", produces = "text/css")
+  public String getStyle(
+      @PathVariable StyleLevel level, @PathVariable String referenceId) {
+    return styleService.getStyle(level, referenceId);
+  }
+
+  /**
+   * Updates the style for a specific level and reference.
+   */
+  @PostMapping("/{level}/{referenceId}")
+  public void updateStyle(
+      @PathVariable StyleLevel level,
+      @PathVariable String referenceId,
+      @RequestBody String cssContent) {
+    styleService.saveStyle(level, referenceId, cssContent);
   }
 }
