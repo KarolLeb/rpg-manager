@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 /** Service for managing hierarchical styles (CSS). */
@@ -21,7 +22,7 @@ public class StyleService {
    */
   @Cacheable(value = "aggregatedStyles", key = "#characterId")
   public String getAggregatedCss(Long characterId) {
-    log.info("Aggregating styles for character: {}", characterId);
+    log.debug("Aggregating styles for character: {}", characterId);
 
     return characterRepository.findById(characterId)
         .map(character -> {
@@ -56,11 +57,16 @@ public class StyleService {
   }
 
   private void appendCssIfPresent(StringBuilder sb, StyleLevel level, String referenceId) {
+    log.debug("Checking for CSS: level={}, ref={}", level, referenceId);
     Optional<Style> styleOpt = styleRepository.findByLevelAndReferenceId(level, referenceId);
-    styleOpt.ifPresent(style -> {
+    if (styleOpt.isPresent()) {
+      Style style = styleOpt.get();
+      log.debug("Found CSS for {} - {}: {} chars", level, referenceId, style.getCssContent().length());
       sb.append("/* --- Level: ").append(level).append(" | Ref: ").append(referenceId).append(" --- */\n");
       sb.append(style.getCssContent()).append("\n\n");
-    });
+    } else {
+      log.debug("No CSS found for level={}, ref={}", level, referenceId);
+    }
   }
 
   /**
@@ -78,7 +84,10 @@ public class StyleService {
   /**
    * Saves or updates a generic style.
    */
-  @CacheEvict(value = "styles", key = "#level + '_' + #referenceId")
+  @Caching(evict = {
+      @CacheEvict(value = "styles", key = "#level + '_' + #referenceId"),
+      @CacheEvict(value = "aggregatedStyles", allEntries = true)
+  })
   public Style saveStyle(StyleLevel level, String referenceId, String cssContent) {
     Style style = styleRepository.findByLevelAndReferenceId(level, referenceId).orElse(new Style());
     style.setLevel(level);
