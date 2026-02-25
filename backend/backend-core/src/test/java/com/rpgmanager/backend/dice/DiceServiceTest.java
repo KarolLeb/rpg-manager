@@ -14,9 +14,12 @@ class DiceServiceTest {
 
   private DiceService diceService;
 
-  @Mock private DiceRollerClient diceRollerClient;
-  @Mock private SecureRandom secureRandom;
-  @Mock private org.springframework.context.ApplicationEventPublisher eventPublisher;
+  @Mock
+  private DiceRollerClient diceRollerClient;
+  @Mock
+  private SecureRandom secureRandom;
+  @Mock
+  private org.springframework.context.ApplicationEventPublisher eventPublisher;
 
   @BeforeEach
   void setUp() {
@@ -31,6 +34,8 @@ class DiceServiceTest {
     int result = diceService.roll(20);
 
     assertEquals(15, result);
+    org.mockito.Mockito.verify(eventPublisher)
+        .publishEvent(org.mockito.ArgumentMatchers.any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
   }
 
   @Test
@@ -40,5 +45,7 @@ class DiceServiceTest {
     int result = diceService.localRoll(20, new RuntimeException("error"));
 
     assertEquals(6, result);
+    org.mockito.Mockito.verify(eventPublisher)
+        .publishEvent(org.mockito.ArgumentMatchers.any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
   }
 }

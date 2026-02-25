@@ -21,11 +21,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class CharacterApplicationServiceTest {
 
-  @Mock private CharacterRepository characterRepository;
-  @Mock private CharacterApplicationMapper characterApplicationMapper;
-  @Mock private org.springframework.context.ApplicationEventPublisher eventPublisher;
+  @Mock
+  private CharacterRepository characterRepository;
+  @Mock
+  private CharacterApplicationMapper characterApplicationMapper;
+  @Mock
+  private org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-  @InjectMocks private CharacterApplicationService service;
+  @InjectMocks
+  private CharacterApplicationService service;
 
   @Test
   void getAllCharacters_shouldReturnList() {
@@ -86,6 +90,7 @@ class CharacterApplicationServiceTest {
                   assertThat(c.getStats()).isEqualTo(details.getStats());
                   return true;
                 }));
+    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
   }
 
   @Test
@@ -103,6 +108,7 @@ class CharacterApplicationServiceTest {
 
     assertThat(result).isNotNull();
     assertThat(character.getCampaignId()).isEqualTo(campaignId);
+    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
   }
 
   @Test
