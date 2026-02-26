@@ -34,11 +34,14 @@ export default defineConfig({
           }]
         ],
 
-        // Enforce 50% line and 40% branch per file
+        // Enforce 60% overall and 50% per file
         thresholds: {
-          perFile: true,
-          lines: 50,
-          branches: 40
+          lines: 60,
+          branches: 60,
+          perFile: {
+            lines: 50,
+            branches: 50
+          }
         }
       }
     }]

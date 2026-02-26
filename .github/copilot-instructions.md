@@ -384,9 +384,10 @@ Principles:
 
 Tiered Targets:
 - All application code (Unit Tests): target ≥ 95% line/branch coverage (per file)
-- E2E Test Suite (Backend & Frontend Coverage): target ≥ 50% line and ≥ 40% branch coverage (per file).
+- E2E Test Suite (Backend & Frontend Coverage): target ≥ 60% line/branch (bundle) and ≥ 50% (per file).
 - Quality Gate: **0 issues** allowed (both overall and new violations threshold must be 0).
-- Cognitive Complexity (Unit Tests): Target method complexity ≤ 20 (enforced by JaCoCo/Sonar).
+- **SonarQube Synchronization**: Quality Gate settings for "New Code" and "Overall Code" MUST be identical (e.g., if Overall Coverage target is 95%, New Code Coverage target MUST also be 95%).
+- Cognitive Complexity (Unit Tests): Target method complexity ≤ 15 (enforced by JaCoCo/Sonar).
 - Flakiness Rate: **Zero Flakiness Mandate**. CI retries must be set to 0. Any failure is a blocker.
 - Performance Budget (Frontend): 
     - Time to Interactive (TTI) ≤ 2.5s
