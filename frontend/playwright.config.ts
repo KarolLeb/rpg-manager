@@ -12,8 +12,8 @@ export default defineConfig({
   forbidOnly: !!process.env['CI'],
   /* Zero Flakiness Mandate: Disable retries on CI to ensure tests pass the first time. */
   retries: 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env['CI'] ? 1 : undefined,
+  /* Opt out of parallel tests to avoid data collisions in shared backend. */
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['list'],

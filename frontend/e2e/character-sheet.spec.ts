@@ -41,6 +41,7 @@ test.describe('Character Sheet Feature (No Mocks)', () => {
 
     // Change Name
     const nameInput = page.locator('input[formControlName="name"]');
+    await nameInput.clear();
     await nameInput.fill(updatedName);
 
     // Click Save
@@ -58,6 +59,7 @@ test.describe('Character Sheet Feature (No Mocks)', () => {
     await expect(nameInput).toHaveValue(updatedName);
 
     // Restore name for next runs (optional but good practice)
+    await nameInput.clear();
     await nameInput.fill('Geralt');
     await saveButton.click();
     await expect(toast).toBeVisible();

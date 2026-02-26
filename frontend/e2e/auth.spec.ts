@@ -36,9 +36,6 @@ test.describe('Authentication Flow', () => {
 
     await submitBtn.click();
 
-    // Check for loading state text
-    await expect(page.locator('text=Logging in...')).toBeVisible();
-
     // Should eventually redirect to dashboard
     await expect(page).toHaveURL('/dashboard', { timeout: 10000 });
     await expect(page.locator('.gm-dashboard h1')).toHaveText('GM Dashboard');

@@ -14,6 +14,6 @@ test.describe('Dashboard Feature', () => {
     await expect(page.locator('.gm-dashboard h1')).toHaveText('GM Dashboard');
 
     // Verify seeded campaign is visible
-    await expect(page.locator('.campaign-card h3')).toContainText('Kampania Smoczej Lancy');
+    await expect(page.locator('.campaign-card h3').first()).toContainText('Kampania Smoczej Lancy');
   });
 });

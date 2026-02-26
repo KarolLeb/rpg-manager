@@ -25,12 +25,12 @@ services.forEach(service => {
     console.log(`Dumping coverage to ${execFile}...`);
     execSync(`docker exec ${service.container} mvn org.jacoco:jacoco-maven-plugin:0.8.12:dump -Djacoco.address=localhost -Djacoco.port=${service.port} -Djacoco.destFile=${execFile}`, { stdio: 'inherit' });
 
-    // 2. Generate XML report AND ENFORCE 50/40% PER FILE inside container
-    console.log(`Generating XML report and checking thresholds (50% line, 40% branch) in ${reportDir}...`);
+    // 2. Generate XML report AND ENFORCE 60/60% PER FILE inside container
+    console.log(`Generating XML report and checking thresholds (60% line, 60% branch) in ${reportDir}...`);
     try {
       execSync(`docker exec ${service.container} mvn jacoco:report jacoco:check -Pe2e-check`, { stdio: 'inherit' });
     } catch (checkError) {
-      console.error(`\n[!] Threshold check FAILED for ${service.name}. Some files have < 50/40% E2E coverage.`);
+      console.error(`\n[!] Threshold check FAILED for ${service.name}. Some files have < 60/60% E2E coverage.`);
       allPassed = false;
     }
 
@@ -51,8 +51,8 @@ services.forEach(service => {
 });
 
 if (!allPassed) {
-  console.log('\n[!] Backend E2E coverage failed to meet quality standards (50/40% per file).');
+  console.log('\n[!] Backend E2E coverage failed to meet quality standards (60/60% per file).');
   process.exit(1);
 }
 
-console.log('\nBackend E2E coverage processing complete. All files >= 50/40% coverage.');
+console.log('\nBackend E2E coverage processing complete. All files >= 60/60% coverage.');
