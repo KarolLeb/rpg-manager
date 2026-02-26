@@ -385,7 +385,7 @@ Principles:
 Tiered Targets:
 - All application code (Unit Tests): target ≥ 95% line/branch coverage (per file)
 - E2E Test Suite (Backend & Frontend Coverage): target ≥ 25% line coverage (per file), aiming for 50%.
-- Quality Gate: **0 issues** allowed (new violations threshold must be 0).
+- Quality Gate: **0 issues** allowed (both overall and new violations threshold must be 0).
 - Mutation Testing (Tiered Score Targets):
     - **Global/UI Components**: target ≥ 80% mutation score
     - **Core Domain & Utilities**: target ≥ 90% mutation score
