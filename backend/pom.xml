@@ -49,7 +49,7 @@
             **/*Response*,
             **/*Entry*,
             **/*Dto*,
-            **/*Application*,
+            **/*Application.java,
             **/*MapperImpl*
         </sonar.coverage.exclusions>
         
@@ -118,7 +118,7 @@
                             <configuration>
                                 <excludes>
                                     <exclude>**/*MapperImpl*</exclude>
-                                    <exclude>**/*Application*</exclude>
+                                    <exclude>**/*Application.java</exclude>
                                     <exclude>**/config/**</exclude>
                                     <exclude>**/dto/**</exclude>
                                     <exclude>**/entity/**</exclude>
@@ -140,7 +140,7 @@
                             <configuration>
                                 <excludes>
                                     <exclude>**/*MapperImpl*</exclude>
-                                    <exclude>**/*Application*</exclude>
+                                    <exclude>**/*Application.java</exclude>
                                     <exclude>**/config/**</exclude>
                                     <exclude>**/dto/**</exclude>
                                     <exclude>**/entity/**</exclude>
@@ -325,7 +325,7 @@
                                 <exclude>**/*Response*</exclude>
                                 <exclude>**/*Entry*</exclude>
                                 <exclude>**/*Dto*</exclude>
-                                <exclude>**/*Application*</exclude>
+                                <exclude>**/*Application.java</exclude>
                                 <exclude>**/*MapperImpl*</exclude>
                             </excludes>
                             <rules>
