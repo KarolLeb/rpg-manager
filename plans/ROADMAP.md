@@ -33,6 +33,7 @@ Strategic milestones and high-level project evolution.
     *   API Gateway implementation.
 
 ## 🏁 Recently Completed Milestones
+- **Feb 2026:** Enhanced E2E Quality Gate (50% line/40% branch coverage, zero-flakiness mandate) and enforced Unit-level complexity limits (15).
 - **Feb 2026:** Enforced 95% minimum code coverage policy across all modules.
 - **Feb 2026:** Implemented Frontend Mutation Testing with Stryker.
 - **Jan 2026:** Validated local CI/CD pipelines with `act`.

@@ -53,7 +53,7 @@
             **/*MapperImpl*
         </sonar.coverage.exclusions>
         
-        <!-- Coverage Targets: Unit 95% (enforced by jacoco-maven-plugin), E2E 25% (aiming for 50%) -->
+        <!-- Coverage Targets: Unit 95% (enforced by jacoco-maven-plugin), E2E 50% -->
         
         <!-- Security Patch Overrides -->
         <spring-framework.version>6.2.2</spring-framework.version>
@@ -165,6 +165,16 @@
                                                 <counter>BRANCH</counter>
                                                 <value>COVEREDRATIO</value>
                                                 <minimum>0.90</minimum>
+                                            </limit>
+                                        </limits>
+                                    </rule>
+                                    <rule>
+                                        <element>METHOD</element>
+                                        <limits>
+                                            <limit>
+                                                <counter>COMPLEXITY</counter>
+                                                <value>TOTALCOUNT</value>
+                                                <maximum>15</maximum>
                                             </limit>
                                         </limits>
                                     </rule>
@@ -325,7 +335,12 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.25</minimum>
+                                            <minimum>0.50</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.40</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

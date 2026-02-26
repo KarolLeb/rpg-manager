@@ -10,8 +10,8 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env['CI'],
-  /* Retry on CI only */
-  retries: process.env['CI'] ? 2 : 0,
+  /* Zero Flakiness Mandate: Disable retries on CI to ensure tests pass the first time. */
+  retries: 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env['CI'] ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -34,10 +34,11 @@ export default defineConfig({
           }]
         ],
 
-        // Enforce 25% per file
+        // Enforce 50% line and 40% branch per file
         thresholds: {
           perFile: true,
-          lines: 25
+          lines: 50,
+          branches: 40
         }
       }
     }]
