@@ -15,3 +15,4 @@ public class RpgManagerBackendApplication {
     SpringApplication.run(RpgManagerBackendApplication.class, args);
   }
 }
+

@@ -14,6 +14,7 @@
     "sonar": "node ../.github/scripts/convert-stryker-to-sonar.js && sonar-scanner",
     "test:e2e": "playwright test",
     "e2e": "npm run test:e2e",
+    "e2e:coverage": "npm run test:e2e & node ../.github/scripts/dump-e2e-coverage.js",
     "e2e:ui": "playwright test --ui",
     "e2e:cli": "playwright test --reporter=list",
     "stryker": "stryker run config/stryker.config.json",

@@ -383,7 +383,8 @@ Principles:
 - Efficient Testing: When fixing or updating tests, only rerun relevant test classes or modules to ensure fast feedback cycles. Run the full test suite only after local changes are verified.
 
 Tiered Targets:
-- All application code: target ≥ 95% line/branch coverage
+- All application code (Unit Tests): target ≥ 95% line/branch coverage (per file)
+- E2E Test Suite (Backend Coverage): target ≥ 25% line coverage (per file), aiming for 50%.
 - Mutation Testing (Tiered Score Targets):
     - **Global/UI Components**: target ≥ 80% mutation score
     - **Core Domain & Utilities**: target ≥ 90% mutation score

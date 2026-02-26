@@ -36,6 +36,7 @@
         <sonar.projectKey>RPG-manager-backend-services</sonar.projectKey>
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
+        <!-- Default to Unit coverage for standard sonar scan -->
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.coverage.exclusions>
             **/config/**,
@@ -51,6 +52,8 @@
             **/*Application*,
             **/*MapperImpl*
         </sonar.coverage.exclusions>
+        
+        <!-- Coverage Targets: Unit 95% (enforced by jacoco-maven-plugin), E2E 25% (aiming for 50%) -->
         
         <!-- Security Patch Overrides -->
         <spring-framework.version>6.2.2</spring-framework.version>
@@ -278,4 +281,59 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>mutation</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>e2e-check</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.12</version>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco-e2e.exec</dataFile>
+                            <outputDirectory>${project.build.directory}/site/jacoco-e2e</outputDirectory>
+                            <excludes>
+                                <exclude>**/config/**</exclude>
+                                <exclude>**/model/**</exclude>
+                                <exclude>**/entity/**</exclude>
+                                <exclude>**/dto/**</exclude>
+                                <exclude>**/*Entity*</exclude>
+                                <exclude>**/*Domain*</exclude>
+                                <exclude>**/*Request*</exclude>
+                                <exclude>**/*Response*</exclude>
+                                <exclude>**/*Entry*</exclude>
+                                <exclude>**/*Dto*</exclude>
+                                <exclude>**/*Application*</exclude>
+                                <exclude>**/*MapperImpl*</exclude>
+                            </excludes>
+                            <rules>
+                                <rule>
+                                    <element>CLASS</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.25</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

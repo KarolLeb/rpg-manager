@@ -58,6 +58,9 @@ services:
     container_name: rpg-backend-auth
     ports:
       - "8081:8081"
+      - "6301:6301"
+    volumes:
+      - rpg-maven-repo:/root/.m2
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rpg_auth
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
@@ -79,6 +82,9 @@ services:
     container_name: rpg-backend-admin
     ports:
       - "8082:8082"
+      - "6302:6302"
+    volumes:
+      - rpg-maven-repo:/root/.m2
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rpg_admin
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
@@ -103,6 +109,9 @@ services:
     container_name: rpg-backend-core
     ports:
       - "8080:8080"
+      - "6300:6300"
+    volumes:
+      - rpg-maven-repo:/root/.m2
     environment:
       - SPRING_DOCKER_COMPOSE_ENABLED=false
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rpg
@@ -152,6 +161,8 @@ networks:
     name: rpg-network
 
 volumes:
+  rpg-maven-repo:
+    name: rpg-maven-repo
   rpg-frontend-node-modules:
     external: true
     name: rpg-frontend-node-modules

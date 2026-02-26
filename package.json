@@ -19,6 +19,9 @@
     "sonar:full:backend": "cd backend && .\\mvnw.cmd clean spotless:check checkstyle:check install && .\\mvnw.cmd org.pitest:pitest-maven:mutationCoverage && node ../.github/scripts/convert-pitest-to-sonar.js && .\\mvnw.cmd sonar:sonar -Pmutation",
     "sonar:full:frontend": "cd frontend && npm run lint:report && npm run test:unit && npm run stryker && npm run sonar",
     "sonar:full": "npm run sonar:full:backend && npm run sonar:full:frontend",
+    "sonar:e2e": "npm run e2e:coverage && npm run sonar:scan:e2e:backend",
+    "sonar:scan:e2e:backend": "cd backend && .\\mvnw.cmd sonar:sonar -Dsonar.projectKey=RPG-manager-backend-services-e2e -Dsonar.projectName=\"RPG Manager - Backend (E2E Coverage)\" -Dsonar.coverage.jacoco.xmlReportPaths=\"**/target/site/jacoco-e2e/jacoco.xml\"",
+    "e2e:coverage": "cd frontend && npm run e2e:coverage",
     "sonar": "npm run sonar:full"
   },
   "repository": {
