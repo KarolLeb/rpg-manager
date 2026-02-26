@@ -30,15 +30,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @SuppressWarnings("unchecked")
 class ActivityLogServiceTest {
 
-  @Mock
-  private ActivityLogRepository activityLogRepository;
-  @Mock
-  private EmbeddingService embeddingService;
-  @Mock
-  private ObjectMapper objectMapper;
+  @Mock private ActivityLogRepository activityLogRepository;
+  @Mock private EmbeddingService embeddingService;
+  @Mock private ObjectMapper objectMapper;
 
-  @InjectMocks
-  private ActivityLogService activityLogService;
+  @InjectMocks private ActivityLogService activityLogService;
 
   private CreateActivityLogRequest createRequest;
   private ActivityLogEntry entry;
@@ -53,16 +49,17 @@ class ActivityLogServiceTest {
     createRequest.setDescription("Rolled a 20");
     createRequest.setMetadata(Map.of("die", "d20", "result", 20));
 
-    entry = ActivityLogEntry.builder()
-        .id(100L)
-        .sessionId(1L)
-        .campaignId(2L)
-        .userId(3L)
-        .actionType(ActivityLogEntry.ActionType.DICE_ROLL)
-        .description("Rolled a 20")
-        .metadata("{\"die\":\"d20\",\"result\":20}")
-        .createdAt(OffsetDateTime.now())
-        .build();
+    entry =
+        ActivityLogEntry.builder()
+            .id(100L)
+            .sessionId(1L)
+            .campaignId(2L)
+            .userId(3L)
+            .actionType(ActivityLogEntry.ActionType.DICE_ROLL)
+            .description("Rolled a 20")
+            .metadata("{\"die\":\"d20\",\"result\":20}")
+            .createdAt(OffsetDateTime.now())
+            .build();
   }
 
   @Test
@@ -87,8 +84,9 @@ class ActivityLogServiceTest {
     verify(activityLogRepository)
         .save(
             argThat(
-                savedEntry -> savedEntry.getMetadata() != null
-                    && savedEntry.getMetadata().equals("{\"die\":\"d20\",\"result\":20}")));
+                savedEntry ->
+                    savedEntry.getMetadata() != null
+                        && savedEntry.getMetadata().equals("{\"die\":\"d20\",\"result\":20}")));
   }
 
   @Test
@@ -223,8 +221,7 @@ class ActivityLogServiceTest {
   void shouldHandleJsonProcessingExceptionOnSerialize() throws JsonProcessingException {
     // given
     createRequest.setMetadata(Map.of("key", "value"));
-    when(objectMapper.writeValueAsString(any())).thenThrow(new JsonProcessingException("error") {
-    });
+    when(objectMapper.writeValueAsString(any())).thenThrow(new JsonProcessingException("error") {});
 
     // when / then
     assertThatThrownBy(() -> activityLogService.logActivity(createRequest))
@@ -250,8 +247,7 @@ class ActivityLogServiceTest {
     when(activityLogRepository.findSimilar(any(), eq(5)))
         .thenReturn(Collections.singletonList(row));
     when(objectMapper.readValue(anyString(), any(TypeReference.class)))
-        .thenThrow(new JsonProcessingException("error") {
-        });
+        .thenThrow(new JsonProcessingException("error") {});
 
     // when
     List<ActivityLogDto> results = activityLogService.searchActivities("query", 5);
@@ -277,7 +273,7 @@ class ActivityLogServiceTest {
   @Test
   void shouldHandleSingleElementVectorInVectorToString() {
     // given
-    float[] vector = new float[] { 1.0f };
+    float[] vector = new float[] {1.0f};
     when(embeddingService.embed("query")).thenReturn(vector);
     when(activityLogRepository.findSimilar("[1.0]", 5)).thenReturn(Collections.emptyList());
 

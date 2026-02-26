@@ -13,12 +13,16 @@ import com.rpgmanager.backend.user.domain.model.UserDomain;
 import com.rpgmanager.backend.user.domain.repository.UserRepositoryPort;
 import java.util.Optional;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @ExtendWith(MockitoExtension.class)
 class CampaignApplicationServiceTest {
@@ -38,6 +42,29 @@ class CampaignApplicationServiceTest {
   void setUp() {
     user = Instancio.create(UserDomain.class);
     user.setId(1L);
+    mockSecurityContext(1L, "GM");
+  }
+
+  @AfterEach
+  void tearDown() {
+    SecurityContextHolder.clearContext();
+  }
+
+  private void mockSecurityContext(Long userId, String role) {
+    SecurityContext securityContext = mock(SecurityContext.class);
+    Authentication authentication = mock(Authentication.class);
+    com.rpgmanager.common.security.UserContext userContext =
+        new com.rpgmanager.common.security.UserContext(
+            "user",
+            "pass",
+            java.util.List.of(
+                new org.springframework.security.core.authority.SimpleGrantedAuthority(
+                    "ROLE_" + role)),
+            userId);
+
+    lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+    lenient().when(authentication.getPrincipal()).thenReturn(userContext);
+    SecurityContextHolder.setContext(securityContext);
   }
 
   @Test
@@ -241,7 +268,11 @@ class CampaignApplicationServiceTest {
 
   @Test
   void deleteCampaign_shouldDelete() {
-    when(campaignRepository.existsById(1L)).thenReturn(true);
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+    campaign.setGameMasterId(1L); // Matches mocked security context
+
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
 
     campaignService.deleteCampaign(1L);
 
@@ -252,7 +283,7 @@ class CampaignApplicationServiceTest {
 
   @Test
   void deleteCampaign_shouldThrowExceptionWhenNotFound() {
-    when(campaignRepository.existsById(1L)).thenReturn(false);
+    when(campaignRepository.findById(1L)).thenReturn(Optional.empty());
 
     org.junit.jupiter.api.Assertions.assertThrows(
         IllegalArgumentException.class, () -> campaignService.deleteCampaign(1L));

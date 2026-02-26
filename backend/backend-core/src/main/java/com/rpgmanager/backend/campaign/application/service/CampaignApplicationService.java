@@ -31,9 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CampaignApplicationService
     implements CreateCampaignUseCase,
-    GetCampaignUseCase,
-    UpdateCampaignUseCase,
-    DeleteCampaignUseCase {
+        GetCampaignUseCase,
+        UpdateCampaignUseCase,
+        DeleteCampaignUseCase {
 
   private static final String CAMPAIGN_NOT_FOUND_MSG = "Campaign not found with id: ";
   private static final String USER_NOT_FOUND_MSG = "User not found with id: ";
@@ -63,9 +63,10 @@ public class CampaignApplicationService
   @Override
   @Transactional(readOnly = true)
   public CampaignDto getCampaignById(Long id) {
-    CampaignDomain campaign = campaignRepository
-        .findById(id)
-        .orElseThrow(() -> new IllegalArgumentException(CAMPAIGN_NOT_FOUND_MSG + id));
+    CampaignDomain campaign =
+        campaignRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(CAMPAIGN_NOT_FOUND_MSG + id));
     return campaignApplicationMapper.toDto(campaign);
   }
 
@@ -79,19 +80,21 @@ public class CampaignApplicationService
   @Transactional
   @CacheEvict(value = "campaigns", allEntries = true)
   public CampaignDto createCampaign(CreateCampaignRequest request) {
-    UserDomain gameMaster = userRepository
-        .findById(request.getGameMasterId())
-        .orElseThrow(
-            () -> new IllegalArgumentException(USER_NOT_FOUND_MSG + request.getGameMasterId()));
+    UserDomain gameMaster =
+        userRepository
+            .findById(request.getGameMasterId())
+            .orElseThrow(
+                () -> new IllegalArgumentException(USER_NOT_FOUND_MSG + request.getGameMasterId()));
 
-    CampaignDomain campaign = CampaignDomain.builder()
-        .name(request.getName())
-        .description(request.getDescription())
-        .status(CampaignDomain.CampaignStatus.ACTIVE)
-        .creationDate(OffsetDateTime.now())
-        .gameMasterId(gameMaster.getId())
-        .gameMasterName(gameMaster.getUsername())
-        .build();
+    CampaignDomain campaign =
+        CampaignDomain.builder()
+            .name(request.getName())
+            .description(request.getDescription())
+            .status(CampaignDomain.CampaignStatus.ACTIVE)
+            .creationDate(OffsetDateTime.now())
+            .gameMasterId(gameMaster.getId())
+            .gameMasterName(gameMaster.getUsername())
+            .build();
 
     CampaignDomain savedCampaign = campaignRepository.save(campaign);
     eventPublisher.publishEvent(
@@ -108,7 +111,7 @@ public class CampaignApplicationService
   /**
    * Updates an existing campaign.
    *
-   * @param id      the ID of the campaign to update
+   * @param id the ID of the campaign to update
    * @param request the campaign update request
    * @return the updated campaign DTO
    */
@@ -116,9 +119,10 @@ public class CampaignApplicationService
   @Transactional
   @CacheEvict(value = "campaigns", allEntries = true)
   public CampaignDto updateCampaign(Long id, CreateCampaignRequest request) {
-    CampaignDomain campaign = campaignRepository
-        .findById(id)
-        .orElseThrow(() -> new IllegalArgumentException(CAMPAIGN_NOT_FOUND_MSG + id));
+    CampaignDomain campaign =
+        campaignRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(CAMPAIGN_NOT_FOUND_MSG + id));
 
     checkCampaignOwnership(campaign);
 
@@ -127,10 +131,12 @@ public class CampaignApplicationService
 
     if (request.getGameMasterId() != null
         && !request.getGameMasterId().equals(campaign.getGameMasterId())) {
-      UserDomain newGameMaster = userRepository
-          .findById(request.getGameMasterId())
-          .orElseThrow(
-              () -> new IllegalArgumentException(USER_NOT_FOUND_MSG + request.getGameMasterId()));
+      UserDomain newGameMaster =
+          userRepository
+              .findById(request.getGameMasterId())
+              .orElseThrow(
+                  () ->
+                      new IllegalArgumentException(USER_NOT_FOUND_MSG + request.getGameMasterId()));
       campaign.setGameMasterId(newGameMaster.getId());
       campaign.setGameMasterName(newGameMaster.getUsername());
     }
@@ -156,9 +162,10 @@ public class CampaignApplicationService
   @Transactional
   @CacheEvict(value = "campaigns", allEntries = true)
   public void deleteCampaign(Long id) {
-    CampaignDomain campaign = campaignRepository
-        .findById(id)
-        .orElseThrow(() -> new IllegalArgumentException(CAMPAIGN_NOT_FOUND_MSG + id));
+    CampaignDomain campaign =
+        campaignRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(CAMPAIGN_NOT_FOUND_MSG + id));
 
     checkCampaignOwnership(campaign);
     campaignRepository.deleteById(id);
@@ -175,10 +182,12 @@ public class CampaignApplicationService
   private void checkCampaignOwnership(CampaignDomain campaign) {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if (principal instanceof UserContext userContext) {
-      boolean isAdmin = userContext.getAuthorities().stream()
-          .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+      boolean isAdmin =
+          userContext.getAuthorities().stream()
+              .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
       if (!isAdmin && !userContext.getUserId().equals(campaign.getGameMasterId())) {
-        throw new AccessDeniedException("Only the Game Master or an Admin can modify this campaign.");
+        throw new AccessDeniedException(
+            "Only the Game Master or an Admin can modify this campaign.");
       }
     } else {
       throw new AccessDeniedException("User not authenticated.");

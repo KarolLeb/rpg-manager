@@ -15,44 +15,49 @@ import org.springframework.stereotype.Service;
 public class StyleService {
 
   private final StyleRepository styleRepository;
-  private final com.rpgmanager.backend.character.domain.repository.CharacterRepository characterRepository;
+  private final com.rpgmanager.backend.character.domain.repository.CharacterRepository
+      characterRepository;
 
-  /**
-   * Retrieves concatenated CSS content for a character.
-   */
+  /** Retrieves concatenated CSS content for a character. */
   @Cacheable(value = "aggregatedStyles", key = "#characterId")
   public String getAggregatedCss(Long characterId) {
     log.debug("Aggregating styles for character: {}", characterId);
 
-    return characterRepository.findById(characterId)
-        .map(character -> {
-          StringBuilder cssBuilder = new StringBuilder();
+    return characterRepository
+        .findById(characterId)
+        .map(
+            character -> {
+              StringBuilder cssBuilder = new StringBuilder();
 
-          // 1. DEFAULT
-          appendCssIfPresent(cssBuilder, StyleLevel.DEFAULT, "global");
+              // 1. DEFAULT
+              appendCssIfPresent(cssBuilder, StyleLevel.DEFAULT, "global");
 
-          // 2. CAMPAIGN
-          if (character.getCampaignId() != null) {
-            // Base campaign style
-            appendCssIfPresent(cssBuilder, StyleLevel.CAMPAIGN, character.getCampaignId().toString());
+              // 2. CAMPAIGN
+              if (character.getCampaignId() != null) {
+                // Base campaign style
+                appendCssIfPresent(
+                    cssBuilder, StyleLevel.CAMPAIGN, character.getCampaignId().toString());
 
-            // Campaign-specific race style (e.g., "1:Elf")
-            if (character.getRace() != null && !character.getRace().isBlank()) {
-              appendCssIfPresent(cssBuilder, StyleLevel.CAMPAIGN,
-                  character.getCampaignId() + ":" + character.getRace());
-            }
-          }
+                // Campaign-specific race style (e.g., "1:Elf")
+                if (character.getRace() != null && !character.getRace().isBlank()) {
+                  appendCssIfPresent(
+                      cssBuilder,
+                      StyleLevel.CAMPAIGN,
+                      character.getCampaignId() + ":" + character.getRace());
+                }
+              }
 
-          // 3. CHARACTER
-          appendCssIfPresent(cssBuilder, StyleLevel.CHARACTER, character.getId().toString());
+              // 3. CHARACTER
+              appendCssIfPresent(cssBuilder, StyleLevel.CHARACTER, character.getId().toString());
 
-          if (cssBuilder.isEmpty()) {
-            return "/* Default minimal style fallback for " + character.getName()
-                + " */\n:root { --race-theme-color: #cccccc; }";
-          }
+              if (cssBuilder.isEmpty()) {
+                return "/* Default minimal style fallback for "
+                    + character.getName()
+                    + " */\n:root { --race-theme-color: #cccccc; }";
+              }
 
-          return cssBuilder.toString();
-        })
+              return cssBuilder.toString();
+            })
         .orElse("/* Character " + characterId + " not found */");
   }
 
@@ -61,17 +66,20 @@ public class StyleService {
     Optional<Style> styleOpt = styleRepository.findByLevelAndReferenceId(level, referenceId);
     if (styleOpt.isPresent()) {
       Style style = styleOpt.get();
-      log.debug("Found CSS for {} - {}: {} chars", level, referenceId, style.getCssContent().length());
-      sb.append("/* --- Level: ").append(level).append(" | Ref: ").append(referenceId).append(" --- */\n");
+      log.debug(
+          "Found CSS for {} - {}: {} chars", level, referenceId, style.getCssContent().length());
+      sb.append("/* --- Level: ")
+          .append(level)
+          .append(" | Ref: ")
+          .append(referenceId)
+          .append(" --- */\n");
       sb.append(style.getCssContent()).append("\n\n");
     } else {
       log.debug("No CSS found for level={}, ref={}", level, referenceId);
     }
   }
 
-  /**
-   * Retrieves a specific style directly.
-   */
+  /** Retrieves a specific style directly. */
   @Cacheable(value = "styles", key = "#level + '_' + #referenceId")
   public String getStyle(StyleLevel level, String referenceId) {
     log.info("Fetching CSS style for {} - {} from database", level, referenceId);
@@ -81,13 +89,12 @@ public class StyleService {
         .orElse("");
   }
 
-  /**
-   * Saves or updates a generic style.
-   */
-  @Caching(evict = {
-      @CacheEvict(value = "styles", key = "#level + '_' + #referenceId"),
-      @CacheEvict(value = "aggregatedStyles", allEntries = true)
-  })
+  /** Saves or updates a generic style. */
+  @Caching(
+      evict = {
+        @CacheEvict(value = "styles", key = "#level + '_' + #referenceId"),
+        @CacheEvict(value = "aggregatedStyles", allEntries = true)
+      })
   public Style saveStyle(StyleLevel level, String referenceId, String cssContent) {
     Style style = styleRepository.findByLevelAndReferenceId(level, referenceId).orElse(new Style());
     style.setLevel(level);

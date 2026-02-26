@@ -15,21 +15,19 @@ import org.springframework.http.ResponseEntity;
 @ExtendWith(MockitoExtension.class)
 class ActionPermissionControllerTest {
 
-    @Mock
-    private ActionPermissionService actionPermissionService;
+  @Mock private ActionPermissionService actionPermissionService;
 
-    @InjectMocks
-    private ActionPermissionController controller;
+  @InjectMocks private ActionPermissionController controller;
 
-    @Test
-    void checkPermission() {
-        when(actionPermissionService.canPerformAction(1L, ActionType.LEVEL_UP, 2L, 3L))
-                .thenReturn(true);
+  @Test
+  void checkPermission() {
+    when(actionPermissionService.canPerformAction(1L, ActionType.LEVEL_UP, 2L, 3L))
+        .thenReturn(true);
 
-        ResponseEntity<ActionPermissionController.PermissionCheckResponse> response = controller.checkPermission(1L,
-                ActionType.LEVEL_UP, 2L, 3L);
+    ResponseEntity<ActionPermissionController.PermissionCheckResponse> response =
+        controller.checkPermission(1L, ActionType.LEVEL_UP, 2L, 3L);
 
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().allowed()).isTrue();
-    }
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().allowed()).isTrue();
+  }
 }

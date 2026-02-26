@@ -58,5 +58,6 @@ public class HexagonalArchitectureTest {
               "org.mapstruct..",
               "com.rpgmanager.backend..application..",
               "com.rpgmanager.backend..domain..",
-              "com.rpgmanager.backend.activitylog..");
+              "com.rpgmanager.backend.activitylog..",
+              "com.rpgmanager.common.security..");
 }

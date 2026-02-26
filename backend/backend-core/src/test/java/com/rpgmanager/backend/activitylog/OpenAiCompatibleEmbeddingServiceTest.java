@@ -18,11 +18,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 @ExtendWith(MockitoExtension.class)
 class OpenAiCompatibleEmbeddingServiceTest {
 
-  @Mock
-  private OpenAiEmbeddingClient client;
+  @Mock private OpenAiEmbeddingClient client;
 
-  @InjectMocks
-  private OpenAiCompatibleEmbeddingService service;
+  @InjectMocks private OpenAiCompatibleEmbeddingService service;
 
   @BeforeEach
   void setUp() {
@@ -32,9 +30,9 @@ class OpenAiCompatibleEmbeddingServiceTest {
 
   @Test
   void embed_shouldReturnEmbeddingFromClient() {
-    float[] expectedEmbedding = new float[] { 0.1f, 0.2f, 0.3f };
-    OpenAiEmbeddingResponse response = new OpenAiEmbeddingResponse(
-        List.of(new OpenAiEmbeddingResponse.Data(expectedEmbedding)));
+    float[] expectedEmbedding = new float[] {0.1f, 0.2f, 0.3f};
+    OpenAiEmbeddingResponse response =
+        new OpenAiEmbeddingResponse(List.of(new OpenAiEmbeddingResponse.Data(expectedEmbedding)));
 
     when(client.getEmbeddings(eq("Bearer test-key"), any(OpenAiEmbeddingRequest.class)))
         .thenReturn(response);

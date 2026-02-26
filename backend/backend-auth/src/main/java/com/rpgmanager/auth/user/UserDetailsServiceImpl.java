@@ -2,7 +2,6 @@ package com.rpgmanager.auth.user;
 
 import com.rpgmanager.auth.user.domain.model.UserDomain;
 import com.rpgmanager.auth.user.domain.repository.UserRepositoryPort;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,9 +22,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     if (!StringUtils.hasText(username)) {
       throw new UsernameNotFoundException("Username cannot be empty");
     }
-    UserDomain user = userRepository
-        .findByUsername(username)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    UserDomain user =
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
     return new org.springframework.security.core.userdetails.User(
         user.getUsername(),

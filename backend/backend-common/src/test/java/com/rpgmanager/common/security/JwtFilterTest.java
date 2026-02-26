@@ -19,17 +19,13 @@ class JwtFilterTest {
 
   private JwtFilter jwtFilter;
 
-  @Mock
-  private JwtUtil jwtUtil;
+  @Mock private JwtUtil jwtUtil;
 
-  @Mock
-  private HttpServletRequest request;
+  @Mock private HttpServletRequest request;
 
-  @Mock
-  private HttpServletResponse response;
+  @Mock private HttpServletResponse response;
 
-  @Mock
-  private FilterChain filterChain;
+  @Mock private FilterChain filterChain;
 
   @BeforeEach
   void setUp() {
@@ -73,12 +69,14 @@ class JwtFilterTest {
     jwtFilter.doFilterInternal(request, response, filterChain);
 
     verify(filterChain).doFilter(request, response);
-    org.springframework.security.core.Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    org.springframework.security.core.Authentication auth =
+        SecurityContextHolder.getContext().getAuthentication();
     assertThat(auth).isNotNull();
     assertThat(((UserContext) auth.getPrincipal()).getUsername()).isEqualTo(username);
     assertThat(((UserContext) auth.getPrincipal()).getUserId()).isEqualTo(userId);
     assertThat(
-        ((org.springframework.security.web.authentication.WebAuthenticationDetails) auth.getDetails()))
+            ((org.springframework.security.web.authentication.WebAuthenticationDetails)
+                auth.getDetails()))
         .isNotNull();
   }
 
@@ -89,8 +87,8 @@ class JwtFilterTest {
     given(request.getHeader("Authorization")).willReturn("Bearer " + token);
     given(jwtUtil.extractUsername(token)).willReturn(username);
 
-    org.springframework.security.core.Authentication existingAuth = mock(
-        org.springframework.security.core.Authentication.class);
+    org.springframework.security.core.Authentication existingAuth =
+        mock(org.springframework.security.core.Authentication.class);
     SecurityContextHolder.getContext().setAuthentication(existingAuth);
 
     jwtFilter.doFilterInternal(request, response, filterChain);

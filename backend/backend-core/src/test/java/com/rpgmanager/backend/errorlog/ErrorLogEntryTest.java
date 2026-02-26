@@ -7,19 +7,19 @@ import org.junit.jupiter.api.Test;
 
 class ErrorLogEntryTest {
 
-    @Test
-    void onCreate_setsCreatedAtIfNull() {
-        ErrorLogEntry entry = new ErrorLogEntry();
-        entry.onCreate();
-        assertThat(entry.getCreatedAt()).isNotNull();
-    }
+  @Test
+  void onCreate_setsCreatedAtIfNull() {
+    ErrorLogEntry entry = new ErrorLogEntry();
+    entry.onCreate();
+    assertThat(entry.getCreatedAt()).isNotNull();
+  }
 
-    @Test
-    void onCreate_doesNotOverrideCreatedAtIfNotNull() {
-        ErrorLogEntry entry = new ErrorLogEntry();
-        OffsetDateTime time = OffsetDateTime.now().minusDays(1);
-        entry.setCreatedAt(time);
-        entry.onCreate();
-        assertThat(entry.getCreatedAt()).isEqualTo(time);
-    }
+  @Test
+  void onCreate_doesNotOverrideCreatedAtIfNotNull() {
+    ErrorLogEntry entry = new ErrorLogEntry();
+    OffsetDateTime time = OffsetDateTime.now().minusDays(1);
+    entry.setCreatedAt(time);
+    entry.onCreate();
+    assertThat(entry.getCreatedAt()).isEqualTo(time);
+  }
 }

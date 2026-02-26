@@ -12,24 +12,52 @@ import com.rpgmanager.backend.character.domain.repository.CharacterRepository;
 import java.util.List;
 import java.util.Optional;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @ExtendWith(MockitoExtension.class)
 class CharacterApplicationServiceTest {
 
-  @Mock
-  private CharacterRepository characterRepository;
-  @Mock
-  private CharacterApplicationMapper characterApplicationMapper;
-  @Mock
-  private org.springframework.context.ApplicationEventPublisher eventPublisher;
+  @Mock private CharacterRepository characterRepository;
+  @Mock private CharacterApplicationMapper characterApplicationMapper;
+  @Mock private org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-  @InjectMocks
-  private CharacterApplicationService service;
+  @InjectMocks private CharacterApplicationService service;
+
+  @BeforeEach
+  void setUp() {
+    mockSecurityContext(1L, "GM");
+  }
+
+  @AfterEach
+  void tearDown() {
+    SecurityContextHolder.clearContext();
+  }
+
+  private void mockSecurityContext(Long userId, String role) {
+    SecurityContext securityContext = mock(SecurityContext.class);
+    Authentication authentication = mock(Authentication.class);
+    com.rpgmanager.common.security.UserContext userContext =
+        new com.rpgmanager.common.security.UserContext(
+            "user",
+            "pass",
+            java.util.List.of(
+                new org.springframework.security.core.authority.SimpleGrantedAuthority(
+                    "ROLE_" + role)),
+            userId);
+
+    lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+    lenient().when(authentication.getPrincipal()).thenReturn(userContext);
+    SecurityContextHolder.setContext(securityContext);
+  }
 
   @Test
   void getAllCharacters_shouldReturnList() {
@@ -70,6 +98,7 @@ class CharacterApplicationServiceTest {
   void updateCharacter_shouldSaveAndReturnResponse() {
     Long id = 1L;
     CharacterDomain existing = Instancio.create(CharacterDomain.class);
+    existing.setOwnerId(1L); // Matches mocked security context
     CharacterDomain details = Instancio.create(CharacterDomain.class);
     CharacterResponse response = Instancio.create(CharacterResponse.class);
 
@@ -90,7 +119,8 @@ class CharacterApplicationServiceTest {
                   assertThat(c.getStats()).isEqualTo(details.getStats());
                   return true;
                 }));
-    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
+    verify(eventPublisher)
+        .publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
   }
 
   @Test
@@ -98,6 +128,7 @@ class CharacterApplicationServiceTest {
     Long id = 1L;
     Long campaignId = 10L;
     CharacterDomain character = Instancio.create(CharacterDomain.class);
+    character.setOwnerId(1L); // Matches mocked security context
     CharacterResponse response = Instancio.create(CharacterResponse.class);
 
     when(characterRepository.findById(id)).thenReturn(Optional.of(character));
@@ -108,7 +139,8 @@ class CharacterApplicationServiceTest {
 
     assertThat(result).isNotNull();
     assertThat(character.getCampaignId()).isEqualTo(campaignId);
-    verify(eventPublisher).publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
+    verify(eventPublisher)
+        .publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
   }
 
   @Test

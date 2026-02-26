@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class StyleServiceTest extends BaseIntegrationTest {
 
-  @Autowired
-  private StyleService styleService;
+  @Autowired private StyleService styleService;
 
-  @Autowired
-  private StyleRepository styleRepository;
+  @Autowired private StyleRepository styleRepository;
 
   @Test
   void shouldUpdateCacheWhenStyleIsSaved() {
@@ -47,7 +45,6 @@ class StyleServiceTest extends BaseIntegrationTest {
     // character first.
     // Given the architecture, an integration test here would need a Character
     // saved.
-    assertThat(styleService.getAggregatedCss(999L))
-        .contains("Character 999 not found");
+    assertThat(styleService.getAggregatedCss(999L)).contains("Character 999 not found");
   }
 }

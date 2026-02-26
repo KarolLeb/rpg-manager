@@ -13,9 +13,9 @@ import lombok.Data;
 
 /** Entity representing a hierarchical Style in the database. */
 @Entity
-@Table(name = "styles", uniqueConstraints = {
-    @UniqueConstraint(columnNames = { "level", "reference_id" })
-})
+@Table(
+    name = "styles",
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"level", "reference_id"})})
 @Data
 public class Style {
   @Id

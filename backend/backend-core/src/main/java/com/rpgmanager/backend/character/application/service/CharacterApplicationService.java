@@ -52,25 +52,27 @@ public class CharacterApplicationService
   @Override
   @Transactional(readOnly = true)
   public CharacterResponse getCharacter(Long id) {
-    CharacterDomain character = characterRepository
-        .findById(id)
-        .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
+    CharacterDomain character =
+        characterRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
     return characterApplicationMapper.toResponse(character);
   }
 
   /**
    * Updates an existing character.
    *
-   * @param id               the ID of the character to update
+   * @param id the ID of the character to update
    * @param characterDetails the new character details
    * @return the updated character response
    */
   @Override
   @Transactional
   public CharacterResponse updateCharacter(Long id, CharacterDomain characterDetails) {
-    CharacterDomain character = characterRepository
-        .findById(id)
-        .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
+    CharacterDomain character =
+        characterRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + id));
 
     checkCharacterAccess(character);
 
@@ -96,15 +98,16 @@ public class CharacterApplicationService
    * Allows a character to join a campaign.
    *
    * @param characterId the ID of the character
-   * @param campaignId  the ID of the campaign
+   * @param campaignId the ID of the campaign
    * @return the updated character response
    */
   @Override
   @Transactional
   public CharacterResponse joinCampaign(Long characterId, Long campaignId) {
-    CharacterDomain character = characterRepository
-        .findById(characterId)
-        .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + characterId));
+    CharacterDomain character =
+        characterRepository
+            .findById(characterId)
+            .orElseThrow(() -> new IllegalArgumentException(CHARACTER_NOT_FOUND_MSG + characterId));
 
     checkCharacterAccess(character);
 
@@ -128,8 +131,9 @@ public class CharacterApplicationService
   private void checkCharacterAccess(CharacterDomain character) {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if (principal instanceof UserContext userContext) {
-      boolean isAdmin = userContext.getAuthorities().stream()
-          .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+      boolean isAdmin =
+          userContext.getAuthorities().stream()
+              .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
       boolean isOwner = userContext.getUserId().equals(character.getOwnerId());
       boolean isController = userContext.getUserId().equals(character.getControllerId());

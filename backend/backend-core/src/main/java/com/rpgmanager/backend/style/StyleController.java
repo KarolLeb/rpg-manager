@@ -17,26 +17,19 @@ public class StyleController {
 
   private final StyleService styleService;
 
-  /**
-   * Retrieves aggregated CSS for a character across all matching levels.
-   */
+  /** Retrieves aggregated CSS for a character across all matching levels. */
   @GetMapping(value = "/aggregated", produces = "text/css")
   public String getAggregatedStyle(@RequestParam Long characterId) {
     return styleService.getAggregatedCss(characterId);
   }
 
-  /**
-   * Retrieves the CSS for a specific level and reference.
-   */
+  /** Retrieves the CSS for a specific level and reference. */
   @GetMapping(value = "/{level}/{referenceId}", produces = "text/css")
-  public String getStyle(
-      @PathVariable StyleLevel level, @PathVariable String referenceId) {
+  public String getStyle(@PathVariable StyleLevel level, @PathVariable String referenceId) {
     return styleService.getStyle(level, referenceId);
   }
 
-  /**
-   * Updates the style for a specific level and reference.
-   */
+  /** Updates the style for a specific level and reference. */
   @PostMapping("/{level}/{referenceId}")
   public void updateStyle(
       @PathVariable StyleLevel level,

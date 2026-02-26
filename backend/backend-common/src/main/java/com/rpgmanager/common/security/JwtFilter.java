@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,15 +43,16 @@ public class JwtFilter extends OncePerRequestFilter {
       roles = jwtUtil.extractRoles(jwt);
 
       if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-        UserContext userContext = new UserContext(
-            username,
-            "", // No password needed for stateless JWT
-            roles.stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r))
-                .collect(java.util.stream.Collectors.toList()),
-            userId);
+        UserContext userContext =
+            new UserContext(
+                username,
+                "", // No password needed for stateless JWT
+                roles.stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r)).toList(),
+                userId);
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-            userContext, null, userContext.getAuthorities());
+        UsernamePasswordAuthenticationToken authToken =
+            new UsernamePasswordAuthenticationToken(
+                userContext, null, userContext.getAuthorities());
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);
       }

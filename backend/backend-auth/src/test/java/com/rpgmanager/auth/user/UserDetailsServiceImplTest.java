@@ -18,11 +18,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @ExtendWith(MockitoExtension.class)
 class UserDetailsServiceImplTest {
 
-  @Mock
-  private UserRepositoryPort userRepository;
+  @Mock private UserRepositoryPort userRepository;
 
-  @InjectMocks
-  private UserDetailsServiceImpl userDetailsService;
+  @InjectMocks private UserDetailsServiceImpl userDetailsService;
 
   @Test
   void loadUserByUsername_shouldReturnUserDetails_whenUserExists() {

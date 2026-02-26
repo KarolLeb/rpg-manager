@@ -35,7 +35,9 @@ public class UserEntity {
   private String email;
 
   @jakarta.persistence.ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
-  @jakarta.persistence.CollectionTable(name = "user_roles", joinColumns = @jakarta.persistence.JoinColumn(name = "user_id"))
+  @jakarta.persistence.CollectionTable(
+      name = "user_roles",
+      joinColumns = @jakarta.persistence.JoinColumn(name = "user_id"))
   @Enumerated(EnumType.STRING)
   @Column(name = "roles", nullable = false, length = 20)
   private java.util.Set<Role> roles;

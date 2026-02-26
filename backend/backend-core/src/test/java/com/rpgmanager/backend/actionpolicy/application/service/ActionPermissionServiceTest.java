@@ -21,14 +21,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ActionPermissionServiceTest {
 
-  @Mock
-  private ActionPolicyRepositoryPort actionPolicyRepositoryPort;
+  @Mock private ActionPolicyRepositoryPort actionPolicyRepositoryPort;
 
-  @Mock
-  private CharacterActionOverrideRepositoryPort characterActionOverrideRepositoryPort;
+  @Mock private CharacterActionOverrideRepositoryPort characterActionOverrideRepositoryPort;
 
-  @InjectMocks
-  private ActionPermissionService underTest;
+  @InjectMocks private ActionPermissionService underTest;
 
   private static final Long CHARACTER_ID = 1L;
   private static final Long CAMPAIGN_ID = 100L;
@@ -43,11 +40,12 @@ class ActionPermissionServiceTest {
   void shouldReturnFalseWhenBlockedGloballyInCampaignAndNoFurtherOverrides() {
     // given
     when(actionPolicyRepositoryPort.findByActionTypeAndContextTypeAndContextId(
-        ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
+            ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
         .thenReturn(Optional.of(ActionPolicy.builder().isAllowed(false).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
 
     // then
     assertThat(result).isFalse();
@@ -59,11 +57,12 @@ class ActionPermissionServiceTest {
     // Removed CAMPAIGN mock since SESSION mock returns early and makes CAMPAIGN
     // stub unnecessary
     when(actionPolicyRepositoryPort.findByActionTypeAndContextTypeAndContextId(
-        ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+            ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
         .thenReturn(Optional.of(ActionPolicy.builder().isAllowed(false).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
 
     // then
     assertThat(result).isFalse();
@@ -75,12 +74,13 @@ class ActionPermissionServiceTest {
     // Removed CAMPAIGN mock since CharacterOverride mock returns early and makes
     // CAMPAIGN stub unnecessary
     when(characterActionOverrideRepositoryPort
-        .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
-            CHARACTER_ID, ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+                CHARACTER_ID, ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
         .thenReturn(Optional.of(CharacterActionOverride.builder().isAllowed(true).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
 
     // then
     assertThat(result).isTrue();
@@ -92,7 +92,8 @@ class ActionPermissionServiceTest {
     // No mocks set, meaning Optional.empty() is returned
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
 
     // then
     assertThat(result).isTrue();
@@ -102,12 +103,13 @@ class ActionPermissionServiceTest {
   void shouldCheckSessionOverrideFirst() {
     // given
     when(characterActionOverrideRepositoryPort
-        .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
-            CHARACTER_ID, ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+                CHARACTER_ID, ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
         .thenReturn(Optional.of(CharacterActionOverride.builder().isAllowed(false).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
 
     // then
     assertThat(result).isFalse();
@@ -117,16 +119,17 @@ class ActionPermissionServiceTest {
   void shouldFallBackToCampaignOverrideIfSessionOverrideMissing() {
     // given
     when(characterActionOverrideRepositoryPort
-        .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
-            CHARACTER_ID, ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+                CHARACTER_ID, ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
         .thenReturn(Optional.empty());
     when(characterActionOverrideRepositoryPort
-        .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
-            CHARACTER_ID, ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+                CHARACTER_ID, ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
         .thenReturn(Optional.of(CharacterActionOverride.builder().isAllowed(true).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
 
     // then
     assertThat(result).isTrue();
@@ -136,14 +139,15 @@ class ActionPermissionServiceTest {
   void shouldCheckSessionPolicyIfNoOverridesExist() {
     // given
     when(characterActionOverrideRepositoryPort
-        .findByCharacterIdAndActionTypeAndContextTypeAndContextId(any(), any(), any(), any()))
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(any(), any(), any(), any()))
         .thenReturn(Optional.empty());
     when(actionPolicyRepositoryPort.findByActionTypeAndContextTypeAndContextId(
-        ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+            ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
         .thenReturn(Optional.of(ActionPolicy.builder().isAllowed(false).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
 
     // then
     assertThat(result).isFalse();
@@ -153,17 +157,18 @@ class ActionPermissionServiceTest {
   void shouldFallBackToCampaignPolicyIfNoSessionPolicyExists() {
     // given
     when(characterActionOverrideRepositoryPort
-        .findByCharacterIdAndActionTypeAndContextTypeAndContextId(any(), any(), any(), any()))
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(any(), any(), any(), any()))
         .thenReturn(Optional.empty());
     when(actionPolicyRepositoryPort.findByActionTypeAndContextTypeAndContextId(
-        ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+            ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
         .thenReturn(Optional.empty());
     when(actionPolicyRepositoryPort.findByActionTypeAndContextTypeAndContextId(
-        ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
+            ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
         .thenReturn(Optional.of(ActionPolicy.builder().isAllowed(false).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
 
     // then
     assertThat(result).isFalse();
@@ -182,11 +187,12 @@ class ActionPermissionServiceTest {
   void shouldReturnTrueWhenAllowedGloballyInCampaignAndNoFurtherOverrides() {
     // given
     when(actionPolicyRepositoryPort.findByActionTypeAndContextTypeAndContextId(
-        ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
+            ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
         .thenReturn(Optional.of(ActionPolicy.builder().isAllowed(true).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
 
     // then
     assertThat(result).isTrue();
@@ -195,14 +201,16 @@ class ActionPermissionServiceTest {
   @Test
   void shouldReturnTrueWhenSessionPolicyAllows() {
     // given
-    when(characterActionOverrideRepositoryPort.findByCharacterIdAndActionTypeAndContextTypeAndContextId(
-        any(), any(), any(), any())).thenReturn(Optional.empty());
+    when(characterActionOverrideRepositoryPort
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(any(), any(), any(), any()))
+        .thenReturn(Optional.empty());
     when(actionPolicyRepositoryPort.findByActionTypeAndContextTypeAndContextId(
-        ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+            ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
         .thenReturn(Optional.of(ActionPolicy.builder().isAllowed(true).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
 
     // then
     assertThat(result).isTrue();
@@ -212,12 +220,13 @@ class ActionPermissionServiceTest {
   void shouldReturnFalseWhenCampaignOverrideDeniesIt() {
     // given
     when(characterActionOverrideRepositoryPort
-        .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
-            CHARACTER_ID, ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+                CHARACTER_ID, ActionType.LEVEL_UP, ContextType.CAMPAIGN, CAMPAIGN_ID))
         .thenReturn(Optional.of(CharacterActionOverride.builder().isAllowed(false).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, null);
 
     // then
     assertThat(result).isFalse();
@@ -227,12 +236,13 @@ class ActionPermissionServiceTest {
   void shouldReturnTrueWhenSessionOverrideAllowsIt() {
     // given
     when(characterActionOverrideRepositoryPort
-        .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
-            CHARACTER_ID, ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
+            .findByCharacterIdAndActionTypeAndContextTypeAndContextId(
+                CHARACTER_ID, ActionType.LEVEL_UP, ContextType.SESSION, SESSION_ID))
         .thenReturn(Optional.of(CharacterActionOverride.builder().isAllowed(true).build()));
 
     // when
-    boolean result = underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
+    boolean result =
+        underTest.canPerformAction(CHARACTER_ID, ActionType.LEVEL_UP, CAMPAIGN_ID, SESSION_ID);
 
     // then
     assertThat(result).isTrue();

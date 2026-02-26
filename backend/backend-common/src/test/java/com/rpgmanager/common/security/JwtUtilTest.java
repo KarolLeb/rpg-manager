@@ -16,7 +16,8 @@ class JwtUtilTest {
   private final String username = "testuser";
   private final Long userId = 123L;
   private final java.util.List<String> roles = java.util.List.of("PLAYER");
-  private final String secret = "bardzo_dlugi_i_bezpieczny_klucz_do_podpisywania_tokenow_jwt_1234567890";
+  private final String secret =
+      "bardzo_dlugi_i_bezpieczny_klucz_do_podpisywania_tokenow_jwt_1234567890";
 
   @BeforeEach
   void setUp() {
@@ -38,40 +39,46 @@ class JwtUtilTest {
 
   @Test
   void shouldExtractUsername() {
-    String token = createToken(username, userId, roles, new Date(System.currentTimeMillis() + 10000));
+    String token =
+        createToken(username, userId, roles, new Date(System.currentTimeMillis() + 10000));
     String extractedUsername = jwtUtil.extractUsername(token);
     assertEquals(username, extractedUsername);
   }
 
   @Test
   void shouldExtractUserId() {
-    String token = createToken(username, userId, roles, new Date(System.currentTimeMillis() + 10000));
+    String token =
+        createToken(username, userId, roles, new Date(System.currentTimeMillis() + 10000));
     Long extractedUserId = jwtUtil.extractUserId(token);
     assertEquals(userId, extractedUserId);
   }
 
   @Test
   void shouldExtractRoles() {
-    String token = createToken(username, userId, roles, new Date(System.currentTimeMillis() + 10000));
+    String token =
+        createToken(username, userId, roles, new Date(System.currentTimeMillis() + 10000));
     java.util.List<String> extractedRoles = jwtUtil.extractRoles(token);
     assertEquals(roles, extractedRoles);
   }
 
   @Test
   void shouldValidateToken() {
-    String token = createToken(username, userId, roles, new Date(System.currentTimeMillis() + 10000));
+    String token =
+        createToken(username, userId, roles, new Date(System.currentTimeMillis() + 10000));
     assertTrue(jwtUtil.validateToken(token, username));
   }
 
   @Test
   void shouldNotValidateTokenForDifferentUser() {
-    String token = createToken(username, userId, roles, new Date(System.currentTimeMillis() + 10000));
+    String token =
+        createToken(username, userId, roles, new Date(System.currentTimeMillis() + 10000));
     assertFalse(jwtUtil.validateToken(token, "otheruser"));
   }
 
   @Test
   void shouldNotValidateExpiredToken() {
-    String token = createToken(username, userId, roles, new Date(System.currentTimeMillis() - 1000));
+    String token =
+        createToken(username, userId, roles, new Date(System.currentTimeMillis() - 1000));
 
     assertFalse(jwtUtil.validateToken(token, username));
   }

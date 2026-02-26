@@ -28,8 +28,7 @@ public class CharacterEntity {
   @Column(nullable = false)
   private String name;
 
-  @Column
-  private String race;
+  @Column private String race;
 
   @Column(name = "character_class")
   private String characterClass;

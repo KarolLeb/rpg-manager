@@ -44,17 +44,17 @@ public class AuthService {
       throw e;
     }
 
-    UserDomain user = userRepository
-        .findByUsername(username)
-        .orElseThrow(
-            () -> {
-              log.error("User not found after authentication: {}", username);
-              return new UsernameNotFoundException("User not found");
-            });
+    UserDomain user =
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(
+                () -> {
+                  log.error("User not found after authentication: {}", username);
+                  return new UsernameNotFoundException("User not found");
+                });
 
-    java.util.List<String> roleNames = user.getRoles().stream()
-        .map(Enum::name)
-        .collect(java.util.stream.Collectors.toList());
+    java.util.List<String> roleNames =
+        user.getRoles().stream().map(Enum::name).collect(java.util.stream.Collectors.toList());
     String token = jwtUtil.generateToken(user.getUsername(), user.getId(), roleNames);
     log.info("Login successful for user: {}", username);
 

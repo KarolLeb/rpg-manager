@@ -24,27 +24,22 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(StyleController.class)
 @Import({
-    SecurityConfig.class,
-    SecurityProperties.class,
-    JwtFilter.class,
-    BrowserNavigationFilter.class
+  SecurityConfig.class,
+  SecurityProperties.class,
+  JwtFilter.class,
+  BrowserNavigationFilter.class
 })
 class StyleControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @MockitoBean
-  private StyleService styleService;
+  @MockitoBean private StyleService styleService;
 
-  @MockitoBean
-  private ErrorLogService errorLogService;
+  @MockitoBean private ErrorLogService errorLogService;
 
-  @MockitoBean
-  private JwtUtil jwtUtil;
+  @MockitoBean private JwtUtil jwtUtil;
 
-  @MockitoBean
-  private UserDetailsService userDetailsService;
+  @MockitoBean private UserDetailsService userDetailsService;
 
   @Test
   @WithMockUser
