@@ -14,7 +14,7 @@
     "sonar": "node ../.github/scripts/convert-stryker-to-sonar.js && sonar-scanner",
     "test:e2e": "playwright test",
     "e2e": "npm run test:e2e",
-    "e2e:coverage": "npm run test:e2e & node ../.github/scripts/dump-e2e-coverage.js",
+    "e2e:coverage": "npx playwright test --project=chromium & node ../.github/scripts/dump-e2e-coverage.js",
     "e2e:ui": "playwright test --ui",
     "e2e:cli": "playwright test --reporter=list",
     "stryker": "stryker run config/stryker.config.json",
@@ -73,6 +73,7 @@
     "karma-coverage": "^2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "monocart-reporter": "^2.10.0",
     "sonarqube-scanner": "^4.3.4",
     "typescript": "~5.7.2"
   }

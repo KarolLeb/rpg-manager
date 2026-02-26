@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './coverage.fixture';
 
 test.describe('Character Sheet Feature (No Mocks)', () => {
   test.describe.configure({ mode: 'serial' });

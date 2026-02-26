@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -15,13 +16,32 @@ export default defineConfig({
   workers: process.env['CI'] ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
+    ['list'],
     ['html', { open: 'never' }],
-    ['junit', { outputFile: 'test-results/e2e-junit.xml' }]
+    ['junit', { outputFile: 'test-results/e2e-junit.xml' }],
+    ['monocart-reporter', {
+      name: "Frontend E2E Coverage Report",
+      outputFile: './test-results/report.html',
+      coverage: {
+        entryFilter: (entry: any) => entry.url.includes('main.js') || entry.url.includes('chunk-'),
+        sourceFilter: (sourcePath: string) => sourcePath.includes('src/app') && !sourcePath.includes('mock'),
+        
+        reports: [
+          ['v8'],
+          ['console-summary'],
+          ['lcovonly', {
+            outputFile: 'coverage-e2e/lcov.info'
+          }]
+        ],
+
+        // Enforce 25% per file
+        thresholds: {
+          perFile: true,
+          lines: 25
+        }
+      }
+    }]
   ],
-  timeout: 60000,
-  expect: {
-    timeout: 10000
-  },
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
