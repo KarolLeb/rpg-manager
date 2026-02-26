@@ -131,13 +131,13 @@ export class CharacterSheetPageComponent implements OnInit, OnDestroy {
 
   private checkPermissions(character: Character) {
     this.authService.currentUser$.pipe(take(1)).subscribe(user => {
-      if (!user) {
-        this.canEditCharacter = false;
-      } else {
+      if (user) {
         const isAdmin = user.roles?.includes('ADMIN');
         const isOwner = user.id === character.ownerId;
         const isController = user.id === character.controllerId;
         this.canEditCharacter = isAdmin || isOwner || isController;
+      } else {
+        this.canEditCharacter = false;
       }
 
       if (!this.canEditCharacter) {

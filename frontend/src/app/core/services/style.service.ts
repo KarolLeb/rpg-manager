@@ -7,9 +7,9 @@ import { tap } from 'rxjs/operators';
     providedIn: 'root'
 })
 export class StyleService {
-    private http = inject(HttpClient);
-    private rendererFactory = inject(RendererFactory2);
-    private renderer: Renderer2;
+    private readonly http = inject(HttpClient);
+    private readonly rendererFactory = inject(RendererFactory2);
+    private readonly renderer: Renderer2;
     private readonly styleElementId = 'dynamic-character-styles';
     private readonly apiUrl = '/api/styles';
 

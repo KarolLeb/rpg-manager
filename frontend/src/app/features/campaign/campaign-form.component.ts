@@ -128,16 +128,16 @@ export class CampaignFormComponent implements OnInit {
 
   private checkPermissions(campaign: Campaign): void {
     const user = this.authService.currentUserValue;
-    if (!user) {
-      this.canEdit = false;
-    } else {
+    if (user) {
       this.canEdit = user.roles?.includes('ADMIN') || campaign.gameMasterId === user.id;
+    } else {
+      this.canEdit = false;
     }
 
-    if (!this.canEdit) {
-      this.campaignForm.disable();
-    } else {
+    if (this.canEdit) {
       this.canEdit = true; // In case it's create mode
+    } else {
+      this.campaignForm.disable();
     }
   }
 }

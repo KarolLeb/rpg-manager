@@ -37,7 +37,7 @@ class CharacterActionOverrideTest {
     CharacterActionOverride empty = new CharacterActionOverride();
     assertNull(empty.getId());
 
-    assertNotEquals(override1, new Object());
-    assertNotEquals(override1, null);
+    assertNotEquals(new Object(), override1);
+    assertNotEquals(null, override1);
   }
 }

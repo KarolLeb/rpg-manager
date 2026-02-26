@@ -35,7 +35,7 @@ class ActionPolicyTest {
     ActionPolicy empty = new ActionPolicy();
     assertNull(empty.getId());
 
-    assertNotEquals(policy1, new Object());
-    assertNotEquals(policy1, null);
+    assertNotEquals(new Object(), policy1);
+    assertNotEquals(null, policy1);
   }
 }

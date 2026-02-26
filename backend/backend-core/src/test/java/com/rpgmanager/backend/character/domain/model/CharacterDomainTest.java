@@ -60,7 +60,7 @@ class CharacterDomainTest {
     CharacterDomain empty = new CharacterDomain();
     assertNull(empty.getId());
 
-    assertNotEquals(char1, new Object());
-    assertNotEquals(char1, null);
+    assertNotEquals(new Object(), char1);
+    assertNotEquals(null, char1);
   }
 }

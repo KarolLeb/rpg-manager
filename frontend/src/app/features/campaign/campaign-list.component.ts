@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { CampaignService } from '../../core/services/campaign.service';
 import { Campaign } from '../../core/models/campaign.model';
 import { AuthService } from '../../core/services/auth.service';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-campaign-list',

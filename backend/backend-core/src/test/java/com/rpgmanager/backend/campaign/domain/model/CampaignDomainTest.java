@@ -42,7 +42,7 @@ class CampaignDomainTest {
     CampaignDomain empty = new CampaignDomain();
     assertNull(empty.getId());
 
-    assertNotEquals(campaign1, new Object());
-    assertNotEquals(campaign1, null);
+    assertNotEquals(new Object(), campaign1);
+    assertNotEquals(null, campaign1);
   }
 }
