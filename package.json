@@ -20,7 +20,7 @@
     "sonar:full:frontend": "cd frontend && npm run lint:report && npm run test:unit && npm run stryker && npm run sonar",
     "sonar:full": "npm run sonar:full:backend && npm run sonar:full:frontend",
     "sonar:e2e": "npm run e2e:coverage && npm run sonar:scan:e2e:backend && npm run sonar:scan:e2e:frontend",
-    "sonar:scan:e2e:backend": "cd backend && .\\mvnw.cmd sonar:sonar -Dsonar.projectKey=RPG-manager-backend-services-e2e -Dsonar.projectName=\"RPG Manager - Backend (E2E Coverage)\" -Dsonar.coverage.jacoco.xmlReportPaths=\"target/site/jacoco-e2e/jacoco.xml\" -Dsonar.tests= -Dsonar.test.inclusions= -Dsonar.test.exclusions=**/*",
+    "sonar:scan:e2e:backend": "cd backend && .\\mvnw.cmd sonar:sonar -Dsonar.projectKey=RPG-manager-backend-services-e2e -Dsonar.projectName=\"RPG Manager - Backend (E2E Coverage)\" -Dsonar.coverage.jacoco.xmlReportPaths=\"**/target/site/jacoco-e2e/jacoco.xml\" -Dsonar.tests= -Dsonar.test.inclusions= -Dsonar.test.exclusions=**/*",
     "sonar:scan:e2e:frontend": "cd frontend && npx sonar-scanner -Dsonar.projectKey=RPG-manager-frontend-e2e -Dsonar.projectName=\"RPG Manager - Frontend (E2E Coverage)\" -Dsonar.javascript.lcov.reportPaths=test-results/coverage/lcov.info -Dsonar.typescript.lcov.reportPaths=test-results/coverage/lcov.info -Dsonar.sources=src/app -Dsonar.tests=e2e -Dsonar.test.inclusions=\"e2e/**/*.spec.ts\" -Dsonar.exclusions=\"**/node_modules/**,**/mock/**,**/*.spec.ts\" -Dsonar.externalIssuesReportPaths=",
     "e2e:coverage": "cd frontend && npm run e2e:coverage",
     "sonar": "npm run sonar:full"
