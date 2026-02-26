@@ -44,9 +44,7 @@ public class SecurityConfig {
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers(org.springframework.http.HttpMethod.GET, "/api/admin/**")
-                    .authenticated()
-                    .requestMatchers("/api/admin/**")
+                auth.requestMatchers("/api/admin/**")
                     .hasRole("ADMIN")
                     .requestMatchers(
                         "/actuator/health/**",

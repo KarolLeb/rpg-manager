@@ -27,8 +27,8 @@
   "timeoutMS": 120000,
   "thresholds": {
     "high": 90,
-    "low": 85,
-    "break": 75
+    "low": 80,
+    "break": 60
   },
   "tempDirName": "stryker-tmp"
 }

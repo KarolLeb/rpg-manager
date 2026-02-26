@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { DashboardComponent } from './dashboard.component';
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { CampaignService } from '../../core/services/campaign.service';
+import { CharacterService } from '../../core/services/character.service';
 import { BehaviorSubject, of, throwError, delay, switchMap } from 'rxjs';
 import { User } from '../../core/models/auth.model';
 
@@ -13,6 +12,7 @@ describe('DashboardComponent', () => {
   let fixture: ComponentFixture<DashboardComponent>;
   let mockAuthService: any;
   let mockCampaignService: any;
+  let mockCharacterService: any;
   let userSubject: BehaviorSubject<User | null>;
 
   beforeEach(async () => {
@@ -24,15 +24,17 @@ describe('DashboardComponent', () => {
     mockCampaignService = {
       getCampaigns: jasmine.createSpy('getCampaigns').and.returnValue(of([]))
     };
+    mockCharacterService = {
+      getCharacters: jasmine.createSpy('getCharacters').and.returnValue(of([]))
+    };
 
     await TestBed.configureTestingModule({
       imports: [DashboardComponent],
       providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
         provideRouter([]),
         { provide: AuthService, useValue: mockAuthService },
-        { provide: CampaignService, useValue: mockCampaignService }
+        { provide: CampaignService, useValue: mockCampaignService },
+        { provide: CharacterService, useValue: mockCharacterService }
       ]
     })
       .compileComponents();
@@ -48,7 +50,7 @@ describe('DashboardComponent', () => {
     userSubject.next(null);
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(component.isLoading).toBeFalse(); // BehaviorSubject emits immediately, not GM -> false
+    expect(component.isLoading).toBeFalse(); 
     expect(component.error).toBeNull();
   });
 
@@ -78,7 +80,7 @@ describe('DashboardComponent', () => {
     expect(compiled.querySelector('.player-dashboard')).toBeTruthy();
     expect(component.userRoles).toContain('PLAYER');
     expect(component.isLoading).toBeFalse();
-    expect(mockCampaignService.getCampaigns).not.toHaveBeenCalled();
+    expect(mockCampaignService.getCampaigns).toHaveBeenCalled();
   });
 
   it('should handle error when loading campaigns and stop loading', fakeAsync(() => {
@@ -96,12 +98,12 @@ describe('DashboardComponent', () => {
     expect(component.isLoading).toBeFalse();
   }));
 
-  it('should not load campaigns for non-GM users and stop loading', () => {
+  it('should load campaigns for non-GM users and stop loading', () => {
     userSubject.next({ id: 2, username: 'player', roles: ['PLAYER'] });
     fixture.detectChanges();
 
     expect(component.isLoading).toBeFalse();
-    expect(component.campaigns.length).toBe(0);
+    expect(mockCampaignService.getCampaigns).toHaveBeenCalled();
   });
 
   it('should handle user without role correctly', () => {
@@ -110,6 +112,41 @@ describe('DashboardComponent', () => {
 
     expect(component.userRoles).toEqual([]);
     expect(component.isLoading).toBeFalse();
-    expect(mockCampaignService.getCampaigns).not.toHaveBeenCalled();
+    expect(mockCampaignService.getCampaigns).toHaveBeenCalled();
+  });
+
+  describe('branch coverage improvements', () => {
+    it('canCreateCampaign should return true for ADMIN', () => {
+      userSubject.next({ id: 1, username: 'admin', roles: ['ADMIN'] });
+      fixture.detectChanges();
+      expect(component.canCreateCampaign).toBeTrue();
+    });
+
+    it('canCreateCampaign should return false when no user', () => {
+      userSubject.next(null);
+      fixture.detectChanges();
+      expect(component.canCreateCampaign).toBeFalsy();
+    });
+
+    it('canEditCampaign should return true for ADMIN', () => {
+      userSubject.next({ id: 1, username: 'admin', roles: ['ADMIN'] });
+      fixture.detectChanges();
+      const campaign = { id: 1, gameMasterId: 99 } as any;
+      expect(component.canEditCampaign(campaign)).toBeTrue();
+    });
+
+    it('canEditCampaign should return false when user is not owner and not admin', () => {
+      userSubject.next({ id: 1, username: 'user', roles: ['PLAYER'] });
+      fixture.detectChanges();
+      const campaign = { id: 1, gameMasterId: 99 } as any;
+      expect(component.canEditCampaign(campaign)).toBeFalse();
+    });
+
+    it('canEditCampaign should return false when no user', () => {
+      // Setup component state manually to simulate edge case
+      (component as any).currentUser = null;
+      const campaign = { id: 1, gameMasterId: 99 } as any;
+      expect(component.canEditCampaign(campaign)).toBeFalse();
+    });
   });
 });

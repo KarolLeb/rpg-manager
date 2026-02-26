@@ -267,6 +267,23 @@ class CampaignApplicationServiceTest {
   }
 
   @Test
+  void updateCampaign_shouldThrowAccessDenied_whenUserIsNotGMOrAdmin() {
+    mockSecurityContext(2L, "USER"); // Not GM (1), not Admin
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+    campaign.setGameMasterId(1L);
+
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+
+    CreateCampaignRequest request = new CreateCampaignRequest();
+    request.setName("New Name");
+
+    org.junit.jupiter.api.Assertions.assertThrows(
+        org.springframework.security.access.AccessDeniedException.class,
+        () -> campaignService.updateCampaign(1L, request));
+  }
+
+  @Test
   void deleteCampaign_shouldDelete() {
     CampaignDomain campaign = Instancio.create(CampaignDomain.class);
     campaign.setId(1L);
@@ -279,6 +296,52 @@ class CampaignApplicationServiceTest {
     verify(eventPublisher)
         .publishEvent(any(com.rpgmanager.backend.activitylog.ActivityEvent.class));
     verify(campaignRepository).deleteById(1L);
+  }
+
+  @Test
+  void deleteCampaign_shouldAllowAdminToDelete() {
+    mockSecurityContext(99L, "ADMIN");
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+    campaign.setGameMasterId(1L); // GM is 1, but user is 99 (Admin)
+
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+
+    campaignService.deleteCampaign(1L);
+
+    verify(campaignRepository).deleteById(1L);
+  }
+
+  @Test
+  void deleteCampaign_shouldThrowAccessDenied_whenUserIsNotGMOrAdmin() {
+    mockSecurityContext(2L, "USER"); // Not GM (1), not Admin
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+    campaign.setGameMasterId(1L);
+
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+
+    org.junit.jupiter.api.Assertions.assertThrows(
+        org.springframework.security.access.AccessDeniedException.class,
+        () -> campaignService.deleteCampaign(1L));
+  }
+
+  @Test
+  void deleteCampaign_shouldThrowAccessDenied_whenPrincipalIsNotUserContext() {
+    SecurityContext securityContext = mock(SecurityContext.class);
+    Authentication authentication = mock(Authentication.class);
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    when(authentication.getPrincipal()).thenReturn("not-user-context");
+    SecurityContextHolder.setContext(securityContext);
+
+    CampaignDomain campaign = Instancio.create(CampaignDomain.class);
+    campaign.setId(1L);
+
+    when(campaignRepository.findById(1L)).thenReturn(Optional.of(campaign));
+
+    org.junit.jupiter.api.Assertions.assertThrows(
+        org.springframework.security.access.AccessDeniedException.class,
+        () -> campaignService.deleteCampaign(1L));
   }
 
   @Test

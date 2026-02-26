@@ -144,6 +144,49 @@ class CharacterApplicationServiceTest {
   }
 
   @Test
+  void updateCharacter_shouldThrowAccessDenied_whenUserUnauthorized() {
+    mockSecurityContext(99L, "PLAYER"); // Different user
+    Long id = 1L;
+    CharacterDomain character = Instancio.create(CharacterDomain.class);
+    character.setOwnerId(1L);
+    character.setControllerId(2L);
+
+    when(characterRepository.findById(id)).thenReturn(Optional.of(character));
+
+    assertThatThrownBy(() -> service.updateCharacter(id, character))
+        .isInstanceOf(org.springframework.security.access.AccessDeniedException.class);
+  }
+
+  @Test
+  void joinCampaign_shouldThrowAccessDenied_whenUserUnauthorized() {
+    mockSecurityContext(99L, "PLAYER");
+    Long id = 1L;
+    CharacterDomain character = Instancio.create(CharacterDomain.class);
+    character.setOwnerId(1L);
+
+    when(characterRepository.findById(id)).thenReturn(Optional.of(character));
+
+    assertThatThrownBy(() -> service.joinCampaign(id, 10L))
+        .isInstanceOf(org.springframework.security.access.AccessDeniedException.class);
+  }
+
+  @Test
+  void updateCharacter_shouldAllowAdmin() {
+    mockSecurityContext(99L, "ADMIN");
+    Long id = 1L;
+    CharacterDomain existing = Instancio.create(CharacterDomain.class);
+    existing.setOwnerId(1L);
+    CharacterDomain details = Instancio.create(CharacterDomain.class);
+
+    when(characterRepository.findById(id)).thenReturn(Optional.of(existing));
+    when(characterRepository.save(any())).thenReturn(existing);
+
+    service.updateCharacter(id, details);
+
+    verify(characterRepository).save(any());
+  }
+
+  @Test
   void updateCharacter_shouldThrowException_whenNotFound() {
     Long id = 1L;
     CharacterDomain details = Instancio.create(CharacterDomain.class);

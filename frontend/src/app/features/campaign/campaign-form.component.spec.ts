@@ -426,4 +426,58 @@ describe('CampaignFormComponent', () => {
     expect(mockToastService.error).toHaveBeenCalledWith('Error loading campaign details');
     expect(component.campaignForm.value.name).toBe('');
   }));
+
+  describe('branch coverage improvements', () => {
+    it('should disable form when user has no permissions (checkPermissions)', () => {
+      // Setup currentUserValue to unauthorized player
+      Object.defineProperty(mockAuthService, 'currentUserValue', {
+        get: () => ({ id: 99, roles: ['PLAYER'] }),
+        configurable: true
+      });
+      const campaign = { id: 1, gameMasterId: 1 } as any;
+      
+      (component as any).checkPermissions(campaign);
+      
+      expect(component.canEdit).toBeFalse();
+      expect(component.campaignForm.disabled).toBeTrue();
+    });
+
+    it('should allow edit when user is ADMIN but not GM', () => {
+      Object.defineProperty(mockAuthService, 'currentUserValue', {
+        get: () => ({ id: 99, roles: ['ADMIN'] }),
+        configurable: true
+      });
+      const campaign = { id: 1, gameMasterId: 1 } as any;
+      
+      (component as any).checkPermissions(campaign);
+      
+      expect(component.canEdit).toBeTrue();
+      expect(component.campaignForm.enabled).toBeTrue();
+    });
+
+    it('should handle no user in checkPermissions', () => {
+      Object.defineProperty(mockAuthService, 'currentUserValue', {
+        get: () => null,
+        configurable: true
+      });
+      const campaign = { id: 1, gameMasterId: 1 } as any;
+      
+      (component as any).checkPermissions(campaign);
+      
+      expect(component.canEdit).toBeFalse();
+      expect(component.campaignForm.disabled).toBeTrue();
+    });
+
+    it('onSubmit should show error if no user', () => {
+      Object.defineProperty(mockAuthService, 'currentUserValue', {
+        get: () => null,
+        configurable: true
+      });
+      
+      component.campaignForm.patchValue({ name: 'Test' });
+      component.onSubmit();
+      
+      expect(mockToastService.error).toHaveBeenCalledWith('You must be logged in to create a campaign.');
+    });
+  });
 });

@@ -9,7 +9,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** Entity representing a hierarchical Style in the database. */
 @Entity
@@ -17,6 +20,9 @@ import lombok.Data;
     name = "styles",
     uniqueConstraints = {@UniqueConstraint(columnNames = {"level", "reference_id"})})
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Style {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

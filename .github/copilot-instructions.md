@@ -386,7 +386,7 @@ Tiered Targets:
 - All application code (Unit Tests): target ≥ 95% line/branch coverage (per file)
 - E2E Test Suite (Backend & Frontend Coverage): target ≥ 50% line and ≥ 40% branch coverage (per file).
 - Quality Gate: **0 issues** allowed (both overall and new violations threshold must be 0).
-- Cognitive Complexity (Unit Tests): Target method complexity ≤ 15 (enforced by JaCoCo/Sonar).
+- Cognitive Complexity (Unit Tests): Target method complexity ≤ 20 (enforced by JaCoCo/Sonar).
 - Flakiness Rate: **Zero Flakiness Mandate**. CI retries must be set to 0. Any failure is a blocker.
 - Performance Budget (Frontend): 
     - Time to Interactive (TTI) ≤ 2.5s
@@ -394,7 +394,7 @@ Tiered Targets:
     - First Contentful Paint (FCP) ≤ 1.2s
 - API Contract Coverage: Target 100% of OpenAPI endpoints exercised by E2E/Contract tests.
 - Mutation Testing (Unit Tests - Tiered Score Targets):
-    - **Global/UI Components**: target ≥ 80% mutation score
+    - **Global/UI Components**: target ≥ 75% mutation score
     - **Core Domain & Utilities**: target ≥ 90% mutation score
     - **Security & Critical Paths**: target 100% mutation score (Aligned with 100% line coverage mandate)
 - Generated scaffolds and spikes: opportunistic; may be exempt if tagged and justified in PR

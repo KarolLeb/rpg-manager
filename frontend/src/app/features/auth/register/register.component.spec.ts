@@ -11,26 +11,24 @@ import { of, throwError, delay, switchMap } from 'rxjs';
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
-  let authService: AuthService;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
   let toastServiceSpy: jasmine.SpyObj<ToastService>;
   let router: Router;
 
   beforeEach(async () => {
     toastServiceSpy = jasmine.createSpyObj('ToastService', ['success', 'error']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['register']);
 
     await TestBed.configureTestingModule({
       imports: [RegisterComponent, ReactiveFormsModule],
       providers: [
         provideRouter([]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        AuthService,
+        { provide: AuthService, useValue: authServiceSpy },
         { provide: ToastService, useValue: toastServiceSpy }
       ]
     })
     .compileComponents();
 
-    authService = TestBed.inject(AuthService);
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
@@ -121,7 +119,7 @@ describe('RegisterComponent', () => {
   });
 
   it('should navigate to login on registration success and manage isLoading correctly', fakeAsync(() => {
-    const registerSpy = spyOn(authService, 'register').and.returnValue(of(void 0).pipe(delay(10)));
+    const registerSpy = authServiceSpy.register.and.returnValue(of(void 0).pipe(delay(10)));
     const navigateSpy = spyOn(router, 'navigate');
 
     component.registerForm.patchValue({
@@ -157,7 +155,7 @@ describe('RegisterComponent', () => {
   it('should set error on registration failure and manage isLoading correctly', fakeAsync(() => {
     spyOn(console, 'error');
     const errorResponse = { error: { message: 'Registration failed' } };
-    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => errorResponse))));
+    authServiceSpy.register.and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => errorResponse))));
 
     component.registerForm.patchValue({
       username: 'User',
@@ -179,7 +177,7 @@ describe('RegisterComponent', () => {
   }));
 
   it('should use default error message on registration failure if error object is missing', fakeAsync(() => {
-    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({})))));
+    authServiceSpy.register.and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({})))));
 
     component.registerForm.patchValue({
       username: 'User',
@@ -197,7 +195,7 @@ describe('RegisterComponent', () => {
   }));
 
   it('should use default error message on registration failure if error is null', fakeAsync(() => {
-    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: null })))));
+    authServiceSpy.register.and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: null })))));
 
     component.registerForm.patchValue({
       username: 'User',
@@ -215,7 +213,7 @@ describe('RegisterComponent', () => {
 
   it('should use default error message on registration failure if message is missing in error object', fakeAsync(() => {
     // error object exists but message property is missing
-    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: {} })))));
+    authServiceSpy.register.and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: {} })))));
 
     component.registerForm.patchValue({
       username: 'User',
@@ -233,7 +231,7 @@ describe('RegisterComponent', () => {
 
   it('should handle mutation where err.error is null by using fallback message', fakeAsync(() => {
     // err.error is null
-    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: null })))));
+    authServiceSpy.register.and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: null })))));
 
     component.registerForm.patchValue({
       username: 'User',
@@ -250,7 +248,7 @@ describe('RegisterComponent', () => {
   }));
 
   it('should use default error message if err.error.message is empty string', fakeAsync(() => {
-    spyOn(authService, 'register').and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: { message: '' } })))));
+    authServiceSpy.register.and.returnValue(of(null).pipe(delay(10), switchMap(() => throwError(() => ({ error: { message: '' } })))));
 
     component.registerForm.patchValue({
       username: 'User',
@@ -267,7 +265,7 @@ describe('RegisterComponent', () => {
   }));
 
   it('should return early if form is invalid and NOT set isLoading to true', () => {
-    const registerSpy = spyOn(authService, 'register');
+    const registerSpy = authServiceSpy.register;
     component.registerForm.patchValue({
       username: '', // Invalid
     });

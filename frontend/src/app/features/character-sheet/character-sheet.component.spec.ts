@@ -7,6 +7,7 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { Character } from '../../core/models/character.model';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { ToastService } from '../../core/services/toast.service';
+import { AuthService } from '../../core/services/auth.service';
 
 describe('CharacterSheetPageComponent', () => {
   let component: CharacterSheetPageComponent;
@@ -14,11 +15,13 @@ describe('CharacterSheetPageComponent', () => {
   let mockCharacterService: jasmine.SpyObj<CharacterService>;
   let mockStyleService: jasmine.SpyObj<StyleService>;
   let mockToastService: jasmine.SpyObj<ToastService>;
+  let mockAuthService: jasmine.SpyObj<AuthService>;
   let routeId: string | null = '1';
 
   const dummyCharacter: Character = {
     id: 1,
     name: 'Test Char',
+    race: 'Human',
     characterClass: 'Soldier',
     level: 1,
     stats: JSON.stringify({
@@ -38,6 +41,10 @@ describe('CharacterSheetPageComponent', () => {
     mockStyleService.fetchAggregatedCss.and.returnValue(of(''));
 
     mockToastService = jasmine.createSpyObj('ToastService', ['success', 'error', 'warning']);
+    
+    mockAuthService = jasmine.createSpyObj('AuthService', [], {
+      currentUser$: of({ id: 1, username: 'testuser', roles: ['PLAYER'] })
+    });
 
     await TestBed.configureTestingModule({
       imports: [CharacterSheetPageComponent, ReactiveFormsModule],
@@ -45,6 +52,7 @@ describe('CharacterSheetPageComponent', () => {
         { provide: CharacterService, useValue: mockCharacterService },
         { provide: StyleService, useValue: mockStyleService },
         { provide: ToastService, useValue: mockToastService },
+        { provide: AuthService, useValue: mockAuthService },
         provideRouter([]),
         {
           provide: ActivatedRoute,
@@ -131,6 +139,7 @@ describe('CharacterSheetPageComponent', () => {
   }));
 
   it('should call updateCharacter on save with correctly serialized stats', () => {
+    (component as any).loadCharacterData(dummyCharacter);
     fixture.detectChanges();
     // Modify value
     component.characterForm.get('info.name')?.setValue('Updated Char');
@@ -142,6 +151,7 @@ describe('CharacterSheetPageComponent', () => {
     const args = mockCharacterService.updateCharacter.calls.mostRecent().args;
     expect(args[0]).toBe(1);
     expect(args[1].name).toBe('Updated Char');
+    expect(args[1].race).toBe('Human');
     expect(args[1].characterClass).toBe('Soldier');
     expect(args[1].id).toBe(1);
 
@@ -288,6 +298,7 @@ describe('CharacterSheetPageComponent', () => {
   });
 
   it('should handle save error and show toast error', () => {
+    (component as any).loadCharacterData(dummyCharacter);
     fixture.detectChanges();
     const saveError = new Error('Save failed');
     mockCharacterService.updateCharacter.and.returnValue(throwError(() => saveError));

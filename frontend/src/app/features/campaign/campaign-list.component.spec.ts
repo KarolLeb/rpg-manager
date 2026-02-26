@@ -5,11 +5,13 @@ import { of, throwError } from 'rxjs';
 import { provideRouter } from '@angular/router';
 import { Campaign } from '../../core/models/campaign.model';
 import { By } from '@angular/platform-browser';
+import { AuthService } from '../../core/services/auth.service';
 
 describe('CampaignListComponent', () => {
   let component: CampaignListComponent;
   let fixture: ComponentFixture<CampaignListComponent>;
   let mockCampaignService: jasmine.SpyObj<CampaignService>;
+  let mockAuthService: jasmine.SpyObj<AuthService>;
 
   const dummyCampaigns: Campaign[] = [
     { id: 1, name: 'Campaign 1', description: 'Desc 1', creationDate: '2023-01-01', status: 'ACTIVE', gameMasterId: 10, gameMasterName: 'GM1' },
@@ -21,11 +23,16 @@ describe('CampaignListComponent', () => {
     mockCampaignService.getCampaigns.and.returnValue(of(dummyCampaigns));
     mockCampaignService.deleteCampaign.and.returnValue(of(void 0));
 
+    mockAuthService = jasmine.createSpyObj('AuthService', [], {
+      currentUser$: of({ id: 10, username: 'GM1', roles: ['PLAYER'] })
+    });
+
     await TestBed.configureTestingModule({
       imports: [CampaignListComponent],
       providers: [
         provideRouter([]),
-        { provide: CampaignService, useValue: mockCampaignService }
+        { provide: CampaignService, useValue: mockCampaignService },
+        { provide: AuthService, useValue: mockAuthService }
       ]
     })
     .compileComponents();

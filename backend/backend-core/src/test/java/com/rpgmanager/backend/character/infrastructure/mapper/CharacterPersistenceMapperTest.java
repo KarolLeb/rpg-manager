@@ -80,6 +80,7 @@ class CharacterPersistenceMapperTest {
 
     assertThat(domain).isNotNull();
     assertThat(domain.getId()).isEqualTo(entity.getId());
+    assertThat(domain.getRace()).isEqualTo(entity.getRace());
     assertThat(domain.getCharacterType().name()).isEqualTo(entity.getCharacterType().name());
     assertThat(domain.getOwnerId()).isEqualTo(1L);
     assertThat(domain.getControllerId()).isEqualTo(2L);
@@ -97,6 +98,7 @@ class CharacterPersistenceMapperTest {
 
     assertThat(entity).isNotNull();
     assertThat(entity.getName()).isEqualTo(domain.getName());
+    assertThat(entity.getRace()).isEqualTo(domain.getRace());
     assertThat(entity.getCharacterClass()).isEqualTo(domain.getCharacterClass());
     assertThat(entity.getLevel()).isEqualTo(domain.getLevel());
     assertThat(entity.getStats()).isEqualTo(domain.getStats());
@@ -121,6 +123,7 @@ class CharacterPersistenceMapperTest {
     CharacterPersistenceMapper.updateEntity(entity, domain, campaign);
 
     assertThat(entity.getName()).isEqualTo(domain.getName());
+    assertThat(entity.getRace()).isEqualTo(domain.getRace());
     assertThat(entity.getCharacterClass()).isEqualTo(domain.getCharacterClass());
     assertThat(entity.getLevel()).isEqualTo(domain.getLevel());
     assertThat(entity.getStats()).isEqualTo(domain.getStats());
