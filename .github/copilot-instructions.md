@@ -71,6 +71,12 @@ AI assistants MUST assume the following local infrastructure is running and avai
 - **Docker/Testcontainers**: The Docker daemon is assumed to be running for all integration and E2E tests.
 </CRITICAL_REQUIREMENT>
 
+## Continuous Learning & Context Documentation
+
+<CRITICAL_REQUIREMENT type="MANDATORY">
+Whenever an AI assistant learns new, unwritten project-specific context from the user that is required to proceed with a task (e.g., architectural decisions, local infrastructure setups, implicit rules), the assistant MUST proactively update the relevant documentation (such as this `copilot-instructions.md` file or specific `.github/instructions/*.md` files) to include this knowledge. This ensures future agents have immediate access to the necessary context, eliminating the need to ask the user the same questions repeatedly.
+</CRITICAL_REQUIREMENT>
+
 <!--
 ==============================================================================
 PROJECT METHODOLOGIES SECTION
