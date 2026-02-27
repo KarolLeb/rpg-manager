@@ -35,6 +35,9 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
   public UserDomain save(@NonNull UserDomain user) {
     UserEntity entity = userPersistenceMapper.toEntity(user);
     UserEntity savedEntity = jpaUserRepository.save(entity);
+    if (savedEntity == null) {
+      throw new IllegalStateException("Failed to save user entity");
+    }
     return userPersistenceMapper.toDomain(savedEntity);
   }
 

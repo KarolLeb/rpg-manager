@@ -44,18 +44,24 @@ public class AuthService {
       throw e;
     }
 
-    UserDomain user =
-        userRepository
-            .findByUsername(username)
-            .orElseThrow(
-                () -> {
-                  log.error("User not found after authentication: {}", username);
-                  return new UsernameNotFoundException("User not found");
-                });
+    UserDomain user = userRepository
+        .findByUsername(username)
+        .orElseThrow(
+            () -> {
+              log.error("User not found after authentication: {}", username);
+              return new UsernameNotFoundException("User not found");
+            });
 
-    java.util.List<String> roleNames =
-        user.getRoles().stream().map(Enum::name).collect(java.util.stream.Collectors.toList());
-    String token = jwtUtil.generateToken(user.getUsername(), user.getId(), roleNames);
+    String foundUsername = user.getUsername();
+    Long userId = user.getId();
+    if (foundUsername == null || userId == null) {
+      throw new IllegalStateException("User domain object is missing critical data");
+    }
+
+    java.util.List<String> roleNames = user.getRoles().stream()
+        .map(role -> role != null ? role.name() : "PLAYER")
+        .collect(java.util.stream.Collectors.toList());
+    String token = jwtUtil.generateToken(foundUsername, userId, roleNames);
     log.info("Login successful for user: {}", username);
 
     return new AuthResponse(token, user.getUsername(), roleNames, user.getId());

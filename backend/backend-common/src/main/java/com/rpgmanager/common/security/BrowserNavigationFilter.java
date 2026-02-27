@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Filter to prevent manual access to API endpoints from a browser tab. It blocks requests that
+ * Filter to prevent manual access to API endpoints from a browser tab. It
+ * blocks requests that
  * appear to be top-level navigation (e.g. typing URL in address bar).
  */
 @Component
@@ -17,7 +18,9 @@ public class BrowserNavigationFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      @org.springframework.lang.NonNull HttpServletRequest request,
+      @org.springframework.lang.NonNull HttpServletResponse response,
+      @org.springframework.lang.NonNull FilterChain filterChain)
       throws ServletException, IOException {
 
     String path = request.getRequestURI();

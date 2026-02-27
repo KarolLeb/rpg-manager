@@ -14,7 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/** Service for managing activity log entries with embedding-based semantic search. */
+/**
+ * Service for managing activity log entries with embedding-based semantic
+ * search.
+ */
 @Service
 @RequiredArgsConstructor
 public class ActivityLogService {
@@ -34,16 +37,15 @@ public class ActivityLogService {
     String metadataJson = serializeMetadata(request.getMetadata());
     float[] embedding = embeddingService.embed(request.getDescription());
 
-    ActivityLogEntry entry =
-        ActivityLogEntry.builder()
-            .sessionId(request.getSessionId())
-            .campaignId(request.getCampaignId())
-            .userId(request.getUserId())
-            .actionType(request.getActionType())
-            .description(request.getDescription())
-            .metadata(metadataJson)
-            .embedding(embedding)
-            .build();
+    ActivityLogEntry entry = ActivityLogEntry.builder()
+        .sessionId(request.getSessionId())
+        .campaignId(request.getCampaignId())
+        .userId(request.getUserId())
+        .actionType(request.getActionType())
+        .description(request.getDescription())
+        .metadata(metadataJson)
+        .embedding(embedding)
+        .build();
 
     ActivityLogEntry saved = activityLogRepository.save(entry);
     return toDto(saved, null);
@@ -106,20 +108,33 @@ public class ActivityLogService {
   }
 
   private ActivityLogDto mapNativeResult(Object[] row) {
+    Number idNum = (Number) row[0];
+    Number sessionNum = (Number) row[1];
+    Number campaignNum = (Number) row[2];
+    Number userNum = (Number) row[3];
+    String actionTypeStr = (String) row[4];
+    String description = (String) row[5];
+    String metadata = (String) row[6];
+    Object createdAtObj = row[8];
+    BigDecimal similarityDec = (BigDecimal) row[9];
+
     return ActivityLogDto.builder()
-        .id(((Number) row[0]).longValue())
-        .sessionId(row[1] != null ? ((Number) row[1]).longValue() : null)
-        .campaignId(row[2] != null ? ((Number) row[2]).longValue() : null)
-        .userId(row[3] != null ? ((Number) row[3]).longValue() : null)
-        .actionType(ActivityLogEntry.ActionType.valueOf((String) row[4]))
-        .description((String) row[5])
-        .metadata(deserializeMetadata((String) row[6]))
-        .createdAt(toOffsetDateTime(row[8]))
-        .similarityScore(row[9] != null ? ((BigDecimal) row[9]).doubleValue() : null)
+        .id(idNum.longValue())
+        .sessionId(sessionNum != null ? sessionNum.longValue() : null)
+        .campaignId(campaignNum != null ? campaignNum.longValue() : null)
+        .userId(userNum != null ? userNum.longValue() : null)
+        .actionType(actionTypeStr != null ? ActivityLogEntry.ActionType.valueOf(actionTypeStr) : null)
+        .description(description)
+        .metadata(deserializeMetadata(metadata))
+        .createdAt(toOffsetDateTime(createdAtObj))
+        .similarityScore(similarityDec != null ? similarityDec.doubleValue() : null)
         .build();
   }
 
   private OffsetDateTime toOffsetDateTime(Object value) {
+    if (value == null) {
+      return null;
+    }
     if (value instanceof Timestamp ts) {
       return ts.toInstant().atOffset(ZoneOffset.UTC);
     }
@@ -145,7 +160,8 @@ public class ActivityLogService {
       return Collections.emptyMap();
     }
     try {
-      return objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {});
+      return objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
+      });
     } catch (JsonProcessingException e) {
       return Collections.emptyMap();
     }

@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class StyleServiceTest extends BaseIntegrationTest {
 
-  @Autowired private StyleService styleService;
-
-  @Autowired private StyleRepository styleRepository;
+  @Autowired
+  private StyleService styleService;
 
   @Test
   void shouldUpdateCacheWhenStyleIsSaved() {
