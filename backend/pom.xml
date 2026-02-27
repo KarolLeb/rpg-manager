@@ -30,12 +30,16 @@
         <pitest-junit5.version>1.2.1</pitest-junit5.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <dependency-check.version>11.1.0</dependency-check.version>
         
         <!-- Shared Sonar properties (can be overridden in modules) -->
         <sonar.projectName>RPG Manager - Backend (Services)</sonar.projectName>
         <sonar.projectKey>RPG-manager-backend-services</sonar.projectKey>
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
+        <!-- Tell SonarQube where to find the OWASP Dependency-Check report -->
+        <sonar.dependencyCheck.htmlReportPath>${project.build.directory}/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
+        <sonar.dependencyCheck.jsonReportPath>${project.build.directory}/dependency-check-report.json</sonar.dependencyCheck.jsonReportPath>
         <!-- Default to Unit coverage for standard sonar scan -->
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.coverage.exclusions>
@@ -289,6 +293,27 @@
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <linkXRef>false</linkXRef>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${dependency-check.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Fail the build on High (7.0+) or Critical CVSS scores -->
+                    <failBuildOnCVSS>7</failBuildOnCVSS>
+                    <formats>
+                        <format>HTML</format>
+                        <format>JSON</format>
+                        <format>XML</format>
+                    </formats>
                 </configuration>
             </plugin>
         </plugins>
