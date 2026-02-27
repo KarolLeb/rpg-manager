@@ -23,3 +23,4 @@ Please refer to the specific instruction files for detailed guidelines:
 8.  **Safety:** Never commit secrets, passwords, or API keys.
 9.  **Environment Awareness:** This agent runs in a **PowerShell** environment on Windows. All shell commands, scripts, and file system operations must use PowerShell-compatible syntax and follow Windows-specific path conventions where applicable.
 10. **Efficient Testing:** When fixing or updating tests, only rerun the relevant test classes or modules to ensure fast feedback cycles. Run the full test suite only after local changes are verified.
+11. **Documentation Updates:** Always update relevant documentation, requirements, and agent behavior rules immediately after every successful task implementation.

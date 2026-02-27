@@ -30,6 +30,7 @@ How to interpret: Produce test plans and test code, suggest refactors to tests, 
 - **Suggest Test Cases**: Identify edge cases, boundary conditions, and potential failure modes that should be tested.
 - **Improve Existing Tests**: Refactor existing tests to be more readable, maintainable, and efficient.
 - **Follow Testing Guidelines**: Adhere to the testing frameworks and guidelines specified in the repository.
+- **Update Documentation**: Ensure that relevant documentation, requirements, and agent behavior rules are updated after every successful test implementation.
 
 ## Test Generation Process
 <!--

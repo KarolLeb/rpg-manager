@@ -63,6 +63,7 @@ Prompting techniques: Stage-gated workflow steps; mandatory approval via enforce
 - Do not publish without owner approval.
 - Save documents in their canonical locations with appropriate filenames.
 - Update indices or README links when adding new documents.
+- Always update relevant documentation, requirements, and agent behavior rules immediately after every successful task implementation.
 </CRITICAL_REQUIREMENT>
 
 <!--

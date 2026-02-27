@@ -264,7 +264,7 @@ AI assistants MUST follow this exact workflow for all code changes.
 1. **Rebase Strategy**: Always rebase feature branch on latest `master` before creating PR
 2. **Commit Organization**: Squash related commits into logical units
 3. **Testing**: Ensure all tests pass before requesting review
-4. **Documentation**: Update relevant documentation as part of the same PR
+4. **Documentation**: Update relevant documentation as part of the same PR. Ensure that documentation, requirements, and agent behavior rules are updated immediately after every successful task implementation.
 
 **Merge Process:**
 - **Squash and Merge**: Use squash merge for feature branches to maintain clean history

@@ -202,6 +202,7 @@ PROMPTING TECHNIQUES: Must-language to force compliance.
 - Must document in docs/designs/ before coding
 - Must update docs/architecture/ for new components
 - Must check & update plans/todo.md
+- **Must update relevant documentation, requirements, and agent behavior rules immediately after every successful task implementation.**
 
 <!--
 SECTION PURPOSE: Hard stops for risky behavior.

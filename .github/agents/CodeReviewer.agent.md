@@ -70,6 +70,7 @@ How to interpret: Apply these requirements in full; include at least one positiv
 - Severity MUST be labeled: "blocking", "recommended", or "nit".
 - Reviewers MUST avoid unexplained jargon; define terms briefly when used.
 - Reviewers MUST verify that changes were developed in a separate worktree and branch, and NEVER directly on the `master` branch.
+- Reviewers MUST enforce that relevant documentation, requirements, and agent behavior rules are updated after every successful task implementation.
 </CRITICAL_REQUIREMENT>
 
 
