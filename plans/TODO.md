@@ -6,12 +6,12 @@ Operational task list and active execution plans.
 *(No active plans at the moment)*
 
 ## 📋 Backlog (Short Tasks)
-- [ ] **API Contract Coverage:** Implement Spring Cloud Contract or Swagger-coverage to track E2E/Contract coverage of OpenAPI spec.
 - [ ] **Performance Budget:** Integrate Playwright's Lighthouse or custom Performance API checks into the E2E suite (TBT ≤ 200ms, FCP ≤ 1.2s).
 
 - [ ] **Property-Based Testing:** Introduce property-based testing (e.g., using jqwik for Java) to complement existing example-based unit tests for core domain logic.
 
 ## ✅ Recently Finished (Pending Archive)
+- [x] **API Contract Coverage**: Implemented a lightweight TypeScript `OpenApiCoverageTracker` in Playwright that dynamically pulls OpenAPI specs exposed by `springdoc-openapi-starter-webmvc-api` on the backend and tracks intercepted endpoints to output coverage results locally.
 - [x] **CRAP Analysis:** Built `crap-analyzer.js` script inside `.github/scripts` and integrated it with `backend/pom.xml` to parse Jacoco XML and strictly fail build for methods with CRAP > 30.
 - [x] **E2E Quality Gate Enhancement:** Successfully achieved 50% line / 40% branch E2E coverage across all services. 
 - [x] **Unit Test Quality Enforcement:** Reached ≥ 95% line and ≥ 90% branch coverage for both Backend (98.8% core) and Frontend (99.3%/97.3%). Enforced 20-point cognitive complexity limit and 75% (UI) / 90% (Core) mutation scores. Resolved all SonarQube Quality Gate violations.
