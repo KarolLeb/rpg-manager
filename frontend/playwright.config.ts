@@ -5,6 +5,8 @@ import path from 'path';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  globalSetup: require.resolve('./e2e/global-setup'),
+  globalTeardown: require.resolve('./e2e/global-teardown'),
   testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -25,7 +27,7 @@ export default defineConfig({
       coverage: {
         entryFilter: (entry: any) => entry.url.includes('main.js') || entry.url.includes('chunk-'),
         sourceFilter: (sourcePath: string) => sourcePath.includes('src/app') && !sourcePath.includes('mock'),
-        
+
         reports: [
           ['v8'],
           ['console-summary'],
