@@ -63,6 +63,14 @@ This repository is a GitHub Template created by Capgemini's AI & Software Engine
 - Follow the configuration and best practices outlined here when assisting in this repository.
 - Reference `README.md` for general orientation and project goals.
 
+## Infrastructure & Local Environment Assumptions
+
+<CRITICAL_REQUIREMENT type="MANDATORY">
+AI assistants MUST assume the following local infrastructure is running and available without asking the user for confirmation:
+- **SonarQube**: A local SonarQube instance is running at `http://localhost:9000`. Do not ask the user if SonarQube is configured or running before executing SonarQube scans, reading properties, or running pipelines. Assume it is ready.
+- **Docker/Testcontainers**: The Docker daemon is assumed to be running for all integration and E2E tests.
+</CRITICAL_REQUIREMENT>
+
 <!--
 ==============================================================================
 PROJECT METHODOLOGIES SECTION

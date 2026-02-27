@@ -1,7 +1,5 @@
 ---
-mode: 'agent'
 description: 'Analyze CRAP (Change Risk Anti-Patterns) metrics and refactor code to lower scores.'
-tools: ['codebase', 'search', 'editFiles', 'usages', 'problems', 'changes']
 ---
 
 # CRAP Metric Resolution
