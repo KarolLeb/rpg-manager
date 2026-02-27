@@ -7,9 +7,8 @@ Operational task list and active execution plans.
 
 ## 📋 Backlog (Short Tasks)
 
-- [ ] **Property-Based Testing:** Introduce property-based testing (e.g., using jqwik for Java) to complement existing example-based unit tests for core domain logic.
-
 ## ✅ Recently Finished (Pending Archive)
+- [x] **Property-Based Testing:** Introduced property-based testing using `jqwik` for `ActionPermissionService` (backend-core). Verified 6 resolution-chain invariants across random inputs and confirmed integration into the main CI/CD pipeline.
 - [x] **Performance Budget:** Integrated custom Performance API checks into the Playwright E2E suite (TBT ≤ 200ms, FCP ≤ 1.2s).
 - [x] **API Contract Coverage**: Implemented a lightweight TypeScript `OpenApiCoverageTracker` in Playwright that dynamically pulls OpenAPI specs exposed by `springdoc-openapi-starter-webmvc-api` on the backend and tracks intercepted endpoints to output coverage results locally.
 - [x] **CRAP Analysis:** Built `crap-analyzer.js` script inside `.github/scripts` and integrated it with `backend/pom.xml` to parse Jacoco XML and strictly fail build for methods with CRAP > 30.
