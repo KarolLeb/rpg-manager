@@ -388,6 +388,7 @@ Tiered Targets:
 - Quality Gate: **0 issues** allowed (both overall and new violations threshold must be 0).
 - **SonarQube Synchronization**: Quality Gate settings for "New Code" and "Overall Code" MUST be identical (e.g., if Overall Coverage target is 95%, New Code Coverage target MUST also be 95%).
 - Cognitive Complexity (Unit Tests): Target method complexity ≤ 15 (enforced by JaCoCo/Sonar).
+- CRAP Score: Target method CRAP score ≤ 30 (enforced by custom pipeline scripts analyzing coverage reports).
 - Flakiness Rate: **Zero Flakiness Mandate**. CI retries must be set to 0. Any failure is a blocker.
 - Performance Budget (Frontend): 
     - Time to Interactive (TTI) ≤ 2.5s
