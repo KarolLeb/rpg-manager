@@ -121,7 +121,7 @@ AI assistants MUST follow trunk-based development with lightweight, short-lived 
 - **Pull Request Mandatory**: ALL changes, no matter how small, MUST go through PR process
 
 **Workflow Requirements:**
-1. **Worktree Creation**: Create a dedicated git worktree and feature/fix branch from latest `master` BEFORE making any code changes.
+1. **Worktree Creation**: Create a dedicated git worktree and feature/fix branch from latest `master` BEFORE making any code changes. If the AI agent lacks environment permissions outside the repository root, it MUST create the worktree inside a nested `.worktrees/` directory (e.g., `git worktree add .worktrees/api-coverage feature/api-coverage`).
 2. **Development**: Make small, focused commits with clear messages.
 3. **Integration**: Regularly rebase/merge from `master` to stay current.
 4. **Review**: Submit PR when feature/fix is complete.
@@ -278,7 +278,7 @@ AI assistants MUST follow this exact workflow for all code changes.
 1. **Rebase Strategy**: Always rebase feature branch on latest `master` before creating PR
 2. **Commit Organization**: Squash related commits into logical units
 3. **Testing**: Ensure all tests pass before requesting review
-4. **Documentation**: Update relevant documentation as part of the same PR. Ensure that documentation, requirements, and agent behavior rules are updated immediately after every successful task implementation.
+4. **Documentation & Context Reflection**: Before finalizing any task, merging, or notifying the user of completion, the AI MUST review the preceding conversation. If the user provided any implicit project knowledge, constraints, or preferences (e.g., "put worktrees in a nested folder"), the AI MUST proactively add this knowledge to `copilot-instructions.md` in the current commit. Do NOT wait for the user to ask if anything should be documented.
 
 **Merge Process:**
 - **Squash and Merge**: Use squash merge for feature branches to maintain clean history

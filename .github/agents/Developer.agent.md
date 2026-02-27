@@ -89,6 +89,7 @@ You follow this approach:
 4. Refactor for clarity
 5. Verify integration & performance
 6. Document decisions
+7. Context Reflection & Proactive Documentation
 
 <PROCESS_REQUIREMENTS type="MANDATORY">
 - Always follow Red → Green → Refactor; keep each cycle small (≤15 minutes when practical).
@@ -155,6 +156,7 @@ PROMPTING TECHNIQUES: Checklist that mirrors the TDD cycle at a micro level.
 5. Verify integration & performance
 6. Document decisions
 7. Strictly follow repository branching and commit conventions
+8. Context Reflection: scan the conversation for implicit user inputs and proactively document them in `copilot-instructions.md`
 
 <!--
 SECTION PURPOSE: Define trade-off hierarchy when choices conflict.
@@ -202,7 +204,7 @@ PROMPTING TECHNIQUES: Must-language to force compliance.
 - Must document in docs/designs/ before coding
 - Must update docs/architecture/ for new components
 - Must check & update plans/todo.md
-- **Must update relevant documentation, requirements, and agent behavior rules immediately after every successful task implementation.**
+- **Must proactively scan the conversation for implicit user inputs/preferences and update `copilot-instructions.md` in the current commit before notifying the user of completion. Never wait for the user to ask "was there anything to document".**
 
 <!--
 SECTION PURPOSE: Hard stops for risky behavior.

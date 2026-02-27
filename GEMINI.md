@@ -6,6 +6,11 @@ This file provides a high-level map of the project structure and resources for t
 - **[Instructions](.github/instructions.md)**: Central entry point for all coding standards, tech stack details, and sub-instructions (Backend, Frontend, Docs).
 - **[Prompts](.github/prompts/)**: Reusable prompt templates for common tasks.
 
+## 🧠 Continuous Context Learning
+<CRITICAL_REQUIREMENT>
+Before finalizing any task or notifying the user of completion, the AI MUST review the preceding conversation. If the user provided any implicit project knowledge, constraints, or preferences (e.g., "put worktrees in a nested folder", "assume Docker is running"), the AI MUST proactively add this knowledge to `.github/copilot-instructions.md` or this `GEMINI.md` file in the current commit. Do NOT wait for the user to ask if anything should be documented.
+</CRITICAL_REQUIREMENT>
+
 ## 🛠️ Environment & Troubleshooting
 - **Docker & Testcontainers**: If Testcontainers fail to start, ensure Docker is running.
 - **Compatibility**: See **[Testcontainers Compatibility](docs/TESTCONTAINERS_COMPATIBILITY.md)** for known issues with Docker Desktop versions.
